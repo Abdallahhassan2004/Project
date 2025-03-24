@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | Heaven And Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/cart.css">
+</head>
+<body>
+    <!-- Toolbar -->
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" placeholder="Search for products...">
+            <button>Search</button>
+        </div>
+        <div class="action-buttons">
+            <button class="signin-button">Log In</button>
+            <button class="signup-button">Sign Up</button>
+            <button class="cart-button">Cart</button>
+            <button class="checkout-button">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../HTML/Home.html">Home</a></li>
+                <li><a href="../HTML/bedroom.html">Bed Rooms</a></li>
+                <li><a href="../HTML/Living.html">Living Room</a></li>
+                <li><a href="#">Kitchen</a></li>
+                <li><a href="#">Dining Room</a></li>
+                <li><a href="#">New Arrivals</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Shopping Cart Section -->
+    <div class="cart-container">
+        <div class="cart-left">
+            <div class="cart-item">
+                <img src="../Images/logo.jpg" alt="Mont Blanc Table">
+                <div class="item-details">
+                    <h3>MONT BLANC</h3>
+                    <div class="quantity">
+                        Quantity: <input type="number" value="1" min="1">
+                    </div>
+                    <div class="price">EGP15,261.75</div>
+                </div>
+                <div class="trash-icon">🗑️</div>
+            </div>
+            <a href="#" class="continue-shopping">← Continue Shopping</a>
+        </div>
+        <div class="cart-right">
+            <div class="cart-summary">
+                <p>Items: 1</p>
+                <p class="total-price">Total: EGP15,261.75</p>
+            </div>
+            <button class="checkout-btn">PROCEED TO CHECKOUT</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
+    </footer>
+</body>
+</html>

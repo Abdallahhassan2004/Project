@@ -1,0 +1,131 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #808080, #000000);
+    color: #333;
+    overflow-x: hidden;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 50px;
+    box-sizing: border-box;
+}
+
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 1300px;
+    height: 600px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+}
+
+.signup-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.signup-form {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 8%;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.terms {
+    margin: 15px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.terms label {
+    margin-left: 5px;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    background-color: #716d6d;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #555;
+}
+
+.bottom_text a {
+    font-weight: 700;
+    cursor: pointer;
+    color: #000;
+    text-decoration: none;
+}
+
+.error-message {
+    color: #ff3333;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.logo-circle {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #555;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    display: block;
+    margin: 200px ;
+}
+
+.logo-circle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.btn:active ~ .logo-circle {
+    animation: bounce 0.5s;
+}
+
+@keyframes bounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 1400px) {
+    .signup-container {
+        flex-direction: column-reverse;
+        height: auto;
+    }
+}

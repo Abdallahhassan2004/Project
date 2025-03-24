@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/Signup.css" />
+    <title>Sign Up</title>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-container">
+            <div class="login-left">
+                <img class="logo-circle" src="../Images/logo.jpg" alt="Logo" />
+            </div>
+            <div class="signup-right">
+                <form asp-action="SignUpLogic" method="post" class="signup-form">
+                    <h1><strong>Sign Up</strong></h1>
+                    <input type="text" class="input-field" name="Username" placeholder="Username" required />
+                    <input type="email" class="input-field" name="Email" placeholder="Email address" required />
+                    <input type="password" class="input-field" name="Password" placeholder="Password" required />
+
+                    <div class="terms">
+                        <input type="checkbox" id="accept-terms" required />
+                        <label for="accept-terms">Accept Terms & Conditions</label>
+                    </div>
+
+                    <button type="submit" class="btn"><strong>Join us</strong></button>
+                    <span class="bottom_text">Already have an account? <a href="../HTML/Login.html">Sign In</a></span>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

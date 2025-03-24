@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heaven And Home | Bedroom Set</title>
+    <link rel="stylesheet" href="../../CSS/product.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Search Bar -->
+  <div class="search-container">
+    <div class="logo">
+        <h1>Heaven And Home </h1>
+        <p>Furniture & Accessories</p>
+    </div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search for products...">
+        <button>Search</button>
+    </div>
+    <div class="action-buttons">
+        <button class="signin-button">Log In</button>
+        <button class="signup-button">Sign Up</button>
+        <button class="cart-button">Cart</button>
+        <button class="checkout-button">Checkout</button>
+    </div>
+</div>
+
+<header>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="../HTML/Home.html">Home</a></li>
+            <li><a href="../HTML/bedroom.html">Bedrooms</a></li>
+            <li><a href="../HTML/Living.html">Living Room</a></li>
+            <li><a href="#">Kitchen</a></li>
+            <li><a href="#">Dining Room</a></li>
+            <li><a href="#">New Arrivals</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
+</header>
+
+    <main class="product-page">
+        <div class="image-gallery">
+            <div class="thumbnail-images">
+                <img src="../../Images/bedrooms/b2/1.jpeg" alt="Thumbnail 1" onclick="changeImage(this.src)">
+                <img src="../../Images/bedrooms/b2/2.jpeg" alt="Thumbnail 2" onclick="changeImage(this.src)">
+                <img src="../../Images/bedrooms/b2/3.jpeg" alt="Thumbnail 3" onclick="changeImage(this.src)">
+                <img src="../../Images/bedrooms/b2/4.jpeg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
+                <img src="../../Images/bedrooms/b2/5.jpg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
+         
+            </div>
+            <img src="../../Images/bedrooms/b2/5.jpg" alt="Main bedroom image" class="main-image" id="mainImage">
+        </div>
+
+        <div class="product-info">
+            <h1>bohomeian Bedroom Set</h1>
+            <p class="price">£1,599</p>
+            <p class="availability">In Stock</p>
+            <p class="description">
+                Transform your bedroom with this bohomeian bedroom set. It includes a king-size bed frame with soft neutral upholstery, 
+                two matching bedside tables with oak finishes, a large mirrored wardrobe, and a comfortable memory foam mattress.
+            </p>
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+    </main>
+
+    <!-- You May Also Like Section -->
+    <section class="you-may-like">
+        <h2>You May Also Like</h2>
+        <div class="like-grid">
+            <a href="bedroom1.html"><img src="bedroom1.jpg" alt="Bedroom 1"><p>Mediterranean Bedroom</p></a>
+            <a href="livingroom.html"><img src="livingroom-thumb.jpg" alt="Living Room"><p>Living Room Set</p></a>
+            <a href="kitchen.html"><img src="kitchen-thumb.jpg" alt="Kitchen"><p>Modern Kitchen</p></a>
+            <a href="diningroom.html"><img src="diningroom-thumb.jpg" alt="Dining Room"><p>Dining Room Set</p></a>
+            <a href="bedroom5.html"><img src="bedroom5.jpg" alt="Bedroom 3"><p>Charcoal Sophistication Bedroom</p></a>
+            <a href="bedroom6.html"><img src="bedroom6.jpg" alt="Bedroom 4"><p>Grey Modernity Bedroom</p></a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function changeImage(imageSrc, thumbElement) {
+            const mainImage = document.getElementById('mainImage');
+            mainImage.style.opacity = '0.3';
+            setTimeout(() => {
+                mainImage.src = imageSrc;
+                mainImage.style.opacity = '1';
+            }, 150);
+            const thumbnails = document.querySelectorAll('.thumbnail-images img');
+            thumbnails.forEach(img => img.classList.remove('active'));
+            thumbElement.classList.add('active');
+        }
+    </script>
+</body>
+</html>

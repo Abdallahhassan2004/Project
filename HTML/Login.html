@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../CSS/Login.css" asp-append-version="true" />
+    <title>LogIn</title>
+</head>
+<body>
+    <div class="container">
+        <div class="login">
+            <div class="login-left">
+                <img class="logo-circle" src="../Images/logo.jpg" alt="no image" />
+            </div>
+            <div class="login-right">
+                <form asp-action="LoginLogic" method="post" class="login-form">
+                    <h1><strong>Login</strong></h1>
+                    <input type="text" class="input-field" name="Username" placeholder="Username" required />
+                    <input type="password" class="input-field" name="Password" placeholder="Password" required />
+
+                    <div class="terms">
+                        <input type="checkbox" id="accept-terms" required />
+                        <label for="accept-terms">Accept Terms & Conditions</label>
+                    </div>
+
+                    <button type="submit" class="btn" id="login-btn"><strong>Login</strong></button>
+                    <span class="bottom_text">Don't have an account? <a href="../HTML/Signup.html">Sign Up</a></span>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
