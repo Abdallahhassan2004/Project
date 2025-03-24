@@ -1,0 +1,216 @@
+body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    justify-content: space-between;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-left: 210px;
+    flex-grow: 1;
+}
+
+.search-bar input {
+    padding: 14px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    width: 300px;
+    margin-right: 20px;
+}
+
+.search-bar button {
+    padding: 14px 20px;
+    border: 1px solid #000;
+    background-color: #000;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.signin-button, .signup-button, .cart-button, .checkout-button {
+    padding: 14px 20px;
+    border: none;
+    background-color: transparent;
+    color: black;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.signup-button {
+    background-color: white;
+    border-radius: 8px;
+}
+
+.signin-button:hover,
+.signup-button:hover,
+.cart-button:hover,
+.checkout-button:hover {
+    background-color: #f5f5f5;
+}
+
+header {
+    background-color: #000;
+    padding: 10px 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+}
+
+nav ul li a:hover {
+    color: #d01a42;
+}
+
+/* Hamburger Menu */
+.menu-toggle {
+    
+    color:beige ;
+    display: none;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.hero h1 {
+    color: white;
+    font-size: 2.5em;
+    position: relative;
+    z-index: 1;
+}
+
+.shop-now {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 25px;
+    font-size: 1.2em;
+    background-color: #f1eced;
+    color: rgb(13, 12, 12);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.shop-now:hover {
+    background-color: #a01432;
+}
+
+.image-section {
+    padding: 40px 20px;
+}
+
+.image-row-static {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.image-row-static img {
+    width: 400px;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.image-row-static img:hover {
+    transform: scale(1.05);
+}
+
+.shop-by-room-title {
+    text-align: left;
+    font-size: 2.4em;
+    color: black;
+    font-weight: bold;
+    margin: 40px 0 30px 40px;
+    font-family: 'Georgia', serif;
+}
+
+.clickable-image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+}
+
+.image-container {
+    text-align: center;
+}
+
+.image-container a img {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.image-container a img:hover {
+    transform: scale(1.05);
+}
+
+.image-container p {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #333;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}

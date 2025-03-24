@@ -3,9 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Heaven And Home | Stylish & Unique Homeware</title>
+    <link rel="stylesheet" href="../CSS/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Search Bar -->
     
+    <div class="search-container">
+        <div class="logo">
+            <h1>Heaven And Home </h1>
+            <p>Furniture & Accessories</p>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for products...">
+            <button>Search</button>
+        </div>
+        <div class="action-buttons">
+            <button class="signin-button">Log In</button>
+            <button class="signup-button">Sign Up</button>
+            <button class="cart-button">Cart</button>
+            <button class="checkout-button">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+       
+       <div class="header-content">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../HTML/Home.html">Home</a></li>
+                <li><a href="../HTML/bedroom.html">Bedrooms</a></li>
+                <li><a href="../HTML/Living.html">Living Room</a></li>
+                <li><a href="#">Kitchen</a></li>
+                <li><a href="#">Dining Room</a></li>
+                <li><a href="#">New Arrivals</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
+        </nav>
+       </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <video autoplay muted loop>
+            <source src="../videos/welcome.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <h1>Stylish & Unique Homeware</h1>
+        <button class="shop-now">Shop Now →</button>
+    </section>
+
+    <!-- Image Section -->
+    <section class="image-section">
+        <div class="image-row-static">
+            <img src="../Images/Home/h1.jfif" alt="Home Decor 1">
+            <img src="../Images/Home/h2.jfif" alt="Home Decor 2">
+            <img src="../Images/Home/h3.jfif" alt="Home Decor 3">
+        </div>
+
+        <!-- Shop By Room Title -->
+        <h2 class="shop-by-room-title">Shop By Room :</h2>
+
+        <!-- Clickable images with names underneath -->
+        <div class="clickable-image-grid">
+            <div class="image-container">
+                <a href="../HTML/Living.html">
+                    <img src="../Images/Home/living.jpeg" alt="Living Room">
+                </a>
+                <p>Living Room</p>
+            </div>
+            <div class="image-container">
+                <a href="../HTML/bedroom.html">
+                    <img src="../Images/Home/bedroom.jpeg" alt="Bedroom">
+                </a>
+                <p>Bedroom</p>
+            </div>
+            <div class="image-container">
+                <a href="dining.html">
+                    <img src="../Images/Home/dining.jfif" alt="Dining">
+                </a>
+                <p>Dining</p>
+            </div>
+            <div class="image-container">
+                <a href="office.html">
+                    <img src="../Images/Home/kitchen.jpeg" alt="Office">
+                </a>
+                <p>Kitchen</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
+    </footer>
 </body>
 </html>

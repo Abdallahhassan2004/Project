@@ -1,72 +1,131 @@
 /* General Styling */
-body {
-    font-family: 'Poppins', sans-serif;
+body, h1, h2, h3, p, ul, li {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
 }
 
-/* Header */
-header {
-    background-color: #fff;
-    padding: 15px 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.search-container {
     display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
     justify-content: space-between;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-left: 210px;
+    flex-grow: 1;
+}
+
+.search-bar input {
+    padding: 14px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    width: 300px;
+    margin-right: 20px;
+}
+
+.search-bar button {
+    padding: 14px 20px;
+    border: 1px solid #000;
+    background-color: #000;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
     align-items: center;
 }
 
-/* Navigation */
+.signin-button, .signup-button, .cart-button, .checkout-button {
+    padding: 14px 20px;
+    border: none;
+    background-color: transparent;
+    color: black;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.signup-button {
+    background-color: white;
+    border-radius: 8px;
+}
+
+.signin-button:hover,
+.signup-button:hover,
+.cart-button:hover,
+.checkout-button:hover {
+    background-color: #f5f5f5;
+}
+
+header {
+    background-color: #000;
+    padding: 10px 20px;
+}
+
 nav {
     display: flex;
+    justify-content: center;
     align-items: center;
 }
 
-.nav-links {
+nav ul {
     list-style: none;
     display: flex;
-    gap: 1.5rem;
-    padding: 0;
-    margin: 0;
+    gap: 20px;
 }
 
-.nav-links li {
-    display: inline-block;
-}
-
-.nav-links li a {
+nav ul li a {
     text-decoration: none;
-    color: #333;
-    font-weight: bold;
+    color: #fff;
+    padding: 10px;
+}
+
+nav ul li a:hover {
+    color: #d01a42;
 }
 
 /* Hamburger Menu */
 .menu-toggle {
+    
     display: none;
+    color:beige ;
     font-size: 2rem;
     cursor: pointer;
 }
 
 /* Breadcrumb Section */
 .breadcrumb-section {
-    background: url('your-image.jpg') no-repeat center center/cover;
+    background: url('../Images/background.jpg') no-repeat center 55%/cover;
     color: white;
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 8rem 2rem;
     font-size: 2rem;
 }
 
 .breadcrumb-section p {
-    font-size: 1rem;
+    font-size: 1.75rem;
     margin-top: 0.5rem;
 }
 
 /* Product List */
+/* Product List */
 .product-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive Grid */
+    grid-template-columns: repeat(3, 1fr); /* 3 products per row */
     gap: 20px;
     padding: 2rem;
+    max-width: 1200px; /* Optional: Limit the maximum width for better alignment */
+    margin: 0 auto; /* Center the grid */
 }
 
 /* Product Styling */
@@ -152,4 +211,11 @@ h2 {
     .product img {
         height: 200px;
     }
+}
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
 }
