@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heaven And Home | Bedroom Set</title>
+    <link rel="stylesheet" href="../../CSS/product.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="logo">
+            <h1>Heaven And Home </h1>
+            <p>Furniture & Accessories</p>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for products...">
+            <button>Search</button>
+        </div>
+        <div class="action-buttons">
+            <button class="signin-button">Log In</button>
+            <button class="signup-button">Sign Up</button>
+            <button class="cart-button">Cart</button>
+            <button class="checkout-button">Checkout</button>
+        </div>
+    </div>
+
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../../HTML/Home.html">Home</a></li>
+                <li><a href="../../HTML/bedroom.html">Bedrooms</a></li>
+                <li><a href="../../HTML/Living.html">Living Room</a></li>
+                <li><a href="#">Kitchen</a></li>
+                <li><a href="#">Dining Room</a></li>
+                <li><a href="#">New Arrivals</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
+    </header>
+
+    <main class="product-page">
+        <div class="image-gallery">
+            <div class="thumbnail-images">
+                <img src="../../Images/livingRooms/L3/L1.avif" alt="Thumbnail 1"  onclick="changeImage(this.src)">
+                <img src="../../Images/livingRooms/L3/L2.avif" alt="Thumbnail 2" onclick="changeImage(this.src)">
+                <img src="../../Images/livingRooms/L3/L3.webp" alt="Thumbnail 3" onclick="changeImage(this.src)">
+                <img src="../../Images/livingRooms/L3/L4.avif" alt="Thumbnail 4 " onclick="changeImage(this.src)">
+                <img src="../../Images/livingRooms/L3/L5.webp" alt="Thumbnail 4 " onclick="changeImage(this.src)">
+         
+            </div>
+            <img src="../../Images/livingRooms/L3/L1.avif" alt="Main  image" class="main-image" id="mainImage">
+        </div>
+
+        <div class="product-info">
+            <h1>Relaxing, working, dining...this space does it all</h1>
+            <p class="price">£1,200</p>
+            <p class="availability">In Stock</p>
+            <p class="description">
+                Want to get the most out of a smaller living room?
+                 Start with flexible furniture with smart proportions 
+                 to give you lots of room to get on with all the things you want and need to do.
+            </p>
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+    </main>
+
+    <!-- You May Also Like Section -->
+    <section class="you-may-like">
+        <h2>You May Also Like</h2>
+        <div class="like-grid">
+            <a href="../../HTML/bedrooms/bedroom1.html"><img src="../../Images/bedrooms/b1/5.jpeg" alt="Bedroom 1"><p> Mediterranean Bedroom Set</p></a>
+            <a href="../../HTML/Livingrooms/livingroom4.html"><img src="../../Images/livingRooms/L4/L1.avif" alt="Living Room"><p>A living room with clutter-free calm for everyone</p></a>
+            <a href="kitchen.html"><img src="kitchen-thumb.jpg" alt="Kitchen"><p>Modern Kitchen</p></a>
+            <a href="diningroom.html"><img src="diningroom-thumb.jpg" alt="Dining Room"><p>Dining Room Set</p></a>
+            <a href="bedroom3.html"><img src="bedroom3.jpg" alt="Bedroom 3"><p>vintage Bedroom</p></a>
+            <a href="bedroom4.html"><img src="bedroom4.jpg" alt="Bedroom 4"><p>Japandi Bedroom</p></a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function changeImage(imageSrc, thumbElement) {
+            const mainImage = document.getElementById('mainImage');
+            mainImage.style.opacity = '0.3';
+            setTimeout(() => {
+                mainImage.src = imageSrc;
+                mainImage.style.opacity = '1';
+            }, 150);
+            const thumbnails = document.querySelectorAll('.thumbnail-images img');
+            thumbnails.forEach(img => img.classList.remove('active'));
+            thumbElement.classList.add('active');
+        }
+    </script>
+        
+</body>
+</html>
