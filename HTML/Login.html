@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,27 +7,31 @@
     <title>LogIn</title>
 </head>
 <body>
+
     <div class="container">
-        <div class="login">
-            <div class="login-left">
-                <img class="logo-circle" src="../Images/logo.jpg" alt="no image" />
+        <div class="form-box">
+            <div class="logo-container">
+                <img src="../Images/logo.png" alt="Logo" class="logo">
             </div>
-            <div class="login-right">
-                <form asp-action="LoginLogic" method="post" class="login-form">
-                    <h1><strong>Login</strong></h1>
-                    <input type="text" class="input-field" name="Username" placeholder="Username" required />
-                    <input type="password" class="input-field" name="Password" placeholder="Password" required />
 
-                    <div class="terms">
-                        <input type="checkbox" id="accept-terms" required />
-                        <label for="accept-terms">Accept Terms & Conditions</label>
-                    </div>
+            <h2 class="title">Log In</h2>
 
-                    <button type="submit" class="btn" id="login-btn"><strong>Login</strong></button>
-                    <span class="bottom_text">Don't have an account? <a href="../HTML/Signup.html">Sign Up</a></span>
-                </form>
-            </div>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="uil uil-envelope"></i>
+                    <input type="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="uil uil-lock"></i>
+                    <input type="password" placeholder="Password" required>
+                </div>
+
+                <button type="submit" class="submit-button">Log In</button>
+                <p class="switch-text">Don't have an account? <a href="Signup.html" id="goToSignup">Sign up</a></p>
+            </form>
         </div>
     </div>
+
 </body>
 </html>
