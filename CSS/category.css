@@ -45,28 +45,24 @@ body {
     gap: 10px;
     align-items: center;
 }
-
-.signin-button, .signup-button, .cart-button, .checkout-button {
-    padding: 14px 20px;
-    border: none;
-    background-color: transparent;
+.login-button,
+.signup-button,
+.cart-button {
+    padding: 10px 20px;
+    background-color: #fff;
     color: black;
-    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
     font-weight: bold;
+    margin-right: 10px;
 }
 
-.signup-button {
-    background-color: white;
-    border-radius: 8px;
-}
-
-.signin-button:hover,
+.login-button:hover,
 .signup-button:hover,
-.cart-button:hover,
-.checkout-button:hover {
-    background-color: #f5f5f5;
+.cart-button:hover {
+    background-color: #b7b7b7;
 }
-
 header {
     background-color: #000;
     padding: 10px 20px;
@@ -116,7 +112,9 @@ nav ul li a:hover {
     font-size: 1.75rem;
     margin-top: 0.5rem;
 }
-
+.product a{
+    text-decoration: none;
+}
 /* Product List */
 /* Product List */
 .product-list {
