@@ -37,10 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         errorMsg.textContent = '';
         errorMsg.style.display = 'none';
         
-        // Show success feedback (could be an alert or on-page message)
-        alert("Login successful! Redirecting to your account...");
         
-        // Redirect after delay (replace with your actual home/dashboard page)
         setTimeout(() => {
             window.location.href = '/dashboard.html'; // Update this path
         }, 1500);
