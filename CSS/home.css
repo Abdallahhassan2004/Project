@@ -52,25 +52,25 @@ body {
     align-items: center;
 }
 
-.login-button, .signup-button, .cart-button {
-    padding: 14px 20px;
+.login-button,
+.signup-button,
+.cart-button {
+    padding: 10px 20px;
+    background-color: #fdfdfd;
+    color: #000;
     border: none;
-    background-color: transparent;
-    color: black;
-    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none;
     font-weight: bold;
-}
-
-.signup-button {
-    background-color: white;
-    border-radius: 8px;
+    margin-right: 10px;
 }
 
 .login-button:hover,
 .signup-button:hover,
 .cart-button:hover {
-    background-color: #f5f5f5;
+    background-color: #bdbcbc;
 }
+
 
 /* Navigation */
 header {
