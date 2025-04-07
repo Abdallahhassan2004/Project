@@ -232,7 +232,7 @@ nav ul li a:hover {
 
 .like-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Increased min column width */
     gap: 20px;
 }
 
@@ -244,9 +244,9 @@ nav ul li a:hover {
 
 .like-grid img {
     width: 100%;
-    height: 150px;
+    height: 220px; /* Increased height */
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 0; /* No rounded corners */
     transition: transform 0.3s;
 }
 
