@@ -6,41 +6,43 @@
     <title>Heaven And Home | Stylish & Unique Homeware</title>
     <link rel="stylesheet" href="../CSS/home.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-    
+    </style>
 </head>
 <body>
 
-    <!-- Search Bar -->
+            
+      <!-- Search Bar -->
+    
     <div class="search-container">
         <div class="logo">
-            <h1>Heaven And Home</h1>
+            <h1>Heaven And Home </h1>
             <p>Style That Speaks Comfort</p>
         </div>
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search for products..." oninput="searchProducts()" />
-            <button>Search</button>
+            <button onclick="handleSearchClick()">Search</button>
         </div>
         <div class="action-buttons">
-            <button class="login-button" onclick="window.location.href='login.html'">Log In</button>
-            <button class="signup-button" onclick="window.location.href='signup.html'">Sign Up</button>
-            <button class="cart-button" onclick="window.location.href='cart.html'">Cart</button>
+            <a href="login.html" class="login-button">Log In</a>
+            <a href="signup.html" class="signup-button">Sign Up</a>
+            <a href="cart.html" class="cart-button">Cart</a>            
         </div>
     </div>
-
     <!-- Header -->
     <header>
         <div class="header-content">
+
             <nav>
                 <ul class="nav-links">
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="bedroom.html">Bedrooms</a></li>
-                    <li><a href="living.html">Living Room</a></li>
-                    <li><a href="#">Kitchen</a></li>
-                    <li><a href="#">Dining Room</a></li>
-                    <li><a href="#about-section">About</a></li>
-                    <li><a href="#contact-section">Contact</a></li>
+                      <li><a href="Home.html">Home</a></li>
+                      <li><a href="bedroom.html">Bedrooms</a></li>
+                      <li><a href="living.html">Living Room</a></li>
+                      <li><a href="kitchen.html">Kitchen</a></li>
+                      <li><a href="dining.html">Dining Room</a></li>
+                      <li><a href="Home.html#about-section">About</a></li>
+                      <li><a href="Home.html#contact-section">Contact</a></li>
                 </ul>
-                <div class="menu-toggle">☰</div>
+                <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
             </nav>
         </div>
     </header>
@@ -120,6 +122,73 @@
     <footer>
         <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Function to search products
+        function searchProducts() {
+            var input = document.getElementById('search-input').value.toLowerCase();
+            var products = document.querySelectorAll('.image-container');
+    
+            // Loop through the product containers and filter based on the search input
+            products.forEach(function(product) {
+                var productName = product.getAttribute('data-name').toLowerCase();
+                product.classList.toggle('hidden', !productName.includes(input));
+            });
+        }
+    
+        // Redirect to product page on Enter with fuzzy search
+        document.getElementById('search-input').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent form submission or other default behavior
+                searchProducts(); // Call searchProducts to handle filtering on Enter key press
+    
+                const query = event.target.value.trim().toLowerCase();
+                const roomPages = {
+                    "living room": "living.html",
+                    "bedroom": "bedroom.html",
+                    "kitchen": "kitchen.html",
+                    "dining": "dining.html"
+                };
+    
+                // Fuzzy search: find a match that contains the input
+                const matchedPage = Object.keys(roomPages).find(room =>
+                    room.toLowerCase().includes(query)
+                );
+    
+                if (matchedPage) {
+                    window.location.href = roomPages[matchedPage]; // Redirect to matched page
+                } else {
+                    alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
+                }
+            }
+            
+        });
+       
+    function handleSearchClick() {
+        searchProducts(); // Filter visible products
+        
+        const query = document.getElementById('search-input').value.trim().toLowerCase();
+        const roomPages = {
+            "living room": "living.html",
+            "bedroom": "bedroom.html",
+            "kitchen": "kitchen.html",
+            "dining": "dining.html"
+        };
+
+        const matchedPage = Object.keys(roomPages).find(room =>
+            room.toLowerCase().includes(query)
+        );
+
+        if (matchedPage) {
+            window.location.href = roomPages[matchedPage];
+        } else {
+            alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
+        }
+    }
+
+
+        </script>
+        
 
 </body>
 </html>
