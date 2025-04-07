@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-     <!-- Search Bar -->
-     <div class="search-container">
+    <!-- Search Bar -->
+    <div class="search-container">
         <div class="logo">
             <h1>Heaven And Home </h1>
             <p>Furniture & Accessories</p>
@@ -22,6 +22,7 @@
             <button class="signin-button">Log In</button>
             <button class="signup-button">Sign Up</button>
             <button class="cart-button">Cart</button>
+            <button class="checkout-button">Checkout</button>
         </div>
     </div>
 
@@ -31,9 +32,9 @@
                 <li><a href="../../HTML/Home.html">Home</a></li>
                 <li><a href="../../HTML/bedroom.html">Bedrooms</a></li>
                 <li><a href="../../HTML/Living.html">Living Room</a></li>
-                <li><a href="#">Kitchen</a></li>
+                <li><a href="../../HTML/kitchen.html">Kitchen</a></li>
                 <li><a href="#">Dining Room</a></li>
-            
+                <li><a href="#">New Arrivals</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
             </ul>
@@ -43,22 +44,23 @@
     <main class="product-page">
         <div class="image-gallery">
             <div class="thumbnail-images">
-                <img src="../../Images/bedrooms/b4/jp.jpeg" alt="Thumbnail 1" onclick="changeImage(this.src)">
-                <img src="../../Images/bedrooms/b4/jp1.jpeg" alt="Thumbnail 2" onclick="changeImage(this.src)">
-                <img src="../../Images/bedrooms/b4/jp2.jpeg" alt="Thumbnail 3" onclick="changeImage(this.src)">
-                <img src="../../Images/bedrooms/b4/jp3.jpeg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
-                <img src="../../Images/bedrooms/b4/bedroom4.jpg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
+                <img src="../../Images/kitchen/kitchen 1/download (1).jpg" alt="Thumbnail 1"  onclick="changeImage(this.src)">
+                <img src="../../Images/kitchen/kitchen 1/download (2).jpg" alt="Thumbnail 2" onclick="changeImage(this.src)">
+                <img src="../../Images/kitchen/kitchen 1/download (3).jpg" alt="Thumbnail 3" onclick="changeImage(this.src)">
+                <img src="../../Images/kitchen/kitchen 1/download (4).jpg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
+               <img src="../../Images/kitchen/kitchen 1/kitchen1.jpg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
+         
             </div>
-            <img src="../../Images/bedrooms/b4/bedroom4.jpg" alt="Main bedroom image" class="main-image" id="mainImage">
+            <img src="../../Images/kitchen/kitchen 1/kitchen1.jpg" alt="Main Kitchen image" class="main-image" id="mainImage">
         </div>
 
         <div class="product-info">
-            <h1>Japandi Bedroom Set</h1>
-            <p class="price">£1,700</p>
+            <h1>Classic Wooden Kitchen</h1>
+            <p class="price">£2,499</p>
             <p class="availability">In Stock</p>
             <p class="description">
-                Transform your bedroom with this vintage bedroom set. It includes a king-size bed frame with soft neutral upholstery, 
-                two matching bedside tables with oak finishes, a large mirrored wardrobe, and a comfortable memory foam mattress.
+                Enhance your kitchen with this elegant classic wooden kitchen set. 
+                It features solid oak cabinetry, a spacious countertop, vintage-style handles, and ample storage space to keep your kitchen organized and stylish.
             </p>
             <button class="add-to-cart">Add to Cart</button>
         </div>
@@ -68,11 +70,11 @@
     <section class="you-may-like">
         <h2>You May Also Like</h2>
         <div class="like-grid">
-            <a href="bedroom5.html"><img src="../../Images/bedrooms/b5/bedroom5.jpg" alt="Bedroom 5"><p>Charcoal Sophistication Bedroom</p></a>
-            <a href="../Livingrooms/livingroom5.html"><img src="../../Images/livingRooms/L5/L1.avif " alt="Living Room"><p>Modern Scandi living Room </p></a>
+            <a href="../../HTML/bedrooms/bedroom2.html"><img src="../../Images/bedrooms/b2/5.jpg" alt="Bedroom 2"><p>bohomeian Bedroom</p></a>
+            <a href="../../HTML/Livingrooms/livingroom2.html"><img src="../../Images/livingRooms/L2/L1.avif" alt="Living Room"><p>Modern living room </p></a>
             <a href="kitchen.html"><img src="kitchen-thumb.jpg" alt="Kitchen"><p>Modern Kitchen</p></a>
             <a href="diningroom.html"><img src="diningroom-thumb.jpg" alt="Dining Room"><p>Dining Room Set</p></a>
-            
+           
         </div>
     </section>
 
@@ -93,5 +95,6 @@
             thumbElement.classList.add('active');
         }
     </script>
+        
 </body>
 </html>
