@@ -128,17 +128,5 @@
         <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
     </footer>
 
-    <script>
-        function searchProducts() {
-            var input = document.getElementById('search-input').value.toLowerCase();
-            var products = document.querySelectorAll('.image-container');
-
-            products.forEach(function(product) {
-                var productName = product.getAttribute('data-name').toLowerCase();
-                product.classList.toggle('hidden', !productName.includes(input));
-            });
-        }
-    </script>
-
 </body>
 </html>
