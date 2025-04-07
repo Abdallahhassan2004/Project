@@ -163,6 +163,18 @@
     }
 
 
+   
+  // Select all buttons with class "add-to-cart-btn"
+  const addToCartButtons = document.querySelectorAll(".add-to-cart");
+
+  addToCartButtons.forEach(button => {
+    button.addEventListener("click", function () {
+      // Optional: Add item to localStorage or backend logic here
+      window.location.href = "../cart.html"; // Replace with your cart page URL
+    });
+  });
+
+
     </script>
    
         
