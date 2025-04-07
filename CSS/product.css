@@ -50,8 +50,8 @@ body {
 .signup-button,
 .cart-button {
     padding: 10px 20px;
-    background-color: #fff;
-    color: black;
+    background-color: #fdfdfd;
+    color: #000;
     border: none;
     border-radius: 5px;
     text-decoration: none;
@@ -62,7 +62,7 @@ body {
 .login-button:hover,
 .signup-button:hover,
 .cart-button:hover {
-    background-color: #b7b7b7;
+    background-color: #bdbcbc;
 }
 
 header {
