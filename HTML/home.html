@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +21,7 @@
     <div class="search-container">
         <div class="logo">
             <h1>Heaven And Home</h1>
-            <p>      Style That Speaks Comfort </p>
+            <p>Style That Speaks Comfort</p>
         </div>
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search for products..." oninput="searchProducts()" />
@@ -60,7 +59,6 @@
             Your browser does not support the video tag.
         </video>
         <h1>Stylish & Unique Homeware</h1>
-        <button class="shop-now">Shop Now →</button>
     </section>
 
     <!-- Image Section -->
@@ -69,13 +67,10 @@
             <img src="../Images/Home/h1.jfif" alt="Home Decor 1" />
             <img src="../Images/Home/h2.jfif" alt="Home Decor 2" />
             <img src="../Images/Home/h3.jfif" alt="Home Decor 3" />
-            <img src ="../Images/Home/kitchen.jpeg" alt="home decore 4">
         </div>
 
-        <!-- Shop By Room Title -->
         <h2 class="shop-by-room-title">Shop By Room :</h2>
 
-        <!-- Clickable images with names underneath -->
         <div class="clickable-image-grid">
             <div class="image-container" data-name="Living Room">
                 <a href="living.html">
@@ -110,13 +105,10 @@
         <p>
             At Heaven And Home, we specialize in crafting stylish and functional furniture that brings comfort, elegance, and warmth to any home or office.
             Our extensive collection includes everything from luxurious sofas and sturdy dining tables to versatile storage solutions and chic accent pieces. 
-            With a commitment to quality craftsmanship and attention to detail, each product is thoughtfully designed using the finest materials to ensure durability
-            and long-lasting beauty.
         </p>
         <p>
             Whether you're furnishing a cozy apartment or redesigning a spacious living room, our curated selections cater to diverse tastes and preferences,
-            offering a perfect blend of style and practicality for every space. With a focus on exceptional customer service, we strive to make your furniture shopping experience seamless and enjoyable,
-            delivering high-quality products that enhance your everyday living.
+            offering a perfect blend of style and practicality for every space.
         </p>
     </section>
 
@@ -127,7 +119,7 @@
         <div class="contact-methods">
             <a href="https://www.instagram.com/yourhandle" target="_blank">📸 Instagram</a> 
             <a href="https://www.facebook.com/yourpage" target="_blank">📘 Facebook</a>
-            <a href="mailto:info@heavenandhome.com">✉️ info@heavenandhome.com</a>
+            <a href="mailto:info@heavenandhome.com">✉ info@heavenandhome.com</a>
             <p>📞 +201210665996</p>
         </div>
     </section>
@@ -143,11 +135,7 @@
 
             products.forEach(function(product) {
                 var productName = product.getAttribute('data-name').toLowerCase();
-                if (productName.indexOf(input) !== -1) {
-                    product.classList.remove('hidden');
-                } else {
-                    product.classList.add('hidden');
-                }
+                product.classList.toggle('hidden', !productName.includes(input));
             });
         }
     </script>
