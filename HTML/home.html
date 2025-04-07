@@ -1,56 +1,62 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Heaven And Home | Stylish & Unique Homeware</title>
-    <link rel="stylesheet" href="../CSS/home.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/home.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
+
     <!-- Search Bar -->
-    
     <div class="search-container">
         <div class="logo">
-            <h1>Heaven And Home </h1>
-            <p>Furniture & Accessories</p>
+            <h1>Heaven And Home</h1>
+            <p>      Style That Speaks Comfort </p>
         </div>
         <div class="search-bar">
-            <input type="text" placeholder="Search for products...">
+            <input type="text" id="search-input" placeholder="Search for products..." oninput="searchProducts()" />
             <button>Search</button>
         </div>
         <div class="action-buttons">
-            <button class="signin-button">Log In</button>
-            <button class="signup-button">Sign Up</button>
-            <button class="cart-button">Cart</button>
-            <button class="checkout-button">Checkout</button>
+            <button class="login-button" onclick="window.location.href='login.html'">Log In</button>
+            <button class="signup-button" onclick="window.location.href='signup.html'">Sign Up</button>
+            <button class="cart-button" onclick="window.location.href='cart.html'">Cart</button>
         </div>
     </div>
 
     <!-- Header -->
     <header>
-       
-       <div class="header-content">
-        <nav>
-            <ul class="nav-links">
-                <li><a href="../HTML/Home.html">Home</a></li>
-                <li><a href="../HTML/bedroom.html">Bedrooms</a></li>
-                <li><a href="../HTML/Living.html">Living Room</a></li>
-                <li><a href="#">Kitchen</a></li>
-                <li><a href="#">Dining Room</a></li>
-                <li><a href="#">New Arrivals</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-            <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
-        </nav>
-       </div>
+        <div class="header-content">
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="bedroom.html">Bedrooms</a></li>
+                    <li><a href="living.html">Living Room</a></li>
+                    <li><a href="#">Kitchen</a></li>
+                    <li><a href="#">Dining Room</a></li>
+                    <li><a href="#about-section">About</a></li>
+                    <li><a href="#contact-section">Contact</a></li>
+                </ul>
+                <div class="menu-toggle">☰</div>
+            </nav>
+        </div>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
         <video autoplay muted loop>
-            <source src="../videos/welcome.mp4" type="video/mp4">
+            <source src="../videos/welcome.mp4" type="video/mp4" />
             Your browser does not support the video tag.
         </video>
         <h1>Stylish & Unique Homeware</h1>
@@ -60,9 +66,10 @@
     <!-- Image Section -->
     <section class="image-section">
         <div class="image-row-static">
-            <img src="../Images/Home/h1.jfif" alt="Home Decor 1">
-            <img src="../Images/Home/h2.jfif" alt="Home Decor 2">
-            <img src="../Images/Home/h3.jfif" alt="Home Decor 3">
+            <img src="../Images/Home/h1.jfif" alt="Home Decor 1" />
+            <img src="../Images/Home/h2.jfif" alt="Home Decor 2" />
+            <img src="../Images/Home/h3.jfif" alt="Home Decor 3" />
+            <img src ="../Images/Home/kitchen.jpeg" alt="home decore 4">
         </div>
 
         <!-- Shop By Room Title -->
@@ -70,35 +77,80 @@
 
         <!-- Clickable images with names underneath -->
         <div class="clickable-image-grid">
-            <div class="image-container">
-                <a href="../HTML/Living.html">
-                    <img src="../Images/Home/living.jpeg" alt="Living Room">
+            <div class="image-container" data-name="Living Room">
+                <a href="living.html">
+                    <img src="../Images/Home/bedroom.jpeg" alt="Living Room" />
                 </a>
                 <p>Living Room</p>
             </div>
-            <div class="image-container">
-                <a href="../HTML/bedroom.html">
-                    <img src="../Images/Home/bedroom.jpeg" alt="Bedroom">
+            <div class="image-container" data-name="Bedroom">
+                <a href="bedroom.html">
+                    <img src="../Images/Home/living.jpeg" alt="Bedroom" />
                 </a>
                 <p>Bedroom</p>
             </div>
-            <div class="image-container">
+            <div class="image-container" data-name="Dining">
                 <a href="dining.html">
-                    <img src="../Images/Home/dining.jfif" alt="Dining">
+                    <img src="../Images/Home/kitchen.jpeg" alt="Dining" />
                 </a>
                 <p>Dining</p>
             </div>
-            <div class="image-container">
-                <a href="office.html">
-                    <img src="../Images/Home/kitchen.jpeg" alt="Office">
+            <div class="image-container" data-name="Kitchen">
+                <a href="kitchen.html">
+                    <img src="../Images/Home/dining.jfif" alt="Kitchen" />
                 </a>
                 <p>Kitchen</p>
             </div>
         </div>
     </section>
 
+    <!-- About Section -->
+    <section id="about-section" class="about-section">
+        <h2>About Heaven And Home</h2>
+        <p>
+            At Heaven And Home, we specialize in crafting stylish and functional furniture that brings comfort, elegance, and warmth to any home or office.
+            Our extensive collection includes everything from luxurious sofas and sturdy dining tables to versatile storage solutions and chic accent pieces. 
+            With a commitment to quality craftsmanship and attention to detail, each product is thoughtfully designed using the finest materials to ensure durability
+            and long-lasting beauty.
+        </p>
+        <p>
+            Whether you're furnishing a cozy apartment or redesigning a spacious living room, our curated selections cater to diverse tastes and preferences,
+            offering a perfect blend of style and practicality for every space. With a focus on exceptional customer service, we strive to make your furniture shopping experience seamless and enjoyable,
+            delivering high-quality products that enhance your everyday living.
+        </p>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact-section" class="contact-section">
+        <h2>Contact Us</h2>
+        <p>We’d love to hear from you! Connect with us via:</p>
+        <div class="contact-methods">
+            <a href="https://www.instagram.com/yourhandle" target="_blank">📸 Instagram</a> 
+            <a href="https://www.facebook.com/yourpage" target="_blank">📘 Facebook</a>
+            <a href="mailto:info@heavenandhome.com">✉️ info@heavenandhome.com</a>
+            <p>📞 +201210665996</p>
+        </div>
+    </section>
+
     <footer>
         <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
     </footer>
+
+    <script>
+        function searchProducts() {
+            var input = document.getElementById('search-input').value.toLowerCase();
+            var products = document.querySelectorAll('.image-container');
+
+            products.forEach(function(product) {
+                var productName = product.getAttribute('data-name').toLowerCase();
+                if (productName.indexOf(input) !== -1) {
+                    product.classList.remove('hidden');
+                } else {
+                    product.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+
 </body>
 </html>
