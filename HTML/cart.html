@@ -59,10 +59,15 @@
                 <p>Items: 1</p>
                 <p class="total-price">Total: EGP15,261.75</p>
             </div>
-            <button class="checkout-btn">PROCEED TO CHECKOUT</button>
+            <button id="checkout-btn"class="checkout-btn">PROCEED TO CHECKOUT</button>
         </div>
     </div>
-
+    
+    <script>
+        document.getElementById("checkout-btn").addEventListener("click", function () {
+          window.location.href = "checkout.html";
+        });
+      </script>
     <footer>
         <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
     </footer>
