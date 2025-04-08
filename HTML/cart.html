@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="../CSS/cart.css">
 </head>
 <body>
-    <!-- Toolbar -->
-    
     
     <div class="search-container">
         <div class="logo">
@@ -23,26 +21,24 @@
             <a href="cart.html" class="cart-button">Cart</a>            
         </div>
     </div>
-    <!-- Header -->
+
     <header>
         <div class="header-content">
-
             <nav>
                 <ul class="nav-links">
-                      <li><a href="Home.html">Home</a></li>
-                      <li><a href="bedroom.html">Bedrooms</a></li>
-                      <li><a href="living.html">Living Room</a></li>
-                      <li><a href="kitchen.html">Kitchen</a></li>
-                      <li><a href="dining.html">Dining Room</a></li>
-                      <li><a href="Home.html#about-section">About</a></li>
-                      <li><a href="Home.html#contact-section">Contact</a></li>
+                    <li><a href="Home.html">Home</a></li>
+                    <li><a href="bedroom.html">Bedrooms</a></li>
+                    <li><a href="living.html">Living Room</a></li>
+                    <li><a href="kitchen.html">Kitchen</a></li>
+                    <li><a href="dining.html">Dining Room</a></li>
+                    <li><a href="Home.html#about-section">About</a></li>
+                    <li><a href="Home.html#contact-section">Contact</a></li>
                 </ul>
-                <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
+                <div class="menu-toggle">☰</div>
             </nav>
         </div>
     </header>
 
-    <!-- Shopping Cart Section -->
     <div class="cart-container">
         <div class="cart-left">
             <div class="cart-item">
@@ -63,15 +59,16 @@
                 <p>Items: 1</p>
                 <p class="total-price">Total: EGP15,261.75</p>
             </div>
-            <button id="checkout-btn"class="checkout-btn">PROCEED TO CHECKOUT</button>
+            <button id="checkout-btn" class="checkout-btn">PROCEED TO CHECKOUT</button>
         </div>
     </div>
     
     <script>
         document.getElementById("checkout-btn").addEventListener("click", function () {
-          window.location.href = "checkout.html";
+            window.location.href = "checkout.html";
         });
-      </script>
+    </script>
+
     <footer>
         <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
     </footer>

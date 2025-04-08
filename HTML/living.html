@@ -41,7 +41,7 @@
                   <li><a href="Home.html#about-section">About</a></li>
                   <li><a href="Home.html#contact-section">Contact</a></li>
             </ul>
-            <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
+            <div class="menu-toggle">☰</div> 
         </nav>
     </div>
 </header>
@@ -54,7 +54,7 @@
 
     <!-- Product List Section -->
     <div class="product-list">
-        <!-- Product Items -->
+       
         <div class="product">
             <a href="Livingrooms/livingroom1.html">
                 <img src="../Images/livingRooms/L1/L1.avif" alt="A lush living room with vintage style">
@@ -115,11 +115,11 @@
             
         }
     
-        // Redirect to product page on Enter with fuzzy search
+     
         document.getElementById('search-input').addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent form submission or other default behavior
-                searchProducts(); // Call searchProducts to handle filtering on Enter key press
+                event.preventDefault();
+                searchProducts(); 
     
                 const query = event.target.value.trim().toLowerCase();
                 const roomPages = {
@@ -129,13 +129,13 @@
                     "dining": "dining.html"
                 };
     
-                // Fuzzy search: find a match that contains the input
+      
                 const matchedPage = Object.keys(roomPages).find(room =>
                     room.toLowerCase().includes(query)
                 );
     
                 if (matchedPage) {
-                    window.location.href = roomPages[matchedPage]; // Redirect to matched page
+                    window.location.href = roomPages[matchedPage]; 
                 } else {
                     alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
                 }
@@ -144,7 +144,7 @@
         });
        
     function handleSearchClick() {
-        searchProducts(); // Filter visible products
+        searchProducts(); 
         
         const query = document.getElementById('search-input').value.trim().toLowerCase();
         const roomPages = {
