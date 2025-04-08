@@ -35,9 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Redirect to home page after 1 second (1000ms)
       setTimeout(function() {
-        // REPLACE '/home.html' WITH YOUR ACTUAL HOME PAGE PATH
-        // Example: window.location.href = 'https://www.yourwebsite.com/home';
-        window.location.href = ''; 
+      
+        window.location.href = "../HTML/home.html"; 
       }, 1000);
     });
   });
