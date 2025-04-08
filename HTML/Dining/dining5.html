@@ -8,37 +8,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-     <!-- Search Bar -->
-  <div class="search-container">
+   <!-- Search Bar -->
+    
+   <div class="search-container">
     <div class="logo">
         <h1>Heaven And Home </h1>
-        <p>Furniture & Accessories</p>
+        <p>Style That Speaks Comfort</p>
     </div>
     <div class="search-bar">
-        <input type="text" placeholder="Search for products...">
-        <button>Search</button>
+        <input type="text" id="search-input" placeholder="Search for products..." oninput="searchProducts()" />
+        <button onclick="handleSearchClick()">Search</button>
     </div>
     <div class="action-buttons">
-        <button class="signin-button">Log In</button>
-        <button class="signup-button">Sign Up</button>
-        <button class="cart-button">Cart</button>
-        <button class="checkout-button">Checkout</button>
+        <a href="../Login.html" class="login-button">Log In</a>
+        <a href="../signup.html" class="signup-button">Sign Up</a>
+        <a href="../cart.html" class="cart-button">Cart</a>            
     </div>
 </div>
-
+<!-- Header -->
 <header>
-    <nav>
-        <ul class="nav-links">
-            <li><a href="../../HTML/Home.html">Home</a></li>
-                <li><a href="../../HTML/bedroom.html">Bedrooms</a></li>
-                <li><a href="../../HTML/Living.html">Living Room</a></li>
-            <li><a href="#">Kitchen</a></li>
-            <li><a href="#">Dining Room</a></li>
-            <li><a href="#">New Arrivals</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-        <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
+    <div class="header-content">
+
+        <nav>
+            <ul class="nav-links">
+                  <li><a href="../Home.html">Home</a></li>
+                  <li><a href="../bedroom.html">Bedrooms</a></li>
+                  <li><a href="../living.html">Living Room</a></li>
+                  <li><a href="../kitchen.html">Kitchen</a></li>
+                  <li><a href="../dining.html">Dining Room</a></li>
+                  <li><a href="Home.html#about-section">About</a></li>
+                  <li><a href="Home.html#contact-section">Contact</a></li>
+            </ul>
+            <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
+        </nav>
+    </div>
 </header>
 
     <main class="product-page">
@@ -94,6 +97,83 @@
             thumbnails.forEach(img => img.classList.remove('active'));
             thumbElement.classList.add('active');
         }
+
+         // Function to search products
+         function searchProducts() {
+            var input = document.getElementById('search-input').value.toLowerCase();
+            var products = document.querySelectorAll('.image-container');
+    
+            // Loop through the product containers and filter based on the search input
+            products.forEach(function(product) {
+                var productName = product.getAttribute('data-name').toLowerCase();
+                product.classList.toggle('hidden', !productName.includes(input));
+            });
+        }
+    
+        // Redirect to product page on Enter with fuzzy search
+        document.getElementById('search-input').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent form submission or other default behavior
+                searchProducts(); // Call searchProducts to handle filtering on Enter key press
+    
+                const query = event.target.value.trim().toLowerCase();
+                const roomPages = {
+                    "living room": "../living.html",
+                    "bedroom": "../bedroom.html",
+                    "kitchen": "../kitchen.html",
+                    "dining": "../dining.html"
+                };
+
+    
+                // Fuzzy search: find a match that contains the input
+                const matchedPage = Object.keys(roomPages).find(room =>
+                    room.toLowerCase().includes(query)
+                );
+    
+                if (matchedPage) {
+                    window.location.href = roomPages[matchedPage]; // Redirect to matched page
+                } else {
+                    alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
+                }
+            }
+            
+        });
+       
+    function handleSearchClick() {
+        searchProducts(); // Filter visible products
+        
+        const query = document.getElementById('search-input').value.trim().toLowerCase();
+        const roomPages = {
+            "living room": "../living.html",
+            "bedroom": "../bedroom.html",
+            "kitchen": "../kitchen.html",
+            "dining": "../dining.html"
+        };
+
+        const matchedPage = Object.keys(roomPages).find(room =>
+            room.toLowerCase().includes(query)
+        );
+
+        if (matchedPage) {
+            window.location.href = roomPages[matchedPage];
+        } else {
+            alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
+        }
+    }
+
+
+   
+  // Select all buttons with class "add-to-cart-btn"
+  const addToCartButtons = document.querySelectorAll(".add-to-cart");
+
+  addToCartButtons.forEach(button => {
+    button.addEventListener("click", function () {
+      // Optional: Add item to localStorage or backend logic here
+      window.location.href = "../cart.html"; // Replace with your cart page URL
+    });
+  });
+
+
     </script>
 </body>
 </html>
