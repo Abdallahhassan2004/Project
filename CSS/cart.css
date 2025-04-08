@@ -16,21 +16,7 @@ body {
     background-color: #ffffff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
-.search-bar input {
-    padding: 8px;
-    width: 250px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-.search-bar button {
-    padding: 8px 12px;
-    margin-left: 5px;
-    background-color: #000;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+
 .action-buttons button {
     margin-left: 10px;
     padding: 8px 14px;
@@ -40,7 +26,24 @@ body {
     background-color: #000; /* Changed to black */
     color: #fff; /* White text */
 }
+.login-button,
+.signup-button,
+.cart-button {
+    padding: 10px 20px;
+    background-color: #fdfdfd;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 10px;
+}
 
+.login-button:hover,
+.signup-button:hover,
+.cart-button:hover {
+    background-color: #bdbcbc;
+}
 /* Header Navigation */
 header nav ul {
     display: flex;
