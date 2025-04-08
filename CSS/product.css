@@ -180,18 +180,7 @@ nav ul li a:hover {
     line-height: 1.5;
 }
 
-.options label {
-    display: block;
-    margin-bottom: 5px;
-}
 
-.options select {
-    padding: 8px;
-    width: 100%;
-    max-width: 200px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
 .product a {
     text-decoration: none;  
 }
@@ -216,7 +205,7 @@ nav ul li a:hover {
 
 /* Highlight the active thumbnail */
 .thumbnail-images img.active {
-    border: 2px solid #000000;
+    border: 3px solid #000000;
 }
 
 /* You May Like Section */
@@ -296,6 +285,7 @@ footer {
     .options select {
         margin: 0 auto;
     }
+    
 }
 
 @media (max-width: 768px) {
@@ -307,6 +297,7 @@ footer {
         width: 100%;
         max-width: 300px;
     }
+    
 }
 
 @media (max-width: 480px) {
@@ -322,4 +313,5 @@ footer {
     .like-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+   
 }

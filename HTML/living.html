@@ -26,7 +26,7 @@
         <a href="signup.html" class="signup-button">Sign Up</a>
         <a href="cart.html" class="cart-button">Cart</a>            
     </div>
-</div>
+   </div>
 <!-- Header -->
 <header>
     <div class="header-content">
@@ -112,13 +112,7 @@
         // Function to search products
         function searchProducts() {
             var input = document.getElementById('search-input').value.toLowerCase();
-            var products = document.querySelectorAll('.image-container');
-    
-            // Loop through the product containers and filter based on the search input
-            products.forEach(function(product) {
-                var productName = product.getAttribute('data-name').toLowerCase();
-                product.classList.toggle('hidden', !productName.includes(input));
-            });
+            
         }
     
         // Redirect to product page on Enter with fuzzy search
