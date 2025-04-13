@@ -82,6 +82,7 @@ header {
 nav {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 nav ul {
@@ -142,18 +143,28 @@ nav ul li a:hover {
 }
 
 .image-row-static {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
     text-align: center;
-    margin-bottom: 30px;
+    padding: 10px;
+    height: 800px;
 }
 
 .image-row-static img {
     display: inline-block;
     margin: 0 6px; /* reduce space between images */
     width: 450px;   /* slightly bigger */
-    height: 500px;
+    height: 600px;
     object-fit: cover;
     border-radius: 10px;
     vertical-align: top;
+    transition: transform 0.3s ease-in-out;
+}
+.image-row-static img:hover{
+    transform: scale(1.05);
 }
 
 /* Shop by Room Title */
@@ -242,4 +253,125 @@ footer {
     text-align: center;
     padding: 20px;
     margin-top: 40px;
+}
+/* Mobile-first adjustments */
+@media (max-width: 768px) {
+    /* Search Bar */
+    .search-container {
+        flex-direction: column;
+        padding: 10px 5px;
+    }
+    
+    .search-bar {
+        margin-left: 0;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .search-bar input {
+        width: 70%;
+        margin-right: 5px;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+        width: 100%;
+        justify-content: space-around;
+    }
+    
+    .login-button,
+    .signup-button,
+    .cart-button {
+        padding: 8px 12px;
+        margin-right: 5px;
+    }
+    
+    /* Navigation */
+    nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+    
+    nav ul.show {
+        display: flex;
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+    
+    /* Hero Section */
+    .hero {
+        height: 50vh;
+    }
+    
+    .hero h1 {
+        font-size: 1.8em;
+        padding: 0 20px;
+    }
+    
+    /* Image Section */
+    .image-row-static {
+        height: auto;
+        flex-direction: column;
+    }
+    
+    .image-row-static img {
+        width: 90%;
+        height: auto;
+        margin: 10px 0;
+    }
+    
+    /* Shop by Room Title */
+    .shop-by-room-title {
+        margin: 20px 0 20px 20px;
+        font-size: 1.8em;
+    }
+    
+    /* Clickable Grid */
+    .clickable-image-grid {
+        gap: 20px;
+    }
+    
+    .image-container a img {
+        width: 90%;
+        height: auto;
+    }
+    
+    /* About and Contact Sections */
+    .about-section,
+    .contact-section {
+        padding: 30px 20px;
+    }
+    
+    .about-section h2,
+    .contact-section h2 {
+        font-size: 1.8em;
+    }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .search-bar {
+        margin-left: 100px;
+    }
+    
+    .image-row-static img {
+        width: 30%;
+        height: 400px;
+    }
+    
+    .image-container a img {
+        width: 250px;
+        height: 180px;
+    }
+}
+
+/* Hide menu toggle on desktop */
+@media (min-width: 769px) {
+    .menu-toggle {
+        display: none;
+    }
 }
