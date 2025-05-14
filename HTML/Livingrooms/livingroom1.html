@@ -8,41 +8,62 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Search Bar -->
-    
-   <div class="search-container">
-    <div class="logo">
-        <h1>Heaven And Home </h1>
-        <p>Style That Speaks Comfort</p>
-    </div>
-    <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search for products..." oninput="searchProducts()" />
-        <button onclick="handleSearchClick()">Search</button>
-    </div>
-    <div class="action-buttons">
-        <a href="../Login.html" class="login-button">Log In</a>
-        <a href="../signup.html" class="signup-button">Sign Up</a>
-        <a href="../cart.html" class="cart-button">Cart</a>            
-    </div>
-</div>
+  
 <!-- Header -->
-<header>
-    <div class="header-content">
+<header id="main-header">
+    
+    <div class="header-container">
+        <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+        <h1 class="logo"><a href="Home.html">Sense</a></h1>
 
-        <nav>
-            <ul class="nav-links">
-                  <li><a href="../Home.html">Home</a></li>
-                  <li><a href="../bedroom.html">Bedrooms</a></li>
-                  <li><a href="../living.html">Living Room</a></li>
-                  <li><a href="../kitchen.html">Kitchen</a></li>
-                  <li><a href="../dining.html">Dining Room</a></li>
-                  <li><a href="../Home.html#about-section">About</a></li>
-                  <li><a href="../Home.html#contact-section">Contact</a></li>
-            </ul>
-            <div class="menu-toggle">☰</div> 
-        </nav>
+        <a href="cart.html" class="cart">bag <span></span>
+            <span class="cart-count">0</span>
+        </a>
     </div>
+
+    <div class="full-menu" id="fullMenu">
+        <div class="menu-left">
+
+            <!-- 🔍 Search Bar -->
+            <div class="menu-search">
+                <input type="text" id="search-input" placeholder="Search for products..." />
+                <button onclick="handleSearchClick()">Search</button>
+                
+            </div>
+
+            <!-- Menu Columns -->
+            <div class="menu-columns">
+                <div class="column">
+                    <h2>Sense</h2>
+                    <ul>
+                        <li><a href="Home.html#about-section">About</a></li>
+                        <li><a href="Home.html#contact-section">Contact</a></li>
+                        <li><a href="login.html">Log In</a></li>
+                        <li><a href="signup.html">Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h2>SHOP</h2>
+                    <ul>
+                        <li><a href="Home.html">Home</a></li>
+                        <li><a href="living.html">Living Room</a></li>
+                        <li><a href="bedroom.html">Bedroom</a></li>
+                        <li><a href="kitchen.html">Kitchen</a></li>
+                        <li><a href="dining.html">Dining Room</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Image Section -->
+        <div class="menu-right">
+            <img src="../Images/Home/intro5.jpg" alt="Hm1" />
+        </div>
+    </div>
+    
 </header>
+
     <main class="product-page">
         <div class="image-gallery">
             <div class="thumbnail-images">
