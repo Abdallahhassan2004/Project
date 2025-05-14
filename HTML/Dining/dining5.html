@@ -3,177 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heaven And Home | Dining Set</title>
+    <title>Heaven And Home | Marble Granite Dining Set</title>
     <link rel="stylesheet" href="../../CSS/product.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-   <!-- Search Bar -->
-    
-   <div class="search-container">
-    <div class="logo">
-        <h1>Heaven And Home </h1>
-        <p>Style That Speaks Comfort</p>
-    </div>
-    <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search for products..." oninput="searchProducts()" />
-        <button onclick="handleSearchClick()">Search</button>
-    </div>
-    <div class="action-buttons">
-        <a href="../Login.html" class="login-button">Log In</a>
-        <a href="../signup.html" class="signup-button">Sign Up</a>
-        <a href="../cart.html" class="cart-button">Cart</a>            
-    </div>
-</div>
-<!-- Header -->
-<header>
-    <div class="header-content">
-
-        <nav>
-            <ul class="nav-links">
-                  <li><a href="../Home.html">Home</a></li>
-                  <li><a href="../bedroom.html">Bedrooms</a></li>
-                  <li><a href="../living.html">Living Room</a></li>
-                  <li><a href="../kitchen.html">Kitchen</a></li>
-                  <li><a href="../dining.html">Dining Room</a></li>
-                  <li><a href="Home.html#about-section">About</a></li>
-                  <li><a href="Home.html#contact-section">Contact</a></li>
-            </ul>
-            <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
-        </nav>
-    </div>
-</header>
+    <!-- Header -->
+    <header id="main-header">
+        <div class="header-container">
+            <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+            <h1 class="logo"><a href="../Home.html">Sense</a></h1>
+            <a href="../cart.html" class="cart">bag <span></span><span class="cart-count">0</span></a>
+        </div>
+        <div class="full-menu" id="fullMenu">
+            <div class="menu-left">
+                <div class="menu-search">
+                    <input type="text" id="search-input" placeholder="Search for products..." />
+                    <button onclick="handleSearchClick()">Search</button>
+                </div>
+                <div class="menu-columns">
+                    <div class="column">
+                        <h2>Sense</h2>
+                        <ul>
+                            <li><a href="../Home.html#about-section">About</a></li>
+                            <li><a href="../Home.html#contact-section">Contact</a></li>
+                            <li><a href="../login.html">Log In</a></li>
+                            <li><a href="../signup.html">Sign Up</a></li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h2>SHOP</h2>
+                        <ul>
+                            <li><a href="../Home.html">Home</a></li>
+                            <li><a href="../living.html">Living Room</a></li>
+                            <li><a href="../bedroom.html">Bedroom</a></li>
+                            <li><a href="../kitchen.html">Kitchen</a></li>
+                            <li><a href="../dining.html">Dining Room</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-right">
+                <img src="../../Images/Home/intro5.jpg" alt="Hm1" />
+            </div>
+        </div>
+    </header>
 
     <main class="product-page">
         <div class="image-gallery">
             <div class="thumbnail-images">
-                <img src="../../Images/dining/d5/51.jpg" alt="Thumbnail 1"  onclick="changeImage(this.src)">
-                <img src="../../Images/dining/d5/52.jpg" alt="Thumbnail 2" onclick="changeImage(this.src)">
-                <img src="../../Images/dining/d5/53.jpg" alt="Thumbnail 3" onclick="changeImage(this.src)">
-                <img src="../../Images/dining/d5/54.jpg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
-                <img src="../../Images/dining/d5/55555.jpg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
-                <img src="../../Images/dining/d5/CharcoalDining5.jpg" alt="Thumbnail 4 " onclick="changeImage(this.src)">
-         
+                <img src="../../Images/dining/d5/1dining.jpg" alt="Thumbnail 1" onclick="changeImage(this.src)">
+                <img src="../../Images/dining/d5/2dining.jpg" alt="Thumbnail 2" onclick="changeImage(this.src)">
+                <img src="../../Images/dining/d5/3dining.webp" alt="Thumbnail 3" onclick="changeImage(this.src)">
+                <img src="../../Images/dining/d5/4dining.jpg" alt="Thumbnail 4" onclick="changeImage(this.src)">
             </div>
-            <img src="../../Images/dining/d5/CharcoalDining5.jpg"  alt="Main Dining image" class="main-image" id="mainImage">
+            <img src="../../Images/dining/d5/1dining.jpg" alt="Main dining image" class="main-image" id="mainImage">
         </div>
 
         <div class="product-info">
-            <h1>Sophistication Dining Set</h1>
+            <h1>Marble Granite Dining Set</h1>
             <p class="price">£450</p>
             <p class="availability">In Stock</p>
             <p class="description">
-                Transform your dining with this Sophistication diningset. It includes frame with soft neutral upholstery, 
-                two matching bedside tables with oak finishes, a large mirrored wardrobe, and a comfortable memory foam mattress.
+                Elevate your dining experience with this marble granite dining set. Featuring a luxurious marble table and six elegant chairs, this set is perfect for formal dining occasions.
             </p>
             <button class="add-to-cart">Add to Cart</button>
         </div>
     </main>
 
-    <!-- You May Also Like Section -->
     <section class="you-may-like">
         <h2>You May Also Like</h2>
         <div class="like-grid">
-            <a href="../../HTML/bedrooms/bedroom1.html"><img src="../../Images/bedrooms/b1/1.jpg" alt="Bedroom 2"><p>Mediterranean Bedroom Set</p></a>
-            <a href="../../HTML/Livingrooms/livingroom2.html"><img src="../../Images/livingRooms/L2/L2.avif" alt="Living Room"><p>Modern living room</p></a>
-            <a href="../../HTML/kitchens/kitchen5.html"><img src="../../Images/kitchen/kitchen 5/kitchen5.jpg"alt="Kitchen"><p>Light Blue Kitchen</p></a>
-            <a href="../../HTML/Dining/dining5.html"><img src="../../Images/dining/d5/55555.jpg" alt="Dining Room"><p>bohomeian Dining Set</p></a>
+            <a href="dining6.html"><img src="../../Images/dining/d6/1D.jpg" alt="Dining 6"><p>Glass Modernity Dining Set</p></a>
+            <a href="../Livingrooms/livingroom1.html"><img src="../../Images/livingRooms/L5/L1.avif" alt="Living Room"><p>Modern Living Room</p></a>
+            <a href="../kitchens/kitchen2.html"><img src="../../Images/kitchen/kitchen 2/kit2 2.jpg" alt="Kitchen"><p>Contemporary Kitchen</p></a>
+            <a href="../bedrooms/bedroom1.html"><img src="../../Images/bedrooms/b5/c.jpg" alt="Bedroom"><p>Charcoal Sophistication Bedroom</p></a>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
+        <div class="footer-wrapper">
+            <div class="footer-grid">
+                <div class="footer-box">
+                    <h4>Store</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Journal</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-box">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="#">All</a></li>
+                        <li><a href="#">Lookbook</a></li>
+                        <li><a href="#">Collections</a></li>
+                        <li><a href="#">Featured</a></li>
+                    </ul>
+                </div>
+                <div class="footer-box">
+                    <h4>Collections</h4>
+                    <ul>
+                        <li><a href="#">Decors</a></li>
+                        <li><a href="#">Furnitures</a></li>
+                        <li><a href="#">Ceramic</a></li>
+                        <li><a href="#">Lamps</a></li>
+                    </ul>
+                </div>
+                <div class="footer-box">
+                    <h4>Help</h4>
+                    <ul>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Login & Account</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Refund policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-brand">
+            <h2>Sense</h2>
+        </div>
     </footer>
 
     <script>
-        function changeImage(imageSrc, thumbElement) {
+        function changeImage(imageSrc) {
             const mainImage = document.getElementById('mainImage');
             mainImage.style.opacity = '0.3';
             setTimeout(() => {
                 mainImage.src = imageSrc;
                 mainImage.style.opacity = '1';
             }, 150);
-            const thumbnails = document.querySelectorAll('.thumbnail-images img');
-            thumbnails.forEach(img => img.classList.remove('active'));
-            thumbElement.classList.add('active');
         }
 
-         // Function to search products
-         function searchProducts() {
-            var input = document.getElementById('search-input').value.toLowerCase();
-            var products = document.querySelectorAll('.image-container');
-    
-            // Loop through the product containers and filter based on the search input
-            products.forEach(function(product) {
-                var productName = product.getAttribute('data-name').toLowerCase();
-                product.classList.toggle('hidden', !productName.includes(input));
-            });
+        function toggleMenu() {
+            const menu = document.getElementById("fullMenu");
+            menu.classList.toggle("active");
         }
-    
-        // Redirect to product page on Enter with fuzzy search
-        document.getElementById('search-input').addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent form submission or other default behavior
-                searchProducts(); // Call searchProducts to handle filtering on Enter key press
-    
-                const query = event.target.value.trim().toLowerCase();
-                const roomPages = {
-                    "living room": "../living.html",
-                    "bedroom": "../bedroom.html",
-                    "kitchen": "../kitchen.html",
-                    "dining": "../dining.html"
-                };
-
-    
-                // Fuzzy search: find a match that contains the input
-                const matchedPage = Object.keys(roomPages).find(room =>
-                    room.toLowerCase().includes(query)
-                );
-    
-                if (matchedPage) {
-                    window.location.href = roomPages[matchedPage]; // Redirect to matched page
-                } else {
-                    alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
-                }
-            }
-            
-        });
-       
-    function handleSearchClick() {
-        searchProducts(); // Filter visible products
-        
-        const query = document.getElementById('search-input').value.trim().toLowerCase();
-        const roomPages = {
-            "living room": "../living.html",
-            "bedroom": "../bedroom.html",
-            "kitchen": "../kitchen.html",
-            "dining": "../dining.html"
-        };
-
-        const matchedPage = Object.keys(roomPages).find(room =>
-            room.toLowerCase().includes(query)
-        );
-
-        if (matchedPage) {
-            window.location.href = roomPages[matchedPage];
-        } else {
-            alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
-        }
-    }
-
-
-   
-  // Select all buttons with class "add-to-cart-btn"
-  const addToCartButtons = document.querySelectorAll(".add-to-cart");
-
-  addToCartButtons.forEach(button => {
-    button.addEventListener("click", function () {
-      // Optional: Add item to localStorage or backend logic here
-      window.location.href = "../cart.html"; // Replace with your cart page URL
-    });
-  });
-
-
     </script>
 </body>
 </html>
