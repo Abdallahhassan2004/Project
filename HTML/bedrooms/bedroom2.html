@@ -8,39 +8,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-   <!-- Search Bar -->
-    
-   <div class="search-container">
-    <div class="logo">
-        <h1>Heaven And Home </h1>
-        <p>Style That Speaks Comfort</p>
-    </div>
-    <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search for products..." oninput="searchProducts()" />
-        <button onclick="handleSearchClick()">Search</button>
-    </div>
-    <div class="action-buttons">
-        <a href="../Login.html" class="login-button">Log In</a>
-        <a href="../signup.html" class="signup-button">Sign Up</a>
-        <a href="../cart.html" class="cart-button">Cart</a>            
-    </div>
-</div>
-<!-- Header -->
-<header>
-    <div class="header-content">
+    <!-- Header -->
+<header id="main-header">
+    <div class="header-container">
+        <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+        <h1 class="logo"><a href="Home.html">Sense</a></h1>
 
-        <nav>
-            <ul class="nav-links">
-                  <li><a href="../Home.html">Home</a></li>
-                  <li><a href="../bedroom.html">Bedrooms</a></li>
-                  <li><a href="../living.html">Living Room</a></li>
-                  <li><a href="../kitchen.html">Kitchen</a></li>
-                  <li><a href="../dining.html">Dining Room</a></li>
-                  <li><a href="../Home.html#about-section">About</a></li>
-                  <li><a href="../Home.html#contact-section">Contact</a></li>
-            </ul>
-            <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
-        </nav>
+        <a href="cart.html" class="cart">bag <span></span>
+            <span class="cart-count">0</span>
+        </a>
+    </div>
+
+    <div class="full-menu" id="fullMenu">
+        <div class="menu-left">
+
+            <!-- 🔍 Search Bar -->
+            <div class="menu-search">
+                <input type="text" id="search-input" placeholder="Search for products..." />
+                <button onclick="handleSearchClick()">Search</button>
+                
+            </div>
+
+            <!-- Menu Columns -->
+            <div class="menu-columns">
+                <div class="column">
+                    <h2>Sense</h2>
+                    <ul>
+                        <li><a href="Home.html#about-section">About</a></li>
+                        <li><a href="Home.html#contact-section">Contact</a></li>
+                        <li><a href="login.html">Log In</a></li>
+                        <li><a href="signup.html">Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h2>SHOP</h2>
+                    <ul>
+                        <li><a href="Home.html">Home</a></li>
+                        <li><a href="living.html">Living Room</a></li>
+                        <li><a href="bedroom.html">Bedroom</a></li>
+                        <li><a href="kitchen.html">Kitchen</a></li>
+                        <li><a href="dining.html">Dining Room</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Image Section -->
+        <div class="menu-right">
+            <img src="../Images/Home/intro5.jpg" alt="Hm1" />
+        </div>
     </div>
 </header>
 
@@ -82,99 +98,167 @@
     </section>
 
     <footer>
-        <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
-    </footer>
-
-    <script>
-        function changeImage(imageSrc, thumbElement) {
-            const mainImage = document.getElementById('mainImage');
-            mainImage.style.opacity = '0.3';
-            setTimeout(() => {
-                mainImage.src = imageSrc;
-                mainImage.style.opacity = '1';
-            }, 150);
-            const thumbnails = document.querySelectorAll('.thumbnail-images img');
-            thumbnails.forEach(img => img.classList.remove('active'));
-            thumbElement.classList.add('active');
+        <div class="footer-wrapper">
+          
+          <!-- Grid Columns with Bordered Boxes -->
+          <div class="footer-grid">
+            <div class="footer-box">
+              <h4>Store</h4>
+              <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Journal</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+      
+            <div class="footer-box">
+              <h4>Shop</h4>
+              <ul>
+                <li><a href="#">All</a></li>
+                <li><a href="#">Lookbook</a></li>
+                <li><a href="#">Collections</a></li>
+                <li><a href="#">Featured</a></li>
+              </ul>
+            </div>
+      
+            <div class="footer-box">
+              <h4>Collections</h4>
+              <ul>
+                <li><a href="#">Decors</a></li>
+                <li><a href="#">Furnitures</a></li>
+                <li><a href="#">Ceramic</a></li>
+                <li><a href="#">Lamps</a></li>
+              </ul>
+            </div>
+      
+            <div class="footer-box">
+              <h4>Help</h4>
+              <ul>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Login & Account</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Refund policy</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Store name in its own full-width block at the bottom -->
+        <div class="footer-brand">
+          <h2>Sense</h2>
+        </div>
+      </footer>
+      <script>
+        /** -----------------------------
+         * SEARCH FUNCTIONS
+         * ----------------------------- **/
+      
+        // Handles product filtering based on search input
+        function searchProducts() {
+          const input = document.getElementById('search-input').value.toLowerCase();
+          const products = document.querySelectorAll('.image-container');
+      
+          products.forEach(product => {
+            const productName = product.getAttribute('data-name').toLowerCase();
+            product.classList.toggle('hidden', !productName.includes(input));
+          });
         }
-
-         // Function to search products
-         function searchProducts() {
-            var input = document.getElementById('search-input').value.toLowerCase();
-            var products = document.querySelectorAll('.image-container');
-    
-            // Loop through the product containers and filter based on the search input
-            products.forEach(function(product) {
-                var productName = product.getAttribute('data-name').toLowerCase();
-                product.classList.toggle('hidden', !productName.includes(input));
-            });
-        }
-    
-        // Redirect to product page on Enter with fuzzy search
+      
+        // Handles redirection to room page on "Enter" key press
         document.getElementById('search-input').addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent form submission or other default behavior
-                searchProducts(); // Call searchProducts to handle filtering on Enter key press
-    
-                const query = event.target.value.trim().toLowerCase();
-                const roomPages = {
-                    "living room": "../living.html",
-                    "bedroom": "../bedroom.html",
-                    "kitchen": "../kitchen.html",
-                    "dining": "../dining.html"
-                };
-
-    
-                // Fuzzy search: find a match that contains the input
-                const matchedPage = Object.keys(roomPages).find(room =>
-                    room.toLowerCase().includes(query)
-                );
-    
-                if (matchedPage) {
-                    window.location.href = roomPages[matchedPage]; // Redirect to matched page
-                } else {
-                    alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
-                }
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            searchProducts(); // Filter products
+      
+            const query = event.target.value.trim().toLowerCase();
+            const roomPages = {
+              "living room": "../living.html",
+              "bedroom": "../bedroom.html",
+              "kitchen": "../kitchen.html",
+              "dining": "../dining.html"
+            };
+      
+            const matchedPage = Object.keys(roomPages).find(room =>
+              room.toLowerCase().includes(query)
+            );
+      
+            if (matchedPage) {
+              window.location.href = roomPages[matchedPage];
+            } else {
+              alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
             }
-            
+          }
         });
-       
-    function handleSearchClick() {
-        searchProducts(); // Filter visible products
-        
-        const query = document.getElementById('search-input').value.trim().toLowerCase();
-        const roomPages = {
+      
+        // Triggered when search button is clicked
+        function handleSearchClick() {
+          searchProducts();
+      
+          const query = document.getElementById('search-input').value.trim().toLowerCase();
+          const roomPages = {
             "living room": "../living.html",
             "bedroom": "../bedroom.html",
             "kitchen": "../kitchen.html",
             "dining": "../dining.html"
-        };
-
-        const matchedPage = Object.keys(roomPages).find(room =>
+          };
+      
+          const matchedPage = Object.keys(roomPages).find(room =>
             room.toLowerCase().includes(query)
-        );
-
-        if (matchedPage) {
+          );
+      
+          if (matchedPage) {
             window.location.href = roomPages[matchedPage];
-        } else {
+          } else {
             alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
+          }
         }
-    }
-
-
-   
-  // Select all buttons with class "add-to-cart-btn"
-  const addToCartButtons = document.querySelectorAll(".add-to-cart");
-
-  addToCartButtons.forEach(button => {
-    button.addEventListener("click", function () {
-      // Optional: Add item to localStorage or backend logic here
-      window.location.href = "../cart.html"; // Replace with your cart page URL
-    });
-  });
-
-
-    </script>
+      
+        /** -----------------------------
+         * IMAGE SWITCHER FUNCTION
+         * ----------------------------- **/
+      
+        // Changes the main product image when a thumbnail is clicked
+        function changeImage(imageSrc, thumbElement) {
+          const mainImage = document.getElementById('mainImage');
+          mainImage.style.opacity = '0.3';
+          setTimeout(() => {
+            mainImage.src = imageSrc;
+            mainImage.style.opacity = '1';
+          }, 150);
+      
+          const thumbnails = document.querySelectorAll('.thumbnail-images img');
+          thumbnails.forEach(img => img.classList.remove('active'));
+          thumbElement.classList.add('active');
+        }
+      
+        /** -----------------------------
+         * MENU TOGGLER (MOBILE/DESKTOP)
+         * ----------------------------- **/
+      
+        // Toggles visibility of full-screen menu
+        function toggleMenu() {
+          const menu = document.getElementById("fullMenu");
+          menu.classList.toggle("active");
+        }
+      
+        /** -----------------------------
+         * ADD TO CART BUTTON LOGIC
+         * ----------------------------- **/
+      
+        // Redirects to cart page when "Add to Cart" is clicked
+        document.addEventListener("DOMContentLoaded", () => {
+          const addToCartButtons = document.querySelectorAll(".add-to-cart");
+      
+          addToCartButtons.forEach(button => {
+            button.addEventListener("click", () => {
+              // Optionally add cart logic here
+              window.location.href = "../cart.html";
+            });
+          });
+        });
+      </script>
+      
         
 </body>
 </html>

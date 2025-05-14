@@ -3,105 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heaven And Home | Bedroom Furniture</title>
     <link rel="stylesheet" href="../CSS/category.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&family=Ubuntu+Condensed&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
 </head>
 <body>
-    <!-- Search Bar -->
-    
-    <div class="search-container">
-        <a href="home.html">       
-            <div class="logo">
-                <h1>Heaven And Home </h1>
-                <p>Style That Speaks Comfort</p>
-            </div>
+
+     <!-- Header -->
+<header id="main-header">
+   
+    <div class="header-container">
+        <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+        <h1 class="logo"><a href="Home.html">Sense</a></h1>
+
+        <a href="cart.html" class="cart">bag <span></span>
+            <span class="cart-count">0</span>
         </a>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search for products..." oninput="searchProducts()" />
-            <button onclick="handleSearchClick()">Search</button>
+    </div>
+
+    <div class="full-menu" id="fullMenu">
+        <div class="menu-left">
+
+            <!-- 🔍 Search Bar -->
+            <div class="menu-search">
+                <input type="text" id="search-input" placeholder="Search for products..." />
+                <button onclick="handleSearchClick()">Search</button>
+                
+            </div>
+
+            <!-- Menu Columns -->
+            <div class="menu-columns">
+                <div class="column">
+                    <h2>Sense</h2>
+                    <ul>
+                        <li><a href="Home.html#about-section">About</a></li>
+                        <li><a href="Home.html#contact-section">Contact</a></li>
+                        <li><a href="login.html">Log In</a></li>
+                        <li><a href="signup.html">Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h2>SHOP</h2>
+                    <ul>
+                        <li><a href="Home.html">Home</a></li>
+                        <li><a href="living.html">Living Room</a></li>
+                        <li><a href="bedroom.html">Bedroom</a></li>
+                        <li><a href="kitchen.html">Kitchen</a></li>
+                        <li><a href="dining.html">Dining Room</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="action-buttons">
-            <a href="login.html" class="login-button">Log In</a>
-            <a href="signup.html" class="signup-button">Sign Up</a>
-            <a href="cart.html" class="cart-button">Cart</a>            
+
+        <!-- Right Image Section -->
+        <div class="menu-right">
+            <img src="../Images/Home/intro5.jpg" alt="Hm1" />
         </div>
     </div>
-    <!-- Header -->
-    <header>
-        <div class="header-content">
+</header>
 
-            <nav>
-                <ul class="nav-links">
-                      <li><a href="Home.html">Home</a></li>
-                      <li><a href="bedroom.html">Bedrooms</a></li>
-                      <li><a href="living.html">Living Room</a></li>
-                      <li><a href="kitchen.html">Kitchen</a></li>
-                      <li><a href="dining.html">Dining Room</a></li>
-                      <li><a href="Home.html#about-section">About</a></li>
-                      <li><a href="Home.html#contact-section">Contact</a></li>
-                </ul>
-                <div class="menu-toggle">☰</div> <!-- Hamburger Menu -->
-            </nav>
-        </div>
-    </header>
+      
+
 
     <!-- Breadcrumb Section -->
     <section class="breadcrumb-section">
-        <h2>BEDROOMS</h2>
-        <p>HOME / FURNITURE / BEDROOMS</p>
+        <h1 class="h2style woocommerce-products-header__title uppercase heading-font">BedRoom Furniture</h1>
+        <div class="content_section">
+            <p class="p2 paragraph-font text-center">
+                <span class="s1 span-font">
+                    HOME / FURNITURE / BEDROOM                </span>
+            </p>
+           
+
+        </div>
     </section>
 
     <!-- Product List Section -->
     <div class="product-list">
-        <!-- Product Items -->
         <div class="product">
             <a href="bedrooms/bedroom1.html">
                 <img src="../Images/bedroom/bedroom1.jpg" alt="Luxury Bed">
-            <h2>Mediterranean Bedroom</h2>
-            <p class="price">£1,499</p>
             </a>
+            <div class="price">£1,499</div>
+            <a href="bedrooms/bedroom1.html" class="product-title">Mediterranean Bedroom</a>
         </div>
+    
         <div class="product">
             <a href="bedrooms/bedroom2.html">
                 <img src="../Images/bedroom/bedroom2.jpg" alt="Bedside Table">
-            <h2>Bohemian Bedroom</h2>
-            <p class="price">£1,599</p>
             </a>
+            <div class="price">£1,599</div>
+            <a href="bedrooms/bedroom2.html" class="product-title">Bohemian Bedroom</a>
         </div>
+    
         <div class="product">
             <a href="bedrooms/bedroom3.html">
-            <img src="../Images/bedroom/bedroom3.jpg" alt="Memory Foam Mattress">
-            <h2>Vintage Bedroom</h2>
-            <p class="price">£1,800</p>
-        </a>
+                <img src="../Images/bedroom/bedroom3.jpg" alt="Memory Foam Mattress">
+            </a>
+            <div class="price">£1,800</div>
+            <a href="bedrooms/bedroom3.html" class="product-title">Vintage Bedroom</a>
         </div>
+    
         <div class="product">
             <a href="bedrooms/bedroom4.html">
-            <img src="../Images/bedroom/bedroom4.jpg" alt="Wooden Drawer">
-            <h2>Japandi Bedroom</h2>
-            <p class="price">£165</p>
-        </a>
+                <img src="../Images/bedroom/bedroom4.jpg" alt="Wooden Drawer">
+            </a>
+            <div class="price">£165</div>
+            <a href="bedrooms/bedroom4.html" class="product-title">Japandi Bedroom</a>
         </div>
+    
         <div class="product">
             <a href="bedrooms/bedroom5.html">
-            <img src="../Images/bedroom/bedroom5.jpg" alt="Modern Wardrobe">
-            <h2>Charcoal Sophistication Bedroom</h2>
-            <p class="price">£450</p>
-        </a>
+                <img src="../Images/bedroom/bedroom5.jpg" alt="Modern Wardrobe">
+            </a>
+            <div class="price">£450</div>
+            <a href="bedrooms/bedroom5.html" class="product-title">Charcoal Sophistication Bedroom</a>
         </div>
+    
         <div class="product">
             <a href="bedrooms/bedroom6.html">
-            <img src="../Images/bedroom/Bedroom6.jpg" alt="Elegant Dresser">
-            <h2>Grey Modernity Bedroom</h2>
-            <p class="price">£550</p>
-        </a>
+                <img src="../Images/bedroom/Bedroom6.jpg" alt="Elegant Dresser">
+            </a>
+            <div class="price">£550</div>
+            <a href="bedrooms/bedroom6.html" class="product-title">Grey Modernity Bedroom</a>
         </div>
     </div>
+    
 
+     
     <footer>
-        <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
-    </footer>
+        <div class="footer-wrapper">
+          
+          <!-- Grid Columns with Bordered Boxes -->
+          <div class="footer-grid">
+            <div class="footer-box">
+              <h4>Store</h4>
+              <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Journal</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+      
+            <div class="footer-box">
+              <h4>Shop</h4>
+              <ul>
+                <li><a href="#">All</a></li>
+                <li><a href="#">Lookbook</a></li>
+                <li><a href="#">Collections</a></li>
+                <li><a href="#">Featured</a></li>
+              </ul>
+            </div>
+      
+            <div class="footer-box">
+              <h4>Collections</h4>
+              <ul>
+                <li><a href="#">Decors</a></li>
+                <li><a href="#">Furnitures</a></li>
+                <li><a href="#">Ceramic</a></li>
+                <li><a href="#">Lamps</a></li>
+              </ul>
+            </div>
+      
+            <div class="footer-box">
+              <h4>Help</h4>
+              <ul>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Login & Account</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Refund policy</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Store name in its own full-width block at the bottom -->
+        <div class="footer-brand">
+          <h2>Sense</h2>
+        </div>
+      </footer>
     <script>
         // Function to search products
         function searchProducts() {
@@ -158,6 +241,13 @@
             alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
         }
     }
+
+   
+  function toggleMenu() {
+    const menu = document.getElementById("fullMenu");
+    menu.classList.toggle("active");
+  }
+
 
 
         </script>
