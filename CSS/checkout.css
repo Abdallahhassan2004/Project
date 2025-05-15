@@ -105,4 +105,50 @@ body {
   .hidden {
     display: none;
   }
+  .order-summary {
+    background: #000000;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+  }
   
+  .order-summary h3 {
+    margin-bottom: 15px;
+    font-family: 'Georgia', serif;
+  }
+  
+  .checkout-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  /* Header Styles */
+  #main-header {
+    background-color: #e7e7e7;
+    padding: 15px 0;
+    margin-bottom: 40px;
+  }
+  
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .logo a {
+    text-decoration: none;
+    color: #000;
+    font-family: 'Georgia', serif;
+    font-size: 26px;
+    font-weight: bold;
+  }
