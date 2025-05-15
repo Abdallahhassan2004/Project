@@ -8,6 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+     <script>
+        // Check if the admin is logged in
+        if (sessionStorage.getItem("isAdminLoggedIn") !== "true") {
+            // Redirect to the login page if not logged in
+            window.location.href = "Login.html";
+        }
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem("isAdminLoggedIn");
+            window.location.href = "Login.html";
+        }
+    </script>
     <!-- Sidebar -->
     <aside id="sidebar">
         <div class="sidebar-header">
@@ -51,9 +64,12 @@
                     <p>45,678</p>
                 </div>
             </div>
-            <div class="chart-container">
+            <div class="salesoverview">
                 <h3>Sales Overview</h3>
+            </div>
+            <div class="chart-container">
                 <canvas id="salesChart"></canvas>
+                <canvas id="ordersChart"></canvas>
             </div>
         </section>
 
@@ -193,8 +209,8 @@
     <script src="../JS/admin.js"></script>
     <script>
         // Sales Chart
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        const salesChart = new Chart(ctx, {
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(salesCtx, {
             type: 'line',
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -217,46 +233,82 @@
             }
         });
 
-        // Export Functions
-        function exportProducts() {
-            alert('Exporting products as CSV...');
-        }
+        // Orders Chart
+        const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+        const ordersChart = new Chart(ordersCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Pending', 'Completed', 'Cancelled'],
+                datasets: [{
+                    label: 'Orders',
+                    data: [327, 1200, 136],
+                    backgroundColor: [
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    </script>
 
-        function exportOrders() {
-            alert('Exporting orders as CSV...');
-        }
-
-        function exportUsers() {
-            alert('Exporting users as CSV...');
-        }
-
-        // Filter Functions
-        function filterProducts() {
-            const search = document.getElementById('productSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#products table tbody tr');
-            rows.forEach(row => {
-                const name = row.cells[1].textContent.toLowerCase();
-                row.style.display = name.includes(search) ? '' : 'none';
-            });
-        }
-
-        function filterOrders() {
-            const search = document.getElementById('orderSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#orders table tbody tr');
-            rows.forEach(row => {
-                const user = row.cells[1].textContent.toLowerCase();
-                row.style.display = user.includes(search) ? '' : 'none';
-            });
-        }
-
-        function filterUsers() {
-            const search = document.getElementById('userSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#users table tbody tr');
-            rows.forEach(row => {
-                const name = row.cells[1].textContent.toLowerCase();
-                row.style.display = name.includes(search) ? '' : 'none';
-            });
-        }
+        <script>
+            // Export Functions
+            function exportProducts() {
+                alert('Exporting products as CSV...');
+            }
+    
+            function exportOrders() {
+                alert('Exporting orders as CSV...');
+            }
+    
+            function exportUsers() {
+                alert('Exporting users as CSV...');
+            }
+    
+            // Filter Functions
+            function filterProducts() {
+                const search = document.getElementById('productSearch').value.toLowerCase();
+                const rows = document.querySelectorAll('#products table tbody tr');
+                rows.forEach(row => {
+                    const name = row.cells[1].textContent.toLowerCase();
+                    row.style.display = name.includes(search) ? '' : 'none';
+                });
+            }
+    
+            function filterOrders() {
+                const search = document.getElementById('orderSearch').value.toLowerCase();
+                const rows = document.querySelectorAll('#orders table tbody tr');
+                rows.forEach(row => {
+                    const user = row.cells[1].textContent.toLowerCase();
+                    row.style.display = user.includes(search) ? '' : 'none';
+                });
+            }
+    
+            function filterUsers() {
+                const search = document.getElementById('userSearch').value.toLowerCase();
+                const rows = document.querySelectorAll('#users table tbody tr');
+                rows.forEach(row => {
+                    const name = row.cells[1].textContent.toLowerCase();
+                    row.style.display = name.includes(search) ? '' : 'none';
+                });
+            }
+        </script>
     </script>
 </body>
 </html>

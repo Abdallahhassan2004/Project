@@ -15,15 +15,15 @@
 
             <h2 class="title">Log In</h2>
 
-            <form id="loginForm">
+            <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="input-group">
                     <i class="uil uil-envelope"></i>
-                    <input type="email" placeholder="Email" required>
+                    <input type="email" id="email" placeholder="Email" required>
                 </div>
 
                 <div class="input-group">
                     <i class="uil uil-lock"></i>
-                    <input type="password" placeholder="Password" required>
+                    <input type="password" id="password" placeholder="Password" required>
                 </div>
 
                 <button type="submit" class="submit-button">Log In</button>
@@ -31,6 +31,26 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Example: Check if the email and password match the admin credentials
+            if (email === "admin@gmail.com" && password === "admin123") {
+                // Store login state in session storage
+                sessionStorage.setItem("isAdminLoggedIn", "true");
+
+                // Redirect to the admin page
+                window.location.href = "admin.html";
+            } else {
+                alert("Invalid credentials. Please try again.");
+            }
+        }
+    </script>
 
 </body>
 </html>
