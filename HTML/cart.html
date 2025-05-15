@@ -3,74 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart | Heaven And Home</title>
+    <title>Shopping Cart | Sense</title>
+    <link rel="icon" type="image/png" href="../Images/logo.jpg" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../CSS/cart.css">
+    <script src="../JavaScript/cart.js" defer></script>
 </head>
 <body>
-    
-    <div class="search-container">
-        <div class="logo">
-            <h1>Heaven And Home </h1>
-            <p>Style That Speaks Comfort</p>
-        </div>
-        
-        <div class="action-buttons">
-            <a href="login.html" class="login-button">Log In</a>
-            <a href="signup.html" class="signup-button">Sign Up</a>
-            <a href="cart.html" class="cart-button">Cart</a>            
-        </div>
-    </div>
+    <!-- Header -->
+    <header id="main-header">
+        <div class="header-container">
+            <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+            <h1 class="logo"><a href="home.html">Sense</a></h1>
 
-    <header>
-        <div class="header-content">
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="Home.html">Home</a></li>
-                    <li><a href="bedroom.html">Bedrooms</a></li>
-                    <li><a href="living.html">Living Room</a></li>
-                    <li><a href="kitchen.html">Kitchen</a></li>
-                    <li><a href="dining.html">Dining Room</a></li>
-                    <li><a href="Home.html#about-section">About</a></li>
-                    <li><a href="Home.html#contact-section">Contact</a></li>
-                </ul>
-                <div class="menu-toggle">☰</div>
-            </nav>
+            <a href="cart.html" class="cart">bag <span></span>
+                <span class="cart-count">0</span>
+            </a>
+        </div>
+
+        <div class="full-menu" id="fullMenu">
+            <div class="menu-left">
+                <!-- Search Bar -->
+                <div class="menu-search">
+                    <input type="text" id="search-input" placeholder="Search for products..." />
+                    <button onclick="handleSearchClick()">Search</button>
+                </div>
+
+                <!-- Menu Columns -->
+                <div class="menu-columns">
+                    <div class="column">
+                        <h2>Sense</h2>
+                        <ul>
+                            <li><a href="home.html#about-section">About</a></li>
+                            <li><a href="home.html#contact-section">Contact</a></li>
+                            <li><a href="login.html">Log In</a></li>
+                            <li><a href="signup.html">Sign Up</a></li>
+                            <li><a href="admin.html">Admin Panel</a></li> 
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h2>SHOP</h2>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="living.html">Living Room</a></li>
+                            <li><a href="bedroom.html">Bedroom</a></li>
+                            <li><a href="kitchen.html">Kitchen</a></li>
+                            <li><a href="dining.html">Dining Room</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Image Section -->
+            <div class="menu-right">
+                <img src="../Images/Home/intro5.jpg" alt="Hm1" />
+            </div>
         </div>
     </header>
 
+    <!-- Cart Content -->
     <div class="cart-container">
-        <div class="cart-left">
-            <div class="cart-item">
-                <img src="../Images/logo.jpg" alt="Mont Blanc Table">
-                <div class="item-details">
-                    <h3>MONT BLANC</h3>
-                    <div class="quantity">
-                        Quantity: <input type="number" value="1" min="1">
-                    </div>
-                    <div class="price">EGP15,261.75</div>
-                </div>
-                <div class="trash-icon">🗑️</div>
-            </div>
-            <a href="home.html" class="continue-shopping">← Continue Shopping</a>
+        <div class="section-title">
+            <h2>Shopping Cart</h2>
         </div>
-        <div class="cart-right">
-            <div class="cart-summary">
-                <p>Items: 1</p>
-                <p class="total-price">Total: EGP15,261.75</p>
+        <div class="cart-content">
+            <div class="cart-left">
+                <!-- Cart items will be loaded here -->
             </div>
-            <button id="checkout-btn" class="checkout-btn">PROCEED TO CHECKOUT</button>
+            <div class="cart-right">
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-item">
+                        <span>Items:</span>
+                        <span id="items-count">0</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total:</span>
+                        <span id="total-price">£0.00</span>
+                    </div>
+                </div>
+                <button id="checkout-btn" class="checkout-btn">PROCEED TO CHECKOUT</button>
+            </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-wrapper">
+            <div class="footer-brand">
+                <h2>Sense</h2>
+            </div>
+            <p>&copy; 2025 Sense. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="../JavaScript/cart.js"></script>
     
     <script>
-        document.getElementById("checkout-btn").addEventListener("click", function () {
-            window.location.href = "checkout.html";
+        // Simple toggle function for the menu
+        function toggleMenu() {
+            const fullMenu = document.getElementById('fullMenu');
+            fullMenu.style.display = fullMenu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const fullMenu = document.getElementById('fullMenu');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (!fullMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                fullMenu.style.display = 'none';
+            }
         });
     </script>
-
-    <footer>
-        <p>&copy; 2025 Heaven And Home. All rights reserved.</p>
-    </footer>
 </body>
 </html>
+
+ 

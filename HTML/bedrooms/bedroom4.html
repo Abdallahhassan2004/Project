@@ -257,6 +257,19 @@
           });
         });
       </script>
+      <script src="../../JavaScript/cart.js"></script>
+      <script>
+          document.querySelector('.add-to-cart').addEventListener('click', function() {
+              const product = {
+                  id: 'bedroom4', // Change this for each product
+                  name: document.querySelector('.product-info h1').textContent,
+                  price: parseFloat(document.querySelector('.price').textContent.replace('£', '').replace(',', '')),
+                  image: document.querySelector('.main-image').src
+              };
+              
+              addToCart(product);
+          });
+      </script>
       
         
 </html>

@@ -6,6 +6,7 @@
     <title>Heaven And Home | Bedroom Set</title>
     <link rel="stylesheet" href="../../CSS/product.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
 </head>
 <body>
  
@@ -373,5 +374,18 @@
     });
         </script>
         
+<script src="../../JavaScript/cart.js"></script>
+<script>
+    document.querySelector('.add-to-cart').addEventListener('click', function() {
+        const product = {
+            id: 'bedroom1',
+            name: document.querySelector('.product-info h1').textContent,
+            price: parseFloat(document.querySelector('.price').textContent.replace('£', '').replace(',', '')),
+            image: document.querySelector('.main-image').src
+        };
+        
+        addToCart(product);
+    });
+</script>
 </body>
 </html>
