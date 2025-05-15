@@ -10,7 +10,7 @@ body {
 /* Sidebar */
 #sidebar {
     width: 250px;
-    background-color: #897f62; /* Updated color */
+    background-color: #504935; /* Updated color */
     color: #fdf9ed; /* Light text color for contrast */
     position: fixed;
     height: 100%;
@@ -251,4 +251,88 @@ button:hover {
     text-transform: uppercase; /* Make the text uppercase */
     letter-spacing: 1px; /* Add spacing between letters */
     margin: 0; /* Remove default margin */
+}
+/* Settings Section */
+#settings {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#settings h2, #settings h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.settings-account, .settings-logins, .settings-logout {
+    margin-bottom: 30px;
+}
+
+.settings-account form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.settings-account form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.settings-account form button {
+    background-color: #897f62;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.settings-account form button:hover {
+    background-color: #755c3b;
+}
+
+.settings-logins table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.settings-logins table th, .settings-logins table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.settings-logins table th {
+    background-color: #897f62;
+    color: #fff;
+}
+
+.settings-logins table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.settings-logins table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.settings-logout button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.settings-logout button:hover {
+    background-color: #c0392b;
 }

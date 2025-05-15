@@ -130,3 +130,21 @@ window.onclick = function (event) {
         closeAddProductModal();
     }
 };
+
+    // Update Account Functionality
+    document.getElementById('updateAccountForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('adminName').value;
+        const email = document.getElementById('adminEmail').value;
+        const password = document.getElementById('adminPassword').value;
+
+        // Simulate updating account details
+        alert(`Account updated successfully!\nName: ${name}\nEmail: ${email}`);
+    });
+
+    // Logout Functionality
+    function logout() {
+        sessionStorage.removeItem("isAdminLoggedIn");
+        alert("You have been logged out.");
+        window.location.href = "Login.html";
+    }
