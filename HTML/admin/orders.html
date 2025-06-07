@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Order Management</title>
+    <link rel="stylesheet" href="../../CSS/users.css">
+    <script>
+        function exportOrders() {
+            alert("Exporting Orders...");
+            // Add logic to export orders
+        }
+
+        function filterOrders() {
+            const searchValue = document.getElementById("orderSearch").value.toLowerCase();
+            const rows = document.querySelectorAll("tbody tr");
+            rows.forEach(row => {
+                const userName = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                const productName = row.querySelector("td:nth-child(3)").textContent.toLowerCase();
+                row.style.display = userName.includes(searchValue) || productName.includes(searchValue) ? "" : "none";
+            });
+        }
+
+        function updateOrderStatus(orderId) {
+            alert(`Updating status for Order ID: ${orderId}`);
+            // Add logic to update the order status
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Admin Panel</h1>
+        <nav>
+            <ul>
+                <li><a href="../admin.html">Dashboard</a></li>
+                <li><a href="../admin/users.html">Users</a></li>
+                <li><a href="../admin/orders.html" class="active">Orders</a></li>
+                <li><a href="../admin/products.html">Products</a></li>
+                <li><a href="../admin/settings.html">Settings</a></li>
+               
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Order Management</h2>
+        <section id="orders">
+            
+            <div class="actions">
+                <button onclick="exportOrders()">Export Orders</button>
+                <input type="text" id="orderSearch" placeholder="Search Orders..." oninput="filterOrders()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User</th>
+                        <th>Product</th>
+                        <th>Status</th>
+                        <th>Date Placed</th>
+                        <th>Last Edited</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>101</td>
+                        <td>John Doe</td>
+                        <td>Modern Dining Set</td>
+                        <td>Pending</td>
+                        <td>2025-05-10</td>
+                        <td>2025-05-11 09:15</td>
+                        <td>
+                            <button onclick="updateOrderStatus(101)">Update Status</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>102</td>
+                        <td>Jane Smith</td>
+                        <td>Classic Sofa</td>
+                        <td>Completed</td>
+                        <td>2025-05-08</td>
+                        <td>2025-05-09 14:00</td>
+                        <td>
+                            <button onclick="updateOrderStatus(102)">Update Status</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Admin Panel</p>
+    </footer>
+</body>
+</html>
