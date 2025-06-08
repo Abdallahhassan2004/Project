@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/CSS/admin.css">
+    <script src="/JavaScript/admin.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <script>
+        // Check if the admin is logged in
+        if (sessionStorage.getItem("isAdminLoggedIn") !== "true") {
+            window.location.href = "/login";
+        }
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem("isAdminLoggedIn");
+            window.location.href = "/login";
+        }
+    </script>
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h2>Admin Panel</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="/admin">Dashboard</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/orders">Orders</a></li>
+                <li><a href="/users">Users</a></li>
+                <li><a href="/settings">Settings</a></li>
+                <li><a href="/">Back to Website</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard">
+            <h1>Dashboard</h1>
+            <div class="dashboard-cards">
+                <div class="card">
+                    <h3>Today's Orders</h3>
+                    <p><%= todaysOrders %></p>
+                </div>
+                <div class="card">
+                    <h3>Total Orders</h3>
+                    <p><%= totalOrders %></p>
+                </div>
+                <div class="card">
+                    <h3>Pending Orders</h3>
+                    <p><%= pendingOrders %></p>
+                </div>
+                <div class="card">
+                    <h3>Cancelled Orders</h3>
+                    <p><%= cancelledOrders %></p>
+                </div>
+                <div class="card">
+                    <h3>Site Views</h3>
+                    <p><%= siteViews %></p>
+                </div>
+            </div>
+            <div class="salesoverview">
+                <h3>Sales Overview</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+                <canvas id="ordersChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products">
+            <h2>Manage Products</h2>
+            <div class="actions">
+                <button onclick="openAddProductModal()">Add New Product</button>
+                <button onclick="exportProducts()">Export Products</button>
+                <input type="text" id="productSearch" placeholder="Search Products..." oninput="filterProducts()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Last Edited</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr>
+                            <td><%= product.id %></td>
+                            <td><%= product.name %></td>
+                            <td><%= product.category %></td>
+                            <td><%= product.price %></td>
+                            <td><%= product.dateAdded %></td>
+                            <td><%= product.lastEdited %></td>
+                            <td>
+                                <button onclick="editProduct(this)">Edit</button>
+                                <button onclick="deleteProduct(this)">Delete</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders">
+            <h2>Orders</h2>
+            <div class="actions">
+                <button onclick="exportOrders()">Export Orders</button>
+                <input type="text" id="orderSearch" placeholder="Search Orders..." oninput="filterOrders()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User</th>
+                        <th>Product</th>
+                        <th>Status</th>
+                        <th>Date Placed</th>
+                        <th>Last Edited</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% orders.forEach(order => { %>
+                        <tr>
+                            <td><%= order.id %></td>
+                            <td><%= order.user %></td>
+                            <td><%= order.product %></td>
+                            <td><%= order.status %></td>
+                            <td><%= order.datePlaced %></td>
+                            <td><%= order.lastEdited %></td>
+                            <td>
+                                <button onclick="updateOrderStatus('<%= order.id %>')">Update Status</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users">
+            <h2>Users</h2>
+            <div class="actions">
+                <button onclick="exportUsers()">Export Users</button>
+                <input type="text" id="userSearch" placeholder="Search Users..." oninput="filterUsers()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Date Registered</th>
+                        <th>Last Edited</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.id %></td>
+                            <td><%= user.name %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.dateRegistered %></td>
+                            <td><%= user.lastEdited %></td>
+                            <td>
+                                <button onclick="editUser(this)">Edit</button>
+                                <button onclick="deleteUser(this)">Delete</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

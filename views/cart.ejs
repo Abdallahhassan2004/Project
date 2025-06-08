@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | Sense</title>
+    <link rel="icon" type="image/png" href="../Images/logo.jpg" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/public/CSS/cart.css">
+    <script src="../JavaScript/cart.js" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header id="main-header">
+        <div class="header-container">
+            <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+            <h1 class="logo"><a href="home.html">Sense</a></h1>
+
+            <a href="cart.html" class="cart">bag <span></span>
+                <span class="cart-count"><%= cartItems ? cartItems.length : 0 %></span>
+            </a>
+        </div>
+
+        <div class="full-menu" id="fullMenu">
+            <div class="menu-left">
+                <!-- Search Bar -->
+                <div class="menu-search">
+                    <input type="text" id="search-input" placeholder="Search for products..." />
+                    <button onclick="handleSearchClick()">Search</button>
+                </div>
+
+                <!-- Menu Columns -->
+                <div class="menu-columns">
+                    <div class="column">
+                        <h2>Sense</h2>
+                        <ul>
+                            <li><a href="home.html#about-section">About</a></li>
+                            <li><a href="home.html#contact-section">Contact</a></li>
+                            <li><a href="login.html">Log In</a></li>
+                            <li><a href="signup.html">Sign Up</a></li>
+                            <li><a href="admin.html">Admin Panel</a></li> 
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h2>SHOP</h2>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="living.html">Living Room</a></li>
+                            <li><a href="bedroom.html">Bedroom</a></li>
+                            <li><a href="kitchen.html">Kitchen</a></li>
+                            <li><a href="dining.html">Dining Room</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Image Section -->
+            <div class="menu-right">
+                <img src="../Images/Home/intro5.jpg" alt="Hm1" />
+            </div>
+        </div>
+    </header>
+
+    <!-- Cart Content -->
+    <div class="cart-container">
+        <div class="section-title">
+            <h2>Shopping Cart</h2>
+        </div>
+        <div class="cart-content">
+            <div class="cart-left">
+                <% if (cartItems && cartItems.length > 0) { %>
+                    <% cartItems.forEach(item => { %>
+                        <div class="cart-item">
+                            <h3><%= item.name %></h3>
+                            <p>Price: £<%= item.price %></p>
+                            <p>Quantity: <%= item.quantity %></p>
+                            <form action="/cart/remove/<%= item.id %>" method="POST">
+                                <button type="submit" class="remove-btn">Remove</button>
+                            </form>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>Your cart is empty.</p>
+                <% } %>
+            </div>
+            <div class="cart-right">
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-item">
+                        <span>Items:</span>
+                        <span id="items-count"><%= cartItems ? cartItems.length : 0 %></span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total:</span>
+                        <span id="total-price">£<%= cartItems ? cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2) : '0.00' %></span>
+                    </div>
+                </div>
+                <form action="/cart/checkout" method="POST">
+                    <button id="checkout-btn" class="checkout-btn">PROCEED TO CHECKOUT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-wrapper">
+            <div class="footer-brand">
+                <h2>Sense</h2>
+            </div>
+            <p>&copy; 2025 Sense. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="../JavaScript/cart.js"></script>
+    
+    <script>
+        // Simple toggle function for the menu
+        function toggleMenu() {
+            const fullMenu = document.getElementById('fullMenu');
+            fullMenu.style.display = fullMenu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const fullMenu = document.getElementById('fullMenu');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (!fullMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                fullMenu.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
