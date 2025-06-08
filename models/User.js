@@ -5,9 +5,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Username is required'],
         trim: true,
-        unique: true,
         minlength: [3, 'Username must be at least 3 characters long'],
-        maxlength: [30, 'Username cannot exceed 30 characters']
+        maxlength: [20, 'Username cannot exceed 20 characters']
     },
     email: {
         type: String,
@@ -15,23 +14,35 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
     },
     password: {
         type: String,
         required: [true, 'Password is required'],
-        minlength: [6, 'Password must be at least 6 characters long']
+        minlength: [8, 'Password must be at least 8 characters long']
     },
     role: {
         type: String,
-        enum: {
-            values: ['user', 'admin'],
-            message: '{VALUE} is not a valid role'
-        },
+        enum: ['user', 'admin'],
         default: 'user'
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    lastLogin: {
+        type: Date
     }
 }, {
     timestamps: true
+});
+
+// Add any pre-save hooks or methods here
+userSchema.pre('save', function(next) {
+    // Add any pre-save logic here
+    next();
 });
 
 const User = mongoose.model('User', userSchema);

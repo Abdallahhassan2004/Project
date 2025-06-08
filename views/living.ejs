@@ -6,9 +6,215 @@
     <link rel="stylesheet" href="<%= '/CSS/category.css' %>">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&family=Ubuntu+Condensed&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .product-details {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .details-content {
+            background: white;
+            margin: 1rem auto;
+            padding: 1.5rem;
+            max-width: 1400px;
+            width: 95%;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .close-details {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            z-index: 1;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0.5rem;
+        }
+
+        .thumbnail-images {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            padding: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #777;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .add-to-cart-btn {
+            background: #333;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #444;
+        }
+
+        .related-products {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            grid-column: 1 / -1;
+        }
+
+        .related-products h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .related-item {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .related-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .related-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .related-item p {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .details-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 60px 1fr;
+            }
+
+            .thumbnail {
+                width: 60px;
+                height: 60px;
+            }
+
+            .main-image {
+                height: 300px;
+            }
+        }
+
+        .product {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .product img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product:hover img {
+            transform: scale(1.05);
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .product .price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product .product-title {
+            display: block;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <!-- H//eader -->
+    <!-- Header -->
     <header id="main-header">
         <div class="header-container">
             <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
@@ -40,7 +246,7 @@
                     <div class="column">
                         <h2>SHOP</h2>
                         <ul>
-                            <li><a href="/">Home</a></li>
+                            <li><a href="/Home"></a></li>
                             <li><a href="/living">Living Room</a></li>
                             <li><a href="/bedroom">Bedroom</a></li>
                             <li><a href="/kitchen">Kitchen</a></li>
@@ -62,32 +268,156 @@
         <h1 class="h2style woocommerce-products-header__title uppercase heading-font">Living Room Furniture</h1>
         <div class="content_section">
             <p class="p2 paragraph-font text-center">
-                <span class="s1 span-font">HOME / FURNITURE / LIVING ROOM</span>
+                <span class="s1 span-font">
+                    HOME / FURNITURE / LIVING ROOM
+                </span>
             </p>
         </div>
     </section>
 
     <!-- Product List Section -->
     <div class="product-list">
-        <% const livingRooms = [
-            { id: 1, image: 'L1/L1.avif', price: '£1,499', title: 'Vintage Style Living Room', alt: 'A lush living room with vintage style' },
-            { id: 2, image: 'L2/L1.avif', price: '£1,200', title: 'Modern Living Room', alt: 'A stylish living room with a calm atmosphere' },
-            { id: 3, image: 'L3/L1.avif', price: '$1,068', title: 'Cosy Living Room', alt: 'Relaxing, working, dining...this space does it all' },
-            { id: 4, image: 'L4/L1.avif', price: '£1,450', title: 'Traditional Living Room', alt: 'A living room with clutter-free calm for everyone' },
-            { id: 5, image: 'L5/L1.avif', price: '£1,600', title: 'Modern Scandi Living Room', alt: 'Earthy colours set the mood in a small, flexible living room' },
-            { id: 6, image: 'L6/L1.avif', price: '£1,500', title: 'Cottage-Style Living Room', alt: 'A cottage-style living room inspired by Nordic forests' }
+        <% const livingProducts = [
+            {
+                id: 1,
+                image: 'L1/L1.5.avif',
+                price: '£1,299',
+                title: 'Modern Living Room Set',
+                alt: 'Modern living room with contemporary furniture',
+                description: 'A stunning modern living room set featuring a comfortable sofa, matching armchairs, and a stylish coffee table. Perfect for creating a contemporary living space.',
+                thumbnails: [
+                    'L1/L1.avif',
+                    'L1/L1.2.avif',
+                    'L1/L1.3.avif',
+                    'L1/L1.4.avif',
+                    'L1/L1.5.avif'
+                ]
+            },
+            {
+                id: 2,
+                image: 'L2/L2.avif',
+                price: '£1,499',
+                title: 'Contemporary Living Room',
+                alt: 'Contemporary living room design',
+                description: 'Elegant contemporary living room set with premium materials and sophisticated design. Includes a spacious sofa, accent chairs, and modern decor elements.',
+                thumbnails: [
+                    'L2/L2.avif',
+                    'L2/L2.2.avif',
+                    'L2/L2.3.avif',
+                    'L2/L2.4.avif',
+                    'L2/L2.5.avif'
+                ]
+            },
+            {
+                id: 3,
+                image: 'L3/L3.avif',
+                price: '£1,699',
+                title: 'Luxury Living Space',
+                alt: 'Luxury living room interior',
+                description: 'Premium luxury living room collection featuring high-end furniture pieces, elegant lighting, and sophisticated design elements for a truly luxurious space.',
+                thumbnails: [
+                    'L3/L3.avif',
+                    'L3/L3.2.avif',
+                    'L3/L3.3.avif',
+                    'L3/L3.4.avif',
+                    'L3/L3.5.avif'
+                ]
+            },
+            {
+                id: 4,
+                image: 'L4/L4.avif',
+                price: '£1,399',
+                title: 'Minimalist Living Room',
+                alt: 'Minimalist living room design',
+                description: 'Clean and minimalist living room set with essential furniture pieces and subtle design elements. Perfect for those who appreciate simplicity and functionality.',
+                thumbnails: [
+                    'L4/L4.avif',
+                    'L4/L4.2.avif',
+                    'L4/L4.3.avif',
+                    'L4/L4.4.avif',
+                    'L4/L4.5.avif'
+                ]
+            },
+            {
+                id: 5,
+                image: 'L5/L5.avif',
+                price: '£1,599',
+                title: 'Scandinavian Living Room',
+                alt: 'Scandinavian style living room',
+                description: 'Beautiful Scandinavian-inspired living room set featuring natural materials, light colors, and functional design. Creates a warm and inviting atmosphere.',
+                thumbnails: [
+                    'L5/L5.avif',
+                    'L5/L5.2.avif',
+                    'L5/L5.3.avif',
+                    'L5/L5.4.avif',
+                    'L5/L5.5.avif'
+                ]
+            },
+            {
+                id: 6,
+                image: 'L6/L6.avif',
+                price: '£1,799',
+                title: 'Art Deco Living Room',
+                alt: 'Art deco living room interior',
+                description: 'Stunning Art Deco living room collection featuring bold geometric patterns, luxurious materials, and sophisticated design elements for a timeless look.',
+                thumbnails: [
+                    'L6/L6.avif',
+                    'L6/L6.2.avif',
+                    'L6/L6.3.avif',
+                    'L6/L6.4.avif',
+                    'L6/L6.5.avif'
+                ]
+            }
         ]; %>
 
-        <% livingRooms.forEach(room => { %>
+        <% livingProducts.forEach(product => { %>
             <div class="product">
-                <img src="<%= '/Images/livingRooms/' + room.image %>" alt="<%= room.alt %>">
-                <div class="price"><%= room.price %></div>
-                <a href="/livingrooms/livingroom<%= room.id %>" class="product-title"><%= room.title %></a>
+                <img src="<%= '/Images/livingRooms/' + product.image %>" alt="<%= product.alt %>" onclick="showProductDetails('<%= product.id %>')">
+                <p class="price"><%= product.price %></p>
+                <a href="#" class="product-title" onclick="showProductDetails('<%= product.id %>')"><%= product.title %></a>
             </div>
         <% }); %>
     </div>
 
-    <!-- Footer -->
+    <!-- Product Details Modal -->
+    <div id="productDetails" class="product-details">
+        <div class="details-content">
+            <span class="close-details" onclick="closeProductDetails()">&times;</span>
+            <div class="image-gallery">
+                <div class="thumbnail-images" id="thumbnailContainer"></div>
+                <img src="" alt="Main product image" class="main-image" id="modalMainImage">
+            </div>
+            <div class="product-info">
+                <h2 class="product-title" id="modalProductTitle"></h2>
+                <p class="product-price" id="modalProductPrice"></p>
+                <p class="product-description" id="modalProductDescription"></p>
+                <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+            </div>
+            <!-- You May Also Like Section -->
+            <div class="related-products">
+                <h3>You May Also Like</h3>
+                <div class="related-grid">
+                    <a href="/livingrooms/livingroom2" class="related-item">
+                        <img src="/Images/livingRooms/L2/L2.avif" alt="Contemporary Living Room">
+                        <p>Contemporary Living Room</p>
+                    </a>
+                    <a href="/kitchens/kitchen1" class="related-item">
+                        <img src="/Images/kitchen/kitchen 1/kit1 2.jpg" alt="Contemporary Kitchen">
+                        <p>Contemporary Kitchen</p>
+                    </a>
+                    <a href="/dining/dining1" class="related-item">
+                        <img src="/Images/dining/d1/1d.webp" alt="Contemporary Dining">
+                        <p>Contemporary Dining</p>
+                    </a>
+                    <a href="/bedrooms/bedroom1" class="related-item">
+                        <img src="/Images/bedrooms/b1/5.jpg" alt="Contemporary Bedroom">
+                        <p>Contemporary Bedroom</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-wrapper">
             <div class="footer-grid">
@@ -116,6 +446,38 @@
     </footer>
 
     <script>
+        const livingProducts = <%- JSON.stringify(livingProducts) %>;
+
+        function showProductDetails(productId) {
+            const product = livingProducts.find(p => p.id === parseInt(productId));
+            if (!product) return;
+
+            // Update modal content
+            document.getElementById('modalMainImage').src = '/Images/livingRooms/' + product.image;
+            document.getElementById('modalProductTitle').textContent = product.title;
+            document.getElementById('modalProductPrice').textContent = product.price;
+            document.getElementById('modalProductDescription').textContent = product.description;
+
+            // Update thumbnails
+            const thumbnailContainer = document.getElementById('thumbnailContainer');
+            thumbnailContainer.innerHTML = '';
+            product.thumbnails.forEach(thumb => {
+                const img = document.createElement('img');
+                img.src = '/Images/livingRooms/' + thumb;
+                img.alt = 'Thumbnail';
+                img.className = 'thumbnail';
+                img.onclick = () => document.getElementById('modalMainImage').src = '/Images/livingRooms/' + thumb;
+                thumbnailContainer.appendChild(img);
+            });
+
+            // Show modal
+            document.getElementById('productDetails').style.display = 'block';
+        }
+
+        function closeProductDetails() {
+            document.getElementById('productDetails').style.display = 'none';
+        }
+
         function handleSearchClick() {
             const query = document.getElementById('search-input').value.trim().toLowerCase();
             const roomPages = {
@@ -144,6 +506,12 @@
             toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
         }
 
+        function addToCart() {
+            const currentCount = parseInt(document.querySelector('.cart-count').textContent);
+            document.querySelector('.cart-count').textContent = currentCount + 1;
+            alert('Product added to cart!');
+        }
+
         // Add event listener for search input
         document.getElementById('search-input').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
@@ -152,13 +520,8 @@
             }
         });
 
-        // Update cart count (this should be replaced with actual cart count from server)
-        function updateCartCount(count) {
-            document.querySelector('.cart-count').textContent = count;
-        }
-
-        // Initialize cart count (this should be replaced with actual cart count from server)
-        updateCartCount(0);
+        // Initialize cart count
+        document.querySelector('.cart-count').textContent = '0';
     </script>
 </body>
 </html>

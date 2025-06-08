@@ -7,6 +7,165 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&family=Ubuntu+Condensed&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .product-details {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .details-content {
+            background: white;
+            margin: 1rem auto;
+            padding: 1.5rem;
+            max-width: 1400px;
+            width: 95%;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .close-details {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            z-index: 1;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0.5rem;
+        }
+
+        .thumbnail-images {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            padding: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #777;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .add-to-cart-btn {
+            background: #333;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #444;
+        }
+
+        .related-products {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            grid-column: 1 / -1;
+        }
+
+        .related-products h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .related-item {
+            text-align: center;
+        }
+
+        .related-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .related-item p {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .details-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 60px 1fr;
+            }
+
+            .thumbnail {
+                width: 60px;
+                height: 60px;
+            }
+
+            .main-image {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -70,24 +229,154 @@
 
     <!-- Product List Section -->
     <div class="product-list">
-        <% const kitchens = [
-            { id: 1, image: 'k1/1k.jpg', price: '£2,499', title: 'Modern Kitchen', alt: 'Modern kitchen with island' },
-            { id: 2, image: 'k2/2k.jpg', price: '£3,599', title: 'Contemporary Kitchen', alt: 'Contemporary kitchen design' },
-            { id: 3, image: 'k3/3k.jpg', price: '£4,800', title: 'Luxury Kitchen', alt: 'Luxury kitchen with marble countertops' },
-            { id: 4, image: 'k4/4k.jpg', price: '£2,165', title: 'Minimalist Kitchen', alt: 'Minimalist kitchen design' },
-            { id: 5, image: 'k5/5k.jpg', price: '£3,450', title: 'Industrial Kitchen', alt: 'Industrial style kitchen' },
-            { id: 6, image: 'k6/6k.jpg', price: '£2,550', title: 'Scandinavian Kitchen', alt: 'Scandinavian style kitchen' }
+        <% const kitchenProducts = [
+            {
+                id: 1,
+                image: 'kitchen 1/d1.jpg',
+                price: '£1,499',
+                title: 'Modern Kitchen',
+                alt: 'Modern Kitchen',
+                description: 'Transform your kitchen with this modern design. Features sleek cabinets, modern appliances, and a spacious layout perfect for any home.',
+                thumbnails: [
+                    'kitchen 1/d1.jpg',
+                    'kitchen 1/kit1 2.jpg',
+                    'kitchen 1/kit1 3.jpg',
+                    'kitchen 1/kit1 4.jpg',
+                    'kitchen 1/kit1 5.jpg'
+                ]
+            },
+            {
+                id: 2,
+                image: 'kitchen 2/kit2 2.jpg',
+                price: '£1,599',
+                title: 'Contemporary Kitchen',
+                alt: 'Contemporary Kitchen',
+                description: 'Upgrade your kitchen with this contemporary design. Featuring clean lines, modern finishes, and efficient storage solutions.',
+                thumbnails: [
+                    'kitchen 2/kit2 1.jpg',
+                    'kitchen 2/kit2 2.jpg',
+                    'kitchen 2/kit2 3.jpg',
+                    'kitchen 2/kit2 4.jpg',
+                    'kitchen 2/kit2 5.jpg'
+                ]
+            },
+            {
+                id: 3,
+                image: 'kitchen 3/kit3 2.jpg',
+                price: '£1,800',
+                title: 'Classic Kitchen',
+                alt: 'Classic Kitchen',
+                description: 'Add timeless elegance to your home with this classic kitchen design. Traditional styling with modern functionality.',
+                thumbnails: [
+                    'kitchen 3/kit3 1.jpg',
+                    'kitchen 3/kit3 2.jpg',
+                    'kitchen 3/kit3 3.jpg',
+                    'kitchen 3/kit3 4.jpg',
+                    'kitchen 3/kit3 5.jpg'
+                ]
+            },
+            {
+                id: 4,
+                image: 'kitchen 4/kit4 2.jpg',
+                price: '£1,650',
+                title: 'Rustic Kitchen',
+                alt: 'Rustic Kitchen',
+                description: 'Bring natural warmth to your kitchen with this rustic design. Made from quality materials with a natural finish.',
+                thumbnails: [
+                    'kitchen 4/kit4 1.jpg',
+                    'kitchen 4/kit4 2.jpg',
+                    'kitchen 4/kit4 3.jpg',
+                    'kitchen 4/kit4 4.jpg',
+                    'kitchen 4/kit4 5.jpg'
+                ]
+            },
+            {
+                id: 5,
+                image: 'kitchen 5/kit5 2.jpg',
+                price: '£1,750',
+                title: 'Minimalist Kitchen',
+                alt: 'Minimalist Kitchen',
+                description: 'Clean and efficient minimalist kitchen design. Perfect for modern living with smart storage solutions.',
+                thumbnails: [
+                    'kitchen 5/kit5 1.jpg',
+                    'kitchen 5/kit5 2.jpg',
+                    'kitchen 5/kit5 3.jpg',
+                    'kitchen 5/kit5 4.jpg',
+                    'kitchen 5/kit5 5.jpg'
+                ]
+            },
+            {
+                id: 6,
+                image: 'kitchen 6/kit6 2.jpg',
+                price: '£1,900',
+                title: 'Luxury Kitchen',
+                alt: 'Luxury Kitchen',
+                description: 'High-end luxury kitchen design with premium materials and state-of-the-art appliances.',
+                thumbnails: [
+                    'kitchen 6/kit6 1.jpg',
+                    'kitchen 6/kit6 2.jpg',
+                    'kitchen 6/kit6 3.jpg',
+                    'kitchen 6/kit6 4.jpg',
+                    'kitchen 6/kit6 5.jpg'
+                ]
+            }
         ]; %>
 
-        <% kitchens.forEach(kitchen => { %>
+        <% kitchenProducts.forEach(product => { %>
             <div class="product">
-                <a href="/kitchens/kitchen<%= kitchen.id %>">
-                    <img src="<%= '/Images/kitchen/' + kitchen.image %>" alt="<%= kitchen.alt %>">
+                <a href="#" onclick="showProductDetails('<%= product.id %>'); return false;">
+                    <img src="/Images/kitchen/<%= product.image %>" alt="<%= product.alt %>">
                 </a>
-                <div class="price"><%= kitchen.price %></div>
-                <a href="/kitchens/kitchen<%= kitchen.id %>" class="product-title"><%= kitchen.title %></a>
+                <div class="price"><%= product.price %></div>
+                <a href="#" onclick="showProductDetails('<%= product.id %>'); return false;" class="product-title"><%= product.title %></a>
             </div>
         <% }); %>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="productDetails" class="product-details">
+        <div class="details-content">
+            <span class="close-details" onclick="closeDetails()">&times;</span>
+            <div class="image-gallery">
+                <div class="thumbnail-images" id="thumbnails"></div>
+                <img id="mainImage" class="main-image" src="" alt="">
+            </div>
+            <div class="product-info">
+                <h2 id="productTitle" class="product-title"></h2>
+                <p id="productPrice" class="product-price"></p>
+                <p id="productDescription" class="product-description"></p>
+                <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+            </div>
+            <div class="related-products">
+                <h3>You May Also Like</h3>
+                <div class="related-grid">
+                    <div class="related-item">
+                        <a href="/living">
+                            <img src="/Images/livingRooms/L1/L1.avif" alt="Contemporary Living Room">
+                            <p>Contemporary Living Room</p>
+                        </a>
+                    </div>
+                    <div class="related-item">
+                        <a href="/dining">
+                            <img src="/Images/dining/d1/1d.webp" alt="Contemporary Dining">
+                            <p>Contemporary Dining</p>
+                        </a>
+                    </div>
+                    <div class="related-item">
+                        <a href="/bedroom">
+                            <img src="/Images/bedrooms/b1/5.jpg" alt="Contemporary Bedroom">
+                            <p>Contemporary Bedroom</p>
+                        </a>
+                    </div>
+                    <div class="related-item">
+                        <a href="/kitchen">
+                            <img src="/Images/kitchen/kitchen 2/kit2 2.jpg" alt="Contemporary Kitchen">
+                            <p>Contemporary Kitchen</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -162,6 +451,146 @@
 
         // Initialize cart count (this should be replaced with actual cart count from server)
         updateCartCount(0);
+
+        const kitchenProducts = [
+            {
+                id: 1,
+                image: 'kitchen 1/kit1 5.jpg',
+                price: '£1,499',
+                title: 'Modern Kitchen',
+                alt: 'Modern Kitchen',
+                description: 'Transform your kitchen with this modern design. Features sleek cabinets, modern appliances, and a spacious layout perfect for any home.',
+                thumbnails: [
+                    'kitchen 1/kit1 1.jpg',
+                    'kitchen 1/kit1 2.jpg',
+                    'kitchen 1/kit1 3.jpg',
+                    'kitchen 1/kit1 4.jpg',
+                    'kitchen 1/kit1 5.jpg'
+                ]
+            },
+            {
+                id: 2,
+                image: 'kitchen 2/kit2 2.jpg',
+                price: '£1,599',
+                title: 'Contemporary Kitchen',
+                alt: 'Contemporary Kitchen',
+                description: 'Upgrade your kitchen with this contemporary design. Featuring clean lines, modern finishes, and efficient storage solutions.',
+                thumbnails: [
+                    'kitchen 2/kit2 1.jpg',
+                    'kitchen 2/kit2 2.jpg',
+                    'kitchen 2/kit2 3.jpg',
+                    'kitchen 2/kit2 4.jpg',
+                    'kitchen 2/kit2 5.jpg'
+                ]
+            },
+            {
+                id: 3,
+                image: 'kitchen 3/kit3 2.jpg',
+                price: '£1,800',
+                title: 'Classic Kitchen',
+                alt: 'Classic Kitchen',
+                description: 'Add timeless elegance to your home with this classic kitchen design. Traditional styling with modern functionality.',
+                thumbnails: [
+                    'kitchen 3/kit3 1.jpg',
+                    'kitchen 3/kit3 2.jpg',
+                    'kitchen 3/kit3 3.jpg',
+                    'kitchen 3/kit3 4.jpg',
+                    'kitchen 3/kit3 5.jpg'
+                ]
+            },
+            {
+                id: 4,
+                image: 'kitchen 4/kit4 2.jpg',
+                price: '£1,650',
+                title: 'Rustic Kitchen',
+                alt: 'Rustic Kitchen',
+                description: 'Bring natural warmth to your kitchen with this rustic design. Made from quality materials with a natural finish.',
+                thumbnails: [
+                    'kitchen 4/kit4 1.jpg',
+                    'kitchen 4/kit4 2.jpg',
+                    'kitchen 4/kit4 3.jpg',
+                    'kitchen 4/kit4 4.jpg',
+                    'kitchen 4/kit4 5.jpg'
+                ]
+            },
+            {
+                id: 5,
+                image: 'kitchen 5/kit5 2.jpg',
+                price: '£1,750',
+                title: 'Minimalist Kitchen',
+                alt: 'Minimalist Kitchen',
+                description: 'Clean and efficient minimalist kitchen design. Perfect for modern living with smart storage solutions.',
+                thumbnails: [
+                    'kitchen 5/kit5 1.jpg',
+                    'kitchen 5/kit5 2.jpg',
+                    'kitchen 5/kit5 3.jpg',
+                    'kitchen 5/kit5 4.jpg',
+                    'kitchen 5/kit5 5.jpg'
+                ]
+            },
+            {
+                id: 6,
+                image: 'kitchen 6/kit6 2.jpg',
+                price: '£1,900',
+                title: 'Luxury Kitchen',
+                alt: 'Luxury Kitchen',
+                description: 'High-end luxury kitchen design with premium materials and state-of-the-art appliances.',
+                thumbnails: [
+                    'kitchen 6/kit6 1.jpg',
+                    'kitchen 6/kit6 2.jpg',
+                    'kitchen 6/kit6 3.jpg',
+                    'kitchen 6/kit6 4.jpg',
+                    'kitchen 6/kit6 5.jpg'
+                ]
+            }
+        ];
+
+        function showProductDetails(productId) {
+            const product = kitchenProducts.find(p => p.id === parseInt(productId));
+            if (!product) return;
+
+            const modal = document.getElementById('productDetails');
+            const mainImage = document.getElementById('mainImage');
+            const thumbnailsContainer = document.getElementById('thumbnails');
+            
+            // Update main image
+            mainImage.src = '/Images/kitchen/' + product.image;
+            
+            // Clear and update thumbnails
+            thumbnailsContainer.innerHTML = '';
+            product.thumbnails.forEach(thumb => {
+                const img = document.createElement('img');
+                img.src = '/Images/kitchen/' + thumb;
+                img.alt = product.title;
+                img.className = 'thumbnail';
+                img.onclick = () => mainImage.src = '/Images/kitchen/' + thumb;
+                thumbnailsContainer.appendChild(img);
+            });
+            
+            // Update product info
+            document.getElementById('productTitle').textContent = product.title;
+            document.getElementById('productPrice').textContent = product.price;
+            document.getElementById('productDescription').textContent = product.description;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeDetails() {
+            document.getElementById('productDetails').style.display = 'none';
+        }
+
+        function addToCart() {
+            // Add to cart functionality
+            alert('Product added to cart!');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('productDetails');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

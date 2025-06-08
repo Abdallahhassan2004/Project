@@ -7,6 +7,165 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&family=Ubuntu+Condensed&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .product-details {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .details-content {
+            background: white;
+            margin: 1rem auto;
+            padding: 1.5rem;
+            max-width: 1400px;
+            width: 95%;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .close-details {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            z-index: 1;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0.5rem;
+        }
+
+        .thumbnail-images {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            padding: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #777;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .add-to-cart-btn {
+            background: #333;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #444;
+        }
+
+        .related-products {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            grid-column: 1 / -1;
+        }
+
+        .related-products h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .related-item {
+            text-align: center;
+        }
+
+        .related-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .related-item p {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .details-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 60px 1fr;
+            }
+
+            .thumbnail {
+                width: 60px;
+                height: 60px;
+            }
+
+            .main-image {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -43,7 +202,7 @@
                     <div class="column">
                         <h2>SHOP</h2>
                         <ul>
-                            <li><a href="/">Home</a></li>
+                            <li><a href="/Home"></a></li>
                             <li><a href="/living">Living Room</a></li>
                             <li><a href="/bedroom">Bedroom</a></li>
                             <li><a href="/kitchen">Kitchen</a></li>
@@ -74,24 +233,141 @@
 
     <!-- Product List Section -->
     <div class="product-list">
-        <% const diningRooms = [
-            { id: 1, image: 'd1/1d.webp', price: '£1,499', title: 'Traditional Dining', alt: 'Luxury dining' },
-            { id: 2, image: 'd2/1di.avif', price: '£1,599', title: 'Modern Dining', alt: 'Bedside Table' },
-            { id: 3, image: 'd3/1din.webp', price: '£1,800', title: 'Vintage Dining', alt: 'Memory Foam Mattress' },
-            { id: 4, image: 'd4/1dini.webp', price: '£165', title: 'Rustic Dining', alt: 'Wooden Drawer' },
-            { id: 5, image: 'd5/1dining.jpg', price: '£450', title: 'Marble Granite Dining', alt: 'Modern Wardrobe' },
-            { id: 6, image: 'd6/1D.jpg', price: '£550', title: 'Glass Modernity Dining', alt: 'Elegant Dresser' }
+        <% const diningProducts = [
+            {
+                id: 1,
+                image: 'd1/1d.webp',
+                price: '£1,499',
+                title: 'Traditional Dining',
+                alt: 'Luxury dining',
+                description: 'Transform your dining with this traditional dining set. It includes a solid wood table with a rich mahogany finish and six upholstered chairs for ultimate comfort.',
+                thumbnails: [
+                    'd1/1d.webp',
+                    'd1/2d.webp',
+                    'd1/3d.webp',
+                    'd1/4d.webp',
+                    'd1/5d.webp'
+                ]
+            },
+            {
+                id: 2,
+                image: 'd2/1di.avif',
+                price: '£1,599',
+                title: 'Modern Dining',
+                alt: 'Bedside Table',
+                description: 'Upgrade your dining space with this modern dining set. Featuring a sleek glass table and four contemporary chairs, this set is perfect for any modern home.',
+                thumbnails: [
+                    'd2/1di.avif',
+                    'd2/2di.avif',
+                    'd2/3di.avif',
+                    'd2/4di.avif',
+                    'd2/5di.avif'
+                ]
+            },
+            {
+                id: 3,
+                image: 'd3/1din.webp',
+                price: '£1,800',
+                title: 'Vintage Dining',
+                alt: 'Memory Foam Mattress',
+                description: 'Add character to your home with this vintage dining set. The distressed wood finish and classic design create a timeless look.',
+                thumbnails: [
+                    'd3/1d.webp',
+                    'd3/2d.webp',
+                    'd3/3d.webp',
+                    'd3/4d.webp',
+                    'd3/5d.webp'
+                ]
+            },
+            {
+                id: 4,
+                image: 'd4/1dini.webp',
+                price: '£165',
+                title: 'Rustic Dining',
+                alt: 'Wooden Drawer',
+                description: 'Bring natural warmth to your dining room with this rustic dining set. Made from reclaimed wood with a natural finish.',
+                thumbnails: [
+                    'd4/1d.webp',
+                    'd4/2d.webp',
+                    'd4/3d.webp',
+                    'd4/4d.webp',
+                    'd4/5d.webp'
+                ]
+            },
+            {
+                id: 5,
+                image: 'd5/1dining.jpg',
+                price: '£450',
+                title: 'Marble Granite Dining',
+                alt: 'Modern Wardrobe',
+                description: 'Elegant marble and granite dining set that combines luxury with durability. Perfect for both casual and formal dining.',
+                thumbnails: [
+                    'd5/1d.webp',
+                    'd5/2d.webp',
+                    'd5/3d.webp',
+                    'd5/4d.webp',
+                    'd5/5d.webp'
+                ]
+            },
+            {
+                id: 6,
+                image: 'd6/1D.jpg',
+                price: '£550',
+                title: 'Glass Modernity Dining',
+                alt: 'Elegant Dresser',
+                description: 'Contemporary glass dining set that brings light and space to your dining area. Features a tempered glass table with modern metal frame.',
+                thumbnails: [
+                    'd6/1d.webp',
+                    'd6/2d.webp',
+                    'd6/3d.webp',
+                    'd6/4d.webp',
+                    'd6/5d.webp'
+                ]
+            }
         ]; %>
 
-        <% diningRooms.forEach(dining => { %>
+        <% diningProducts.forEach(product => { %>
             <div class="product">
-                <a href="/dining/dining<%= dining.id %>">
-                    <img src="<%= '/Images/dining/' + dining.image %>" alt="<%= dining.alt %>">
+                <a href="#" onclick="showProductDetails(<%= JSON.stringify(product) %>); return false;">
+                    <img src="<%= '/Images/dining/' + product.image %>" alt="<%= product.alt %>">
                 </a>
-                <div class="price"><%= dining.price %></div>
-                <a href="/dining/dining<%= dining.id %>" class="product-title"><%= dining.title %></a>
+                <div class="price"><%= product.price %></div>
+                <a href="#" onclick="showProductDetails(<%= JSON.stringify(product) %>); return false;" class="product-title"><%= product.title %></a>
             </div>
         <% }); %>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="productDetails" class="product-details">
+        <div class="details-content">
+            <span class="close-details" onclick="closeProductDetails()">&times;</span>
+            <div class="image-gallery">
+                <div class="thumbnail-images" id="thumbnailContainer"></div>
+                <img id="mainProductImage" class="main-image" src="" alt="Product Image">
+            </div>
+            <div class="product-info">
+                <h2 id="productTitle" class="product-title"></h2>
+                <p id="productPrice" class="product-price"></p>
+                <p id="productDescription" class="product-description"></p>
+                <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+            </div>
+            <div class="related-products">
+                <h3>You May Also Like</h3>
+                <div class="related-grid">
+                    <% const relatedProducts = [
+                        { image: '/Images/livingRooms/L1/L1.avif', title: 'Modern Living Room' },
+                        { image: '/Images/kitchen/kitchen 1/kit1 2.jpg', title: 'Modern Kitchen' },
+                        { image: '/Images/bedrooms/b1/5.jpg', title: 'Modern Bedroom' }
+                    ]; %>
+                    <% relatedProducts.forEach(item => { %>
+                        <div class="related-item">
+                            <img src="<%= item.image %>" alt="<%= item.title %>">
+                            <p><%= item.title %></p>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer>
@@ -125,6 +401,8 @@
     </footer>
 
     <script>
+        let currentProduct = null;
+
         function handleSearchClick() {
             const query = document.getElementById('search-input').value.trim().toLowerCase();
             const roomPages = {
@@ -151,6 +429,56 @@
             const toggleBtn = document.querySelector(".menu-toggle");
             menu.classList.toggle("active");
             toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
+        }
+
+        function showProductDetails(product) {
+            currentProduct = product;
+            const modal = document.getElementById('productDetails');
+            const mainImage = document.getElementById('mainProductImage');
+            const title = document.getElementById('productTitle');
+            const price = document.getElementById('productPrice');
+            const description = document.getElementById('productDescription');
+            const thumbnailContainer = document.getElementById('thumbnailContainer');
+
+            // Set main content
+            mainImage.src = '/Images/dining/' + product.image;
+            title.textContent = product.title;
+            price.textContent = product.price;
+            description.textContent = product.description;
+
+            // Clear and populate thumbnails
+            thumbnailContainer.innerHTML = '';
+            product.thumbnails.forEach(thumb => {
+                const img = document.createElement('img');
+                img.src = '/Images/dining/' + thumb;
+                img.alt = product.title;
+                img.className = 'thumbnail';
+                img.onclick = () => mainImage.src = '/Images/dining/' + thumb;
+                thumbnailContainer.appendChild(img);
+            });
+
+            modal.style.display = 'block';
+        }
+
+        function closeProductDetails() {
+            document.getElementById('productDetails').style.display = 'none';
+            currentProduct = null;
+        }
+
+        function addToCart() {
+            if (currentProduct) {
+                const currentCount = parseInt(document.querySelector('.cart-count').textContent);
+                document.querySelector('.cart-count').textContent = currentCount + 1;
+                alert('Product added to cart!');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('productDetails');
+            if (event.target === modal) {
+                closeProductDetails();
+            }
         }
 
         // Add event listener for search input

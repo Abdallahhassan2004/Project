@@ -1,118 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const authController = require('../controllers/authController');
+const { auth } = require('../middleware/auth');
 
-// Register User
-router.post('/register', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
+// Admin registration route
+router.post('/admin/register', authController.registerAdmin);
 
-        // Validate required fields
-        if (!username || !email || !password) {
-            return res.status(400).json({ 
-                message: 'Missing required fields',
-                required: ['username', 'email', 'password']
-            });
-        }
+// Authentication routes
+router.get('/login', authController.getLoginPage);
+router.post('/login', authController.login);
+router.get('/signup', authController.getSignupPage);
+router.post('/signup', authController.signup);
+router.get('/logout', authController.logout);
+router.get('/forgot-password', authController.getForgotPasswordPage);
+router.post('/forgot-password', authController.forgotPassword);
+router.get('/reset-password/:token', authController.getResetPasswordPage);
+router.post('/reset-password/:token', authController.resetPassword);
 
-        // Check if user already exists
-        let user = await User.findOne({ email });
-        if (user) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
-
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        // Create new user
-        user = new User({
-            username,
-            email,
-            password: hashedPassword
-        });
-
-        await user.save();
-
-        // Create JWT token
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET || 'your-secret-key',
-            { expiresIn: '1h' }
-        );
-
-        res.status(201).json({ 
-            message: 'User registered successfully',
-            token,
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                role: user.role
-            }
-        });
-    } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ 
-            message: 'Server error',
-            error: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
-});
-
-// Login User
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        // Validate required fields
-        if (!email || !password) {
-            return res.status(400).json({ 
-                message: 'Missing required fields',
-                required: ['email', 'password']
-            });
-        }
-
-        // Check if user exists
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        // Verify password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        // Create JWT token
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET || 'your-secret-key',
-            { expiresIn: '1h' }
-        );
-
-        res.json({ 
-            message: 'Login successful',
-            token,
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                role: user.role
-            }
-        });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ 
-            message: 'Server error',
-            error: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
-});
+// Protected route example
+router.get('/profile', auth, authController.getProfile);
 
 module.exports = router; 
