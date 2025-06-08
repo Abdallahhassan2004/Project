@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/CSS/category.css">
+    <link rel="stylesheet" href="<%= '/CSS/category.css' %>">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&family=Ubuntu+Condensed&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -52,7 +53,7 @@
 
             <!-- Right Image Section -->
             <div class="menu-right">
-                <img src="/Images/Home/intro5.jpg" alt="Hm1" />
+                <img src="<%= '/Images/Home/intro5.jpg' %>" alt="Hm1" />
             </div>
         </div>
     </header>
@@ -69,67 +70,98 @@
 
     <!-- Product List Section -->
     <div class="product-list">
+        <% const kitchens = [
+            { id: 1, image: 'k1/1k.jpg', price: '£2,499', title: 'Modern Kitchen', alt: 'Modern kitchen with island' },
+            { id: 2, image: 'k2/2k.jpg', price: '£3,599', title: 'Contemporary Kitchen', alt: 'Contemporary kitchen design' },
+            { id: 3, image: 'k3/3k.jpg', price: '£4,800', title: 'Luxury Kitchen', alt: 'Luxury kitchen with marble countertops' },
+            { id: 4, image: 'k4/4k.jpg', price: '£2,165', title: 'Minimalist Kitchen', alt: 'Minimalist kitchen design' },
+            { id: 5, image: 'k5/5k.jpg', price: '£3,450', title: 'Industrial Kitchen', alt: 'Industrial style kitchen' },
+            { id: 6, image: 'k6/6k.jpg', price: '£2,550', title: 'Scandinavian Kitchen', alt: 'Scandinavian style kitchen' }
+        ]; %>
+
         <% kitchens.forEach(kitchen => { %>
             <div class="product">
-                <a href="<%= kitchen.link %>">
-                    <img src="<%= kitchen.image %>" alt="<%= kitchen.alt %>">
+                <a href="/kitchens/kitchen<%= kitchen.id %>">
+                    <img src="<%= '/Images/kitchen/' + kitchen.image %>" alt="<%= kitchen.alt %>">
                 </a>
                 <div class="price"><%= kitchen.price %></div>
-                <a href="<%= kitchen.link %>" class="product-title"><%= kitchen.title %></a>
+                <a href="/kitchens/kitchen<%= kitchen.id %>" class="product-title"><%= kitchen.title %></a>
             </div>
-        <% }) %>
+        <% }); %>
     </div>
 
     <!-- Footer -->
     <footer>
         <div class="footer-wrapper">
-            <!-- Grid Columns with Bordered Boxes -->
             <div class="footer-grid">
-                <div class="footer-box">
-                    <h4>Store</h4>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Journal</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-box">
-                    <h4>Shop</h4>
-                    <ul>
-                        <li><a href="#">All</a></li>
-                        <li><a href="#">Lookbook</a></li>
-                        <li><a href="#">Collections</a></li>
-                        <li><a href="#">Featured</a></li>
-                    </ul>
-                </div>
-                <div class="footer-box">
-                    <h4>Collections</h4>
-                    <ul>
-                        <li><a href="#">Decors</a></li>
-                        <li><a href="#">Furnitures</a></li>
-                        <li><a href="#">Ceramic</a></li>
-                        <li><a href="#">Lamps</a></li>
-                    </ul>
-                </div>
-                <div class="footer-box">
-                    <h4>Help</h4>
-                    <ul>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Login & Account</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Refund policy</a></li>
-                    </ul>
-                </div>
+                <% const footerSections = [
+                    { title: 'Store', links: ['Home', 'About', 'Journal', 'Contact'] },
+                    { title: 'Shop', links: ['All', 'Lookbook', 'Collections', 'Featured'] },
+                    { title: 'Collections', links: ['Decors', 'Furnitures', 'Ceramic', 'Lamps'] },
+                    { title: 'Help', links: ['Contact', 'Login & Account', 'Privacy Policy', 'Refund policy'] }
+                ]; %>
+                
+                <% footerSections.forEach(section => { %>
+                    <div class="footer-box">
+                        <h4><%= section.title %></h4>
+                        <ul>
+                            <% section.links.forEach(link => { %>
+                                <li><a href="#"><%= link %></a></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% }); %>
             </div>
         </div>
-
-        <!-- Store name in its own full-width block at the bottom -->
         <div class="footer-brand">
             <h2>Sense</h2>
         </div>
     </footer>
 
-    <script src="/JavaScript/kitchen.js"></script>
+    <script>
+        function handleSearchClick() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const roomPages = {
+                "living": "/living",
+                "living room": "/living",
+                "bed": "/bedroom",
+                "bedroom": "/bedroom",
+                "kitchen": "/kitchen",
+                "dining": "/dining",
+                "dining room": "/dining"
+            };
+
+            const matchedKey = Object.keys(roomPages).find(key => query.includes(key));
+
+            if (matchedKey) {
+                window.location.href = roomPages[matchedKey];
+            } else {
+                alert("No matching room found. Try: living, bed, kitchen, dining.");
+            }
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById("fullMenu");
+            const toggleBtn = document.querySelector(".menu-toggle");
+            menu.classList.toggle("active");
+            toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
+        }
+
+        // Add event listener for search input
+        document.getElementById('search-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearchClick();
+            }
+        });
+
+        // Update cart count (this should be replaced with actual cart count from server)
+        function updateCartCount(count) {
+            document.querySelector('.cart-count').textContent = count;
+        }
+
+        // Initialize cart count (this should be replaced with actual cart count from server)
+        updateCartCount(0);
+    </script>
 </body>
 </html>

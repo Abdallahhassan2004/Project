@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="<%= '/CSS/category.css' %>">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&family=Ubuntu+Condensed&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header id="main-header">
+        <div class="header-container">
+            <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+            <h1 class="logo"><a href="/">Sense</a></h1>
+            <a href="/cart" class="cart">bag <span></span>
+                <span class="cart-count">0</span>
+            </a>
+        </div>
+
+        <div class="full-menu" id="fullMenu">
+            <div class="menu-left">
+                <!-- 🔍 Search Bar -->
+                <div class="menu-search">
+                    <input type="text" id="search-input" placeholder="Search for products..." />
+                    <button onclick="handleSearchClick()">Search</button>
+                </div>
+
+                <!-- Menu Columns -->
+                <div class="menu-columns">
+                    <div class="column">
+                        <h2>Sense</h2>
+                        <ul>
+                            <li><a href="/#about-section">About</a></li>
+                            <li><a href="/#contact-section">Contact</a></li>
+                            <li><a href="/login">Log In</a></li>
+                            <li><a href="/signup">Sign Up</a></li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h2>SHOP</h2>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/living">Living Room</a></li>
+                            <li><a href="/bedroom">Bedroom</a></li>
+                            <li><a href="/kitchen">Kitchen</a></li>
+                            <li><a href="/dining">Dining Room</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Image Section -->
+            <div class="menu-right">
+                <img src="<%= '/Images/Home/intro5.jpg' %>" alt="Hm1" />
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb Section -->
+    <section class="breadcrumb-section">
+        <h1 class="h2style woocommerce-products-header__title uppercase heading-font">Living Room Furniture</h1>
+        <div class="content_section">
+            <p class="p2 paragraph-font text-center">
+                <span class="s1 span-font">HOME / FURNITURE / LIVING ROOM</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Product List Section -->
+    <div class="product-list">
+        <% const livingRooms = [
+            { id: 1, image: 'L1/L1.avif', price: '£1,499', title: 'Vintage Style Living Room', alt: 'A lush living room with vintage style' },
+            { id: 2, image: 'L2/L1.avif', price: '£1,200', title: 'Modern Living Room', alt: 'A stylish living room with a calm atmosphere' },
+            { id: 3, image: 'L3/L1.avif', price: '$1,068', title: 'Cosy Living Room', alt: 'Relaxing, working, dining...this space does it all' },
+            { id: 4, image: 'L4/L1.avif', price: '£1,450', title: 'Traditional Living Room', alt: 'A living room with clutter-free calm for everyone' },
+            { id: 5, image: 'L5/L1.avif', price: '£1,600', title: 'Modern Scandi Living Room', alt: 'Earthy colours set the mood in a small, flexible living room' },
+            { id: 6, image: 'L6/L1.avif', price: '£1,500', title: 'Cottage-Style Living Room', alt: 'A cottage-style living room inspired by Nordic forests' }
+        ]; %>
+
+        <% livingRooms.forEach(room => { %>
+            <div class="product">
+                <img src="<%= '/Images/livingRooms/' + room.image %>" alt="<%= room.alt %>">
+                <div class="price"><%= room.price %></div>
+                <a href="/livingrooms/livingroom<%= room.id %>" class="product-title"><%= room.title %></a>
+            </div>
+        <% }); %>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-wrapper">
+            <div class="footer-grid">
+                <% const footerSections = [
+                    { title: 'Store', links: ['Home', 'About', 'Journal', 'Contact'] },
+                    { title: 'Shop', links: ['All', 'Lookbook', 'Collections', 'Featured'] },
+                    { title: 'Collections', links: ['Decors', 'Furnitures', 'Ceramic', 'Lamps'] },
+                    { title: 'Help', links: ['Contact', 'Login & Account', 'Privacy Policy', 'Refund policy'] }
+                ]; %>
+                
+                <% footerSections.forEach(section => { %>
+                    <div class="footer-box">
+                        <h4><%= section.title %></h4>
+                        <ul>
+                            <% section.links.forEach(link => { %>
+                                <li><a href="#"><%= link %></a></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        <div class="footer-brand">
+            <h2>Sense</h2>
+        </div>
+    </footer>
+
+    <script>
+        function handleSearchClick() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const roomPages = {
+                "living": "/living",
+                "living room": "/living",
+                "bed": "/bedroom",
+                "bedroom": "/bedroom",
+                "kitchen": "/kitchen",
+                "dining": "/dining",
+                "dining room": "/dining"
+            };
+
+            const matchedKey = Object.keys(roomPages).find(key => query.includes(key));
+
+            if (matchedKey) {
+                window.location.href = roomPages[matchedKey];
+            } else {
+                alert("No matching room found. Try: living, bed, kitchen, dining.");
+            }
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById("fullMenu");
+            const toggleBtn = document.querySelector(".menu-toggle");
+            menu.classList.toggle("active");
+            toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
+        }
+
+        // Add event listener for search input
+        document.getElementById('search-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearchClick();
+            }
+        });
+
+        // Update cart count (this should be replaced with actual cart count from server)
+        function updateCartCount(count) {
+            document.querySelector('.cart-count').textContent = count;
+        }
+
+        // Initialize cart count (this should be replaced with actual cart count from server)
+        updateCartCount(0);
+    </script>
+</body>
+</html>

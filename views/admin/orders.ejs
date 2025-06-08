@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="<%= '/CSS/users.css' %>">
+    <script src="<%= '/JavaScript/admin.js' %>" defer></script>
+    <script src="<%= '/JavaScript/orders.js' %>" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Admin Panel</h1>
+        <nav>
+            <ul>
+                <li><a href="/admin" class="<%= active === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
+                <li><a href="/admin/users" class="<%= active === 'users' ? 'active' : '' %>">Users</a></li>
+                <li><a href="/admin/orders" class="<%= active === 'orders' ? 'active' : '' %>">Orders</a></li>
+                <li><a href="/admin/products" class="<%= active === 'products' ? 'active' : '' %>">Products</a></li>
+                <li><a href="/admin/settings" class="<%= active === 'settings' ? 'active' : '' %>">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Order Management</h2>
+        <section id="orders">
+            <div class="actions">
+                <button onclick="exportOrders()">Export Orders</button>
+                <input type="text" id="orderSearch" placeholder="Search Orders..." oninput="filterOrders()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User</th>
+                        <th>Product</th>
+                        <th>Status</th>
+                        <th>Date Placed</th>
+                        <th>Last Edited</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% orders.forEach(order => { %>
+                        <tr>
+                            <td><%= order.id %></td>
+                            <td><%= order.user %></td>
+                            <td><%= order.product %></td>
+                            <td><%= order.status %></td>
+                            <td><%= order.datePlaced %></td>
+                            <td><%= order.lastEdited %></td>
+                            <td>
+                                <button onclick="updateOrderStatus('<%= order.id %>')">Update Status</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Admin Panel</p>
+    </footer>
+
+    <script>
+        function exportOrders() {
+            // This should be replaced with actual export functionality
+            alert('Exporting orders...');
+        }
+
+        function filterOrders() {
+            const searchInput = document.getElementById('orderSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        function updateOrderStatus(orderId) {
+            // This should be replaced with actual status update functionality
+            alert(`Updating status for order ${orderId}...`);
+        }
+    </script>
+</body>
+</html>

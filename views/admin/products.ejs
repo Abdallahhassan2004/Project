@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="<%= '/CSS/users.css' %>">
+    <script src="<%= '/JavaScript/admin.js' %>" defer></script>
+    <script src="<%= '/JavaScript/products.js' %>" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Admin Panel</h1>
+        <nav>
+            <ul>
+                <li><a href="/admin" class="<%= active === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
+                <li><a href="/admin/users" class="<%= active === 'users' ? 'active' : '' %>">Users</a></li>
+                <li><a href="/admin/orders" class="<%= active === 'orders' ? 'active' : '' %>">Orders</a></li>
+                <li><a href="/admin/products" class="<%= active === 'products' ? 'active' : '' %>">Products</a></li>
+                <li><a href="/admin/settings" class="<%= active === 'settings' ? 'active' : '' %>">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Product Management</h2>
+        <section id="products">
+            <div class="actions">
+                <button onclick="addNewProduct()">Add New Product</button>
+                <input type="text" id="productSearch" placeholder="Search Products..." oninput="filterProducts()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr>
+                            <td><%= product.id %></td>
+                            <td><%= product.name %></td>
+                            <td><%= product.category %></td>
+                            <td><%= product.price %></td>
+                            <td><%= product.stock %></td>
+                            <td><%= product.status %></td>
+                            <td>
+                                <button onclick="editProduct('<%= product.id %>')">Edit</button>
+                                <button onclick="deleteProduct('<%= product.id %>')">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Admin Panel</p>
+    </footer>
+
+    <script>
+        function addNewProduct() {
+            // This should be replaced with actual add product functionality
+            alert('Adding new product...');
+        }
+
+        function editProduct(productId) {
+            // This should be replaced with actual edit functionality
+            alert(`Editing product ${productId}...`);
+        }
+
+        function deleteProduct(productId) {
+            // This should be replaced with actual delete functionality
+            if (confirm(`Are you sure you want to delete product ${productId}?`)) {
+                alert(`Deleting product ${productId}...`);
+            }
+        }
+
+        function filterProducts() {
+            const searchInput = document.getElementById('productSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

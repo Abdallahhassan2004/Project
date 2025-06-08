@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/category.css">
+    <link rel="stylesheet" href="<%= '/CSS/category.css' %>">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&family=Ubuntu+Condensed&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poiret+One&family=Share+Tech&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -14,9 +14,9 @@
     <header id="main-header">
         <div class="header-container">
             <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
-            <h1 class="logo"><a href="Home.html">Sense</a></h1>
+            <h1 class="logo"><a href="/">Sense</a></h1>
 
-            <a href="cart.html" class="cart">bag <span></span>
+            <a href="/cart" class="cart">bag <span></span>
                 <span class="cart-count">0</span>
             </a>
         </div>
@@ -34,20 +34,20 @@
                     <div class="column">
                         <h2>Sense</h2>
                         <ul>
-                            <li><a href="Home.html#about-section">About</a></li>
-                            <li><a href="Home.html#contact-section">Contact</a></li>
-                            <li><a href="login.html">Log In</a></li>
-                            <li><a href="signup.html">Sign Up</a></li>
+                            <li><a href="/#about-section">About</a></li>
+                            <li><a href="/#contact-section">Contact</a></li>
+                            <li><a href="/login">Log In</a></li>
+                            <li><a href="/signup">Sign Up</a></li>
                         </ul>
                     </div>
                     <div class="column">
                         <h2>SHOP</h2>
                         <ul>
-                            <li><a href="Home.html">Home</a></li>
-                            <li><a href="living.html">Living Room</a></li>
-                            <li><a href="bedroom.html">Bedroom</a></li>
-                            <li><a href="kitchen.html">Kitchen</a></li>
-                            <li><a href="dining.html">Dining Room</a></li>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/living">Living Room</a></li>
+                            <li><a href="/bedroom">Bedroom</a></li>
+                            <li><a href="/kitchen">Kitchen</a></li>
+                            <li><a href="/dining">Dining Room</a></li>
                         </ul>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
 
             <!-- Right Image Section -->
             <div class="menu-right">
-                <img src="../Images/Home/intro5.jpg" alt="Hm1" />
+                <img src="<%= '/Images/Home/intro5.jpg' %>" alt="Hm1" />
             </div>
         </div>
     </header>
@@ -74,22 +74,22 @@
 
     <!-- Product List Section -->
     <div class="product-list">
-        <% const products = [
-            { href: "Dining/dininig1.html", imgSrc: "../Images/dining/d1/1d.webp", alt: "Luxury dining", price: "£1,499", title: "Traditional Dining" },
-            { href: "Dining/dining2.html", imgSrc: "../Images/dining/d2/1di.avif", alt: "Bedside Table", price: "£1,599", title: "Modern Dining" },
-            { href: "Dining/dining3.html", imgSrc: "../Images/dining/d3/1din.webp", alt: "Memory Foam Mattress", price: "£1,800", title: "Vintage Dining" },
-            { href: "Dining/dining4.html", imgSrc: "../Images/dining/d4/1dini.webp", alt: "Wooden Drawer", price: "£165", title: "Rustic Dining" },
-            { href: "Dining/dining5.html", imgSrc: "../Images/dining/d5/1dining.jpg", alt: "Modern Wardrobe", price: "£450", title: "Marble Granite Dining" },
-            { href: "Dining/dining6.html", imgSrc: "../Images/dining/d6/1D.jpg", alt: "Elegant Dresser", price: "£550", title: "Glass Modernity Dining" }
+        <% const diningRooms = [
+            { id: 1, image: 'd1/1d.webp', price: '£1,499', title: 'Traditional Dining', alt: 'Luxury dining' },
+            { id: 2, image: 'd2/1di.avif', price: '£1,599', title: 'Modern Dining', alt: 'Bedside Table' },
+            { id: 3, image: 'd3/1din.webp', price: '£1,800', title: 'Vintage Dining', alt: 'Memory Foam Mattress' },
+            { id: 4, image: 'd4/1dini.webp', price: '£165', title: 'Rustic Dining', alt: 'Wooden Drawer' },
+            { id: 5, image: 'd5/1dining.jpg', price: '£450', title: 'Marble Granite Dining', alt: 'Modern Wardrobe' },
+            { id: 6, image: 'd6/1D.jpg', price: '£550', title: 'Glass Modernity Dining', alt: 'Elegant Dresser' }
         ]; %>
 
-        <% products.forEach(product => { %>
+        <% diningRooms.forEach(dining => { %>
             <div class="product">
-                <a href="<%= product.href %>">
-                    <img src="<%= product.imgSrc %>" alt="<%= product.alt %>">
+                <a href="/dining/dining<%= dining.id %>">
+                    <img src="<%= '/Images/dining/' + dining.image %>" alt="<%= dining.alt %>">
                 </a>
-                <div class="price"><%= product.price %></div>
-                <a href="<%= product.href %>" class="product-title"><%= product.title %></a>
+                <div class="price"><%= dining.price %></div>
+                <a href="/dining/dining<%= dining.id %>" class="product-title"><%= dining.title %></a>
             </div>
         <% }); %>
     </div>
@@ -98,45 +98,23 @@
         <div class="footer-wrapper">
             <!-- Grid Columns with Bordered Boxes -->
             <div class="footer-grid">
-                <div class="footer-box">
-                    <h4>Store</h4>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Journal</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-box">
-                    <h4>Shop</h4>
-                    <ul>
-                        <li><a href="#">All</a></li>
-                        <li><a href="#">Lookbook</a></li>
-                        <li><a href="#">Collections</a></li>
-                        <li><a href="#">Featured</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-box">
-                    <h4>Collections</h4>
-                    <ul>
-                        <li><a href="#">Decors</a></li>
-                        <li><a href="#">Furnitures</a></li>
-                        <li><a href="#">Ceramic</a></li>
-                        <li><a href="#">Lamps</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-box">
-                    <h4>Help</h4>
-                    <ul>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Login & Account</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Refund policy</a></li>
-                    </ul>
-                </div>
+                <% const footerSections = [
+                    { title: 'Store', links: ['Home', 'About', 'Journal', 'Contact'] },
+                    { title: 'Shop', links: ['All', 'Lookbook', 'Collections', 'Featured'] },
+                    { title: 'Collections', links: ['Decors', 'Furnitures', 'Ceramic', 'Lamps'] },
+                    { title: 'Help', links: ['Contact', 'Login & Account', 'Privacy Policy', 'Refund policy'] }
+                ]; %>
+                
+                <% footerSections.forEach(section => { %>
+                    <div class="footer-box">
+                        <h4><%= section.title %></h4>
+                        <ul>
+                            <% section.links.forEach(link => { %>
+                                <li><a href="#"><%= link %></a></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% }); %>
             </div>
         </div>
 
@@ -147,61 +125,49 @@
     </footer>
 
     <script>
-        function searchProducts() {
-            var input = document.getElementById('search-input').value.toLowerCase();
-        }
-
-        document.getElementById('search-input').addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                searchProducts();
-
-                const query = event.target.value.trim().toLowerCase();
-                const roomPages = {
-                    "living room": "living.html",
-                    "bedroom": "bedroom.html",
-                    "kitchen": "kitchen.html",
-                    "dining": "dining.html"
-                };
-
-                const matchedPage = Object.keys(roomPages).find(room =>
-                    room.toLowerCase().includes(query)
-                );
-
-                if (matchedPage) {
-                    window.location.href = roomPages[matchedPage];
-                } else {
-                    alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
-                }
-            }
-        });
-
         function handleSearchClick() {
-            searchProducts();
-
             const query = document.getElementById('search-input').value.trim().toLowerCase();
             const roomPages = {
-                "living room": "living.html",
-                "bedroom": "bedroom.html",
-                "kitchen": "kitchen.html",
-                "dining": "dining.html"
+                "living": "/living",
+                "living room": "/living",
+                "bed": "/bedroom",
+                "bedroom": "/bedroom",
+                "kitchen": "/kitchen",
+                "dining": "/dining",
+                "dining room": "/dining"
             };
 
-            const matchedPage = Object.keys(roomPages).find(room =>
-                room.toLowerCase().includes(query)
-            );
+            const matchedKey = Object.keys(roomPages).find(key => query.includes(key));
 
-            if (matchedPage) {
-                window.location.href = roomPages[matchedPage];
+            if (matchedKey) {
+                window.location.href = roomPages[matchedKey];
             } else {
-                alert("No matching room found. Try typing part of the room name (e.g., 'living', 'bed', 'kitchen').");
+                alert("No matching room found. Try: living, bed, kitchen, dining.");
             }
         }
 
         function toggleMenu() {
             const menu = document.getElementById("fullMenu");
+            const toggleBtn = document.querySelector(".menu-toggle");
             menu.classList.toggle("active");
+            toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
         }
+
+        // Add event listener for search input
+        document.getElementById('search-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearchClick();
+            }
+        });
+
+        // Update cart count (this should be replaced with actual cart count from server)
+        function updateCartCount(count) {
+            document.querySelector('.cart-count').textContent = count;
+        }
+
+        // Initialize cart count (this should be replaced with actual cart count from server)
+        updateCartCount(0);
     </script>
 </body>
 </html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="<%= '/CSS/product.css' %>">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header id="main-header">
+        <div class="header-container">
+            <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+            <h1 class="logo"><a href="/">Sense</a></h1>
+            <a href="/cart" class="cart">bag <span></span>
+                <span class="cart-count">0</span>
+            </a>
+        </div>
+
+        <div class="full-menu" id="fullMenu">
+            <div class="menu-left">
+                <!-- 🔍 Search Bar -->
+                <div class="menu-search">
+                    <input type="text" id="search-input" placeholder="Search for products..." />
+                    <button onclick="handleSearchClick()">Search</button>
+                </div>
+
+                <!-- Menu Columns -->
+                <div class="menu-columns">
+                    <div class="column">
+                        <h2>Sense</h2>
+                        <ul>
+                            <li><a href="/#about-section">About</a></li>
+                            <li><a href="/#contact-section">Contact</a></li>
+                            <li><a href="/login">Log In</a></li>
+                            <li><a href="/signup">Sign Up</a></li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h2>SHOP</h2>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/living">Living Room</a></li>
+                            <li><a href="/bedroom">Bedroom</a></li>
+                            <li><a href="/kitchen">Kitchen</a></li>
+                            <li><a href="/dining">Dining Room</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Image Section -->
+            <div class="menu-right">
+                <img src="<%= '/Images/Home/intro5.jpg' %>" alt="Hm1" />
+            </div>
+        </div>
+    </header>
+
+    <main class="product-page">
+        <div class="image-gallery">
+            <div class="thumbnail-images">
+                <% const thumbnails = [
+                    { src: '/Images/kitchen/kitchen 6/kit6 1.jpg', alt: 'Thumbnail 1' },
+                    { src: '/Images/kitchen/kitchen 6/kit6 2.jpg', alt: 'Thumbnail 2' },
+                    { src: '/Images/kitchen/kitchen 6/kit6 3.jpg', alt: 'Thumbnail 3' },
+                    { src: '/Images/kitchen/kitchen 6/kit6 4.jpg', alt: 'Thumbnail 4' },
+                    { src: '/Images/kitchen/kitchen 6/kit6 5.jpg', alt: 'Thumbnail 5' }
+                ]; %>
+                
+                <% thumbnails.forEach(thumb => { %>
+                    <img src="<%= thumb.src %>" alt="<%= thumb.alt %>" onclick="changeImage(this.src)">
+                <% }); %>
+            </div>
+            <img src="<%= '/Images/kitchen/kitchen 6/kit6 5.jpg' %>" alt="Main kitchen image" class="main-image" id="mainImage">
+        </div>
+
+        <div class="product-info">
+            <h1><%= product.title %></h1>
+            <p class="price"><%= product.price %></p>
+            <p class="availability"><%= product.availability %></p>
+            <p class="description"><%= product.description %></p>
+            <button class="add-to-cart" onclick="addToCart('<%= product.id %>')">Add to Cart</button>
+        </div>
+    </main>
+
+    <!-- You May Also Like Section -->
+    <section class="you-may-like">
+        <h2>You May Also Like</h2>
+        <div class="like-grid">
+            <% const relatedProducts = [
+                { id: 1, image: '/Images/kitchen/kitchen 1/kit1 2.jpg', title: 'Classic Kitchen', link: '/kitchens/kitchen1' },
+                { id: 6, image: '/Images/livingRooms/L6/L6.avif', title: 'Classic Living Room', link: '/livingrooms/livingroom6' },
+                { id: 6, image: '/Images/dining/d6/1d.webp', title: 'Classic Dining', link: '/dining/dining6' },
+                { id: 6, image: '/Images/bedrooms/b6/5.jpg', title: 'Classic Bedroom', link: '/bedrooms/bedroom6' }
+            ]; %>
+
+            <% relatedProducts.forEach(product => { %>
+                <a href="<%= product.link %>">
+                    <img src="<%= product.image %>" alt="<%= product.title %>">
+                    <p><%= product.title %></p>
+                </a>
+            <% }); %>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-wrapper">
+            <div class="footer-grid">
+                <% const footerSections = [
+                    { title: 'Store', links: ['Home', 'About', 'Journal', 'Contact'] },
+                    { title: 'Shop', links: ['All', 'Lookbook', 'Collections', 'Featured'] },
+                    { title: 'Collections', links: ['Decors', 'Furnitures', 'Ceramic', 'Lamps'] },
+                    { title: 'Help', links: ['Contact', 'Login & Account', 'Privacy Policy', 'Refund policy'] }
+                ]; %>
+                
+                <% footerSections.forEach(section => { %>
+                    <div class="footer-box">
+                        <h4><%= section.title %></h4>
+                        <ul>
+                            <% section.links.forEach(link => { %>
+                                <li><a href="#"><%= link %></a></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        <div class="footer-brand">
+            <h2>Sense</h2>
+        </div>
+    </footer>
+
+    <script>
+        function handleSearchClick() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const roomPages = {
+                "living": "/living",
+                "living room": "/living",
+                "bed": "/bedroom",
+                "bedroom": "/bedroom",
+                "kitchen": "/kitchen",
+                "dining": "/dining",
+                "dining room": "/dining"
+            };
+
+            const matchedKey = Object.keys(roomPages).find(key => query.includes(key));
+
+            if (matchedKey) {
+                window.location.href = roomPages[matchedKey];
+            } else {
+                alert("No matching room found. Try: living, bed, kitchen, dining.");
+            }
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById("fullMenu");
+            const toggleBtn = document.querySelector(".menu-toggle");
+            menu.classList.toggle("active");
+            toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
+        }
+
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+
+        function addToCart(productId) {
+            // This should be replaced with actual cart functionality
+            const currentCount = parseInt(document.querySelector('.cart-count').textContent);
+            document.querySelector('.cart-count').textContent = currentCount + 1;
+            alert('Product added to cart!');
+        }
+
+        // Add event listener for search input
+        document.getElementById('search-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearchClick();
+            }
+        });
+
+        // Initialize cart count (this should be replaced with actual cart count from server)
+        document.querySelector('.cart-count').textContent = '0';
+    </script>
+</body>
+</html>
