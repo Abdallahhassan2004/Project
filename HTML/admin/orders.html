@@ -5,27 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Order Management</title>
     <link rel="stylesheet" href="../../CSS/users.css">
-    <script>
-        function exportOrders() {
-            alert("Exporting Orders...");
-            // Add logic to export orders
-        }
-
-        function filterOrders() {
-            const searchValue = document.getElementById("orderSearch").value.toLowerCase();
-            const rows = document.querySelectorAll("tbody tr");
-            rows.forEach(row => {
-                const userName = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
-                const productName = row.querySelector("td:nth-child(3)").textContent.toLowerCase();
-                row.style.display = userName.includes(searchValue) || productName.includes(searchValue) ? "" : "none";
-            });
-        }
-
-        function updateOrderStatus(orderId) {
-            alert(`Updating status for Order ID: ${orderId}`);
-            // Add logic to update the order status
-        }
-    </script>
+    <script src="../../JavaScript/admin.js" defer></script>
+    <script src="../../JavaScript/orders.js" defer></script>
 </head>
 <body>
     <header>

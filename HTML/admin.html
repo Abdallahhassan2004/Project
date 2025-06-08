@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel | Heaven And Home</title>
     <link rel="stylesheet" href="../CSS/admin.css">
+    <script src="../JavaScript/admin.js" defer></script>
     
-
+  
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -211,7 +212,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../JS/admin.js"></script>
+   
     <script>
         // Sales Chart
         const salesCtx = document.getElementById('salesChart').getContext('2d');
@@ -243,7 +244,7 @@
         const ordersChart = new Chart(ordersCtx, {
             type: 'bar',
             data: {
-                labels: ['Pending', 'Completed', 'Cancelled'],
+                labels: ['Pending', 'Shipped', 'Delivered'],
                 datasets: [{
                     label: 'Orders',
                     data: [327, 1200, 136],
