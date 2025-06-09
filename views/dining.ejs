@@ -165,6 +165,89 @@
                 height: 300px;
             }
         }
+
+        .product img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .product img:hover {
+            transform: scale(1.05);
+        }
+
+        .product-title {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            cursor: default;
+        }
+
+        .product-title:hover {
+            text-decoration: none;
+        }
+
+        .add-to-cart {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: auto;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .add-to-cart:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .add-to-cart:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .product-info {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .product-info h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .product-info .price {
+            font-size: 24px;
+            color: #2c3e50;
+            font-weight: 600;
+            margin: 15px 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .product-info p {
+            color: #666;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .product .price {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: 600;
+            margin: 8px 0;
+            font-family: 'Arial', sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -175,9 +258,7 @@
             <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
             <h1 class="logo"><a href="/">Sense</a></h1>
 
-            <a href="/cart" class="cart">bag <span></span>
-                <span class="cart-count">0</span>
-            </a>
+            <a href="/cart" class="cart">cart <span class="cart-count">0</span></a>
         </div>
 
         <div class="full-menu" id="fullMenu">
@@ -233,106 +314,11 @@
 
     <!-- Product List Section -->
     <div class="product-list">
-        <% const diningProducts = [
-            {
-                id: 1,
-                image: 'd1/1d.webp',
-                price: '£1,499',
-                title: 'Traditional Dining',
-                alt: 'Luxury dining',
-                description: 'Transform your dining with this traditional dining set. It includes a solid wood table with a rich mahogany finish and six upholstered chairs for ultimate comfort.',
-                thumbnails: [
-                    'd1/1d.webp',
-                    'd1/2d.webp',
-                    'd1/3d.webp',
-                    'd1/4d.webp',
-                    'd1/5d.webp'
-                ]
-            },
-            {
-                id: 2,
-                image: 'd2/1di.avif',
-                price: '£1,599',
-                title: 'Modern Dining',
-                alt: 'Bedside Table',
-                description: 'Upgrade your dining space with this modern dining set. Featuring a sleek glass table and four contemporary chairs, this set is perfect for any modern home.',
-                thumbnails: [
-                    'd2/1di.avif',
-                    'd2/2di.avif',
-                    'd2/3di.avif',
-                    'd2/4di.avif',
-                    'd2/5di.avif'
-                ]
-            },
-            {
-                id: 3,
-                image: 'd3/1din.webp',
-                price: '£1,800',
-                title: 'Vintage Dining',
-                alt: 'Memory Foam Mattress',
-                description: 'Add character to your home with this vintage dining set. The distressed wood finish and classic design create a timeless look.',
-                thumbnails: [
-                    'd3/1d.webp',
-                    'd3/2d.webp',
-                    'd3/3d.webp',
-                    'd3/4d.webp',
-                    'd3/5d.webp'
-                ]
-            },
-            {
-                id: 4,
-                image: 'd4/1dini.webp',
-                price: '£165',
-                title: 'Rustic Dining',
-                alt: 'Wooden Drawer',
-                description: 'Bring natural warmth to your dining room with this rustic dining set. Made from reclaimed wood with a natural finish.',
-                thumbnails: [
-                    'd4/1d.webp',
-                    'd4/2d.webp',
-                    'd4/3d.webp',
-                    'd4/4d.webp',
-                    'd4/5d.webp'
-                ]
-            },
-            {
-                id: 5,
-                image: 'd5/1dining.jpg',
-                price: '£450',
-                title: 'Marble Granite Dining',
-                alt: 'Modern Wardrobe',
-                description: 'Elegant marble and granite dining set that combines luxury with durability. Perfect for both casual and formal dining.',
-                thumbnails: [
-                    'd5/1d.webp',
-                    'd5/2d.webp',
-                    'd5/3d.webp',
-                    'd5/4d.webp',
-                    'd5/5d.webp'
-                ]
-            },
-            {
-                id: 6,
-                image: 'd6/1D.jpg',
-                price: '£550',
-                title: 'Glass Modernity Dining',
-                alt: 'Elegant Dresser',
-                description: 'Contemporary glass dining set that brings light and space to your dining area. Features a tempered glass table with modern metal frame.',
-                thumbnails: [
-                    'd6/1d.webp',
-                    'd6/2d.webp',
-                    'd6/3d.webp',
-                    'd6/4d.webp',
-                    'd6/5d.webp'
-                ]
-            }
-        ]; %>
-
-        <% diningProducts.forEach(product => { %>
+        <% products.forEach(product => { %>
             <div class="product">
-                <a href="#" onclick="showProductDetails(<%= JSON.stringify(product) %>); return false;">
-                    <img src="<%= '/Images/dining/' + product.image %>" alt="<%= product.alt %>">
-                </a>
-                <div class="price"><%= product.price %></div>
-                <a href="#" onclick="showProductDetails(<%= JSON.stringify(product) %>); return false;" class="product-title"><%= product.title %></a>
+                <img src="/Images/<%= product.images.main %>" alt="<%= product.alt %>" onclick="showProductDetails('<%= JSON.stringify(product).replace(/'/g, "\\'") %>')">
+                <p class="price">EGP <%= parseFloat(product.price).toFixed(2) %></p>
+                <a href="#" class="product-title" onclick="showProductDetails('<%= JSON.stringify(product).replace(/'/g, "\\'") %>')"><%= product.name %></a>
             </div>
         <% }); %>
     </div>
@@ -342,14 +328,16 @@
         <div class="details-content">
             <span class="close-details" onclick="closeProductDetails()">&times;</span>
             <div class="image-gallery">
-                <div class="thumbnail-images" id="thumbnailContainer"></div>
-                <img id="mainProductImage" class="main-image" src="" alt="Product Image">
+                <div class="thumbnail-images" id="thumbnailContainer">
+                    <!-- Thumbnails will be added here dynamically -->
+                </div>
+                <img id="mainProductImage" src="" alt="" class="main-image">
             </div>
             <div class="product-info">
                 <h2 id="productTitle" class="product-title"></h2>
-                <p id="productPrice" class="product-price"></p>
-                <p id="productDescription" class="product-description"></p>
-                <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+                <p id="productPrice" class="price"></p>
+                <p id="productDescription"></p>
+                <button class="add-to-cart" onclick="addToCart(currentProduct._id)">Add to Cart</button>
             </div>
             <div class="related-products">
                 <h3>You May Also Like</h3>
@@ -432,29 +420,29 @@
         }
 
         function showProductDetails(product) {
-            currentProduct = product;
+            currentProduct = typeof product === 'string' ? JSON.parse(product) : product;
             const modal = document.getElementById('productDetails');
             const mainImage = document.getElementById('mainProductImage');
-            const title = document.getElementById('productTitle');
-            const price = document.getElementById('productPrice');
-            const description = document.getElementById('productDescription');
             const thumbnailContainer = document.getElementById('thumbnailContainer');
+            const productTitle = document.getElementById('productTitle');
+            const productPrice = document.getElementById('productPrice');
+            const productDescription = document.getElementById('productDescription');
 
-            // Set main content
-            mainImage.src = '/Images/dining/' + product.image;
-            title.textContent = product.title;
-            price.textContent = product.price;
-            description.textContent = product.description;
+            // Set main product details
+            mainImage.src = `/Images/${currentProduct.images.main}`;
+            mainImage.alt = currentProduct.alt;
+            productTitle.textContent = currentProduct.name;
+            productPrice.textContent = `EGP ${parseFloat(currentProduct.price).toFixed(2)}`;
+            productDescription.textContent = currentProduct.description;
 
             // Clear and populate thumbnails
             thumbnailContainer.innerHTML = '';
-            product.thumbnails.forEach(thumb => {
-                const img = document.createElement('img');
-                img.src = '/Images/dining/' + thumb;
-                img.alt = product.title;
-                img.className = 'thumbnail';
-                img.onclick = () => mainImage.src = '/Images/dining/' + thumb;
-                thumbnailContainer.appendChild(img);
+            Object.values(currentProduct.images).forEach(image => {
+                const thumbnail = document.createElement('img');
+                thumbnail.src = `/Images/${image}`;
+                thumbnail.alt = currentProduct.alt;
+                thumbnail.onclick = () => mainImage.src = `/Images/${image}`;
+                thumbnailContainer.appendChild(thumbnail);
             });
 
             modal.style.display = 'block';
@@ -463,14 +451,6 @@
         function closeProductDetails() {
             document.getElementById('productDetails').style.display = 'none';
             currentProduct = null;
-        }
-
-        function addToCart() {
-            if (currentProduct) {
-                const currentCount = parseInt(document.querySelector('.cart-count').textContent);
-                document.querySelector('.cart-count').textContent = currentCount + 1;
-                alert('Product added to cart!');
-            }
         }
 
         // Close modal when clicking outside
@@ -489,13 +469,59 @@
             }
         });
 
-        // Update cart count (this should be replaced with actual cart count from server)
-        function updateCartCount(count) {
-            document.querySelector('.cart-count').textContent = count;
+        // Add to cart function
+        async function addToCart(productId) {
+            try {
+                const response = await fetch(`/cart/add/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to add item to cart');
+                }
+
+                const data = await response.json();
+                
+                // Update cart count
+                const cartCount = document.querySelector('.cart-count');
+                if (cartCount) {
+                    cartCount.textContent = data.cartCount;
+                }
+
+                // Show success message
+                alert('Item added to cart successfully!');
+                
+                // Close product details modal if open
+                if (currentProduct) {
+                    closeProductDetails();
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                alert('Failed to add item to cart. Please try again.');
+            }
         }
 
-        // Initialize cart count (this should be replaced with actual cart count from server)
-        updateCartCount(0);
+        // Update cart count when page loads
+        async function updateCartCount() {
+            try {
+                const response = await fetch('/cart/count');
+                if (response.ok) {
+                    const data = await response.json();
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = data.count;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating cart count:', error);
+            }
+        }
+
+        // Call updateCartCount when page loads
+        document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
 </body>
 </html>

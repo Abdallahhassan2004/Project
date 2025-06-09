@@ -56,7 +56,7 @@ function loadCartItems() {
         cartLeftElement.innerHTML = `
             <div class="empty-cart">
                 <p>Your cart is empty</p>
-                <a href="../HTML/home.html" class="continue-shopping">← Continue Shopping</a>
+                <a href="/dining" class="continue-shopping">← Continue Shopping</a>
             </div>`;
         const cartRight = document.querySelector('.cart-right');
         if (cartRight) cartRight.style.display = 'none';
@@ -82,7 +82,7 @@ function loadCartItems() {
     `).join('');
 
     cartLeftElement.innerHTML = cartItemsHTML + 
-        '<a href="../HTML/home.html" class="continue-shopping">← Continue Shopping</a>';
+        '<a href="/dining" class="continue-shopping">← Continue Shopping</a>';
     
     updateTotal();
 }
@@ -136,7 +136,7 @@ function updateTotal() {
 // Initialize cart functionality
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
-    if (window.location.pathname.includes('cart.html')) {
+    if (window.location.pathname.includes('/cart')) {
         loadCartItems();
     }
 });
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Redirect to checkout page
-            window.location.href = 'checkout.html';
+            window.location.href = '/checkout';
         });
     }
 });

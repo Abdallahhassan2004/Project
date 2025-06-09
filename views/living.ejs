@@ -219,9 +219,7 @@
         <div class="header-container">
             <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
             <h1 class="logo"><a href="/">Sense</a></h1>
-            <a href="/cart" class="cart">bag <span></span>
-                <span class="cart-count">0</span>
-            </a>
+            <a href="/cart" class="cart">cart <span class="cart-count">0</span></a>
         </div>
 
         <div class="full-menu" id="fullMenu">
@@ -277,104 +275,11 @@
 
     <!-- Product List Section -->
     <div class="product-list">
-        <% const livingProducts = [
-            {
-                id: 1,
-                image: 'L1/L1.5.avif',
-                price: '£1,299',
-                title: 'Modern Living Room Set',
-                alt: 'Modern living room with contemporary furniture',
-                description: 'A stunning modern living room set featuring a comfortable sofa, matching armchairs, and a stylish coffee table. Perfect for creating a contemporary living space.',
-                thumbnails: [
-                    'L1/L1.avif',
-                    'L1/L1.2.avif',
-                    'L1/L1.3.avif',
-                    'L1/L1.4.avif',
-                    'L1/L1.5.avif'
-                ]
-            },
-            {
-                id: 2,
-                image: 'L2/L2.avif',
-                price: '£1,499',
-                title: 'Contemporary Living Room',
-                alt: 'Contemporary living room design',
-                description: 'Elegant contemporary living room set with premium materials and sophisticated design. Includes a spacious sofa, accent chairs, and modern decor elements.',
-                thumbnails: [
-                    'L2/L2.avif',
-                    'L2/L2.2.avif',
-                    'L2/L2.3.avif',
-                    'L2/L2.4.avif',
-                    'L2/L2.5.avif'
-                ]
-            },
-            {
-                id: 3,
-                image: 'L3/L3.avif',
-                price: '£1,699',
-                title: 'Luxury Living Space',
-                alt: 'Luxury living room interior',
-                description: 'Premium luxury living room collection featuring high-end furniture pieces, elegant lighting, and sophisticated design elements for a truly luxurious space.',
-                thumbnails: [
-                    'L3/L3.avif',
-                    'L3/L3.2.avif',
-                    'L3/L3.3.avif',
-                    'L3/L3.4.avif',
-                    'L3/L3.5.avif'
-                ]
-            },
-            {
-                id: 4,
-                image: 'L4/L4.avif',
-                price: '£1,399',
-                title: 'Minimalist Living Room',
-                alt: 'Minimalist living room design',
-                description: 'Clean and minimalist living room set with essential furniture pieces and subtle design elements. Perfect for those who appreciate simplicity and functionality.',
-                thumbnails: [
-                    'L4/L4.avif',
-                    'L4/L4.2.avif',
-                    'L4/L4.3.avif',
-                    'L4/L4.4.avif',
-                    'L4/L4.5.avif'
-                ]
-            },
-            {
-                id: 5,
-                image: 'L5/L5.avif',
-                price: '£1,599',
-                title: 'Scandinavian Living Room',
-                alt: 'Scandinavian style living room',
-                description: 'Beautiful Scandinavian-inspired living room set featuring natural materials, light colors, and functional design. Creates a warm and inviting atmosphere.',
-                thumbnails: [
-                    'L5/L5.avif',
-                    'L5/L5.2.avif',
-                    'L5/L5.3.avif',
-                    'L5/L5.4.avif',
-                    'L5/L5.5.avif'
-                ]
-            },
-            {
-                id: 6,
-                image: 'L6/L6.avif',
-                price: '£1,799',
-                title: 'Art Deco Living Room',
-                alt: 'Art deco living room interior',
-                description: 'Stunning Art Deco living room collection featuring bold geometric patterns, luxurious materials, and sophisticated design elements for a timeless look.',
-                thumbnails: [
-                    'L6/L6.avif',
-                    'L6/L6.2.avif',
-                    'L6/L6.3.avif',
-                    'L6/L6.4.avif',
-                    'L6/L6.5.avif'
-                ]
-            }
-        ]; %>
-
-        <% livingProducts.forEach(product => { %>
+        <% products.forEach(product => { %>
             <div class="product">
-                <img src="<%= '/Images/livingRooms/' + product.image %>" alt="<%= product.alt %>" onclick="showProductDetails('<%= product.id %>')">
+                <img src="<%= '/Images/livingRooms/' + product.image %>" alt="<%= product.name %>" onclick="showProductDetails('<%= product._id %>')">
                 <p class="price"><%= product.price %></p>
-                <a href="#" class="product-title" onclick="showProductDetails('<%= product.id %>')"><%= product.title %></a>
+                <a href="#" class="product-title" onclick="showProductDetails('<%= product._id %>')"><%= product.name %></a>
             </div>
         <% }); %>
     </div>
@@ -384,13 +289,20 @@
         <div class="details-content">
             <span class="close-details" onclick="closeProductDetails()">&times;</span>
             <div class="image-gallery">
-                <div class="thumbnail-images" id="thumbnailContainer"></div>
-                <img src="" alt="Main product image" class="main-image" id="modalMainImage">
+                <div class="thumbnail-images">
+                    <% products.forEach(product => { %>
+                        <img src="<%= '/Images/livingRooms/' + product.image %>" 
+                             alt="<%= product.name %>" 
+                             class="thumbnail" 
+                             onclick="updateMainImage(this.src)">
+                    <% }); %>
+                </div>
+                <img id="modalMainImage" src="" alt="Main product image" class="main-image">
             </div>
             <div class="product-info">
-                <h2 class="product-title" id="modalProductTitle"></h2>
-                <p class="product-price" id="modalProductPrice"></p>
-                <p class="product-description" id="modalProductDescription"></p>
+                <h2 id="modalProductTitle" class="product-title"></h2>
+                <p id="modalProductPrice" class="product-price"></p>
+                <p id="modalProductDescription" class="product-description"></p>
                 <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
             </div>
             <!-- You May Also Like Section -->
@@ -446,29 +358,18 @@
     </footer>
 
     <script>
-        const livingProducts = <%- JSON.stringify(livingProducts) %>;
+        const products = <%- JSON.stringify(products) %>;
+        let currentProduct = null;
 
         function showProductDetails(productId) {
-            const product = livingProducts.find(p => p.id === parseInt(productId));
-            if (!product) return;
+            currentProduct = products.find(p => p._id === productId);
+            if (!currentProduct) return;
 
             // Update modal content
-            document.getElementById('modalMainImage').src = '/Images/livingRooms/' + product.image;
-            document.getElementById('modalProductTitle').textContent = product.title;
-            document.getElementById('modalProductPrice').textContent = product.price;
-            document.getElementById('modalProductDescription').textContent = product.description;
-
-            // Update thumbnails
-            const thumbnailContainer = document.getElementById('thumbnailContainer');
-            thumbnailContainer.innerHTML = '';
-            product.thumbnails.forEach(thumb => {
-                const img = document.createElement('img');
-                img.src = '/Images/livingRooms/' + thumb;
-                img.alt = 'Thumbnail';
-                img.className = 'thumbnail';
-                img.onclick = () => document.getElementById('modalMainImage').src = '/Images/livingRooms/' + thumb;
-                thumbnailContainer.appendChild(img);
-            });
+            document.getElementById('modalMainImage').src = '/Images/livingRooms/' + currentProduct.image;
+            document.getElementById('modalProductTitle').textContent = currentProduct.name;
+            document.getElementById('modalProductPrice').textContent = currentProduct.price;
+            document.getElementById('modalProductDescription').textContent = currentProduct.description;
 
             // Show modal
             document.getElementById('productDetails').style.display = 'block';
@@ -476,7 +377,53 @@
 
         function closeProductDetails() {
             document.getElementById('productDetails').style.display = 'none';
+            currentProduct = null;
         }
+
+        function updateMainImage(src) {
+            document.getElementById('modalMainImage').src = src;
+        }
+
+        function addToCart() {
+            if (!currentProduct) return;
+
+            fetch(`/cart/add/${currentProduct._id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Product added to cart!');
+                    updateCartCount();
+                    closeProductDetails();
+                } else {
+                    alert('Error adding product to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding product to cart');
+            });
+        }
+
+        // Update cart count when page loads
+        async function updateCartCount() {
+            try {
+                const response = await fetch('/cart/count');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.querySelector('.cart-count').textContent = data.count;
+                }
+            } catch (error) {
+                console.error('Error updating cart count:', error);
+            }
+        }
+
+        // Call updateCartCount when page loads
+        document.addEventListener('DOMContentLoaded', updateCartCount);
 
         function handleSearchClick() {
             const query = document.getElementById('search-input').value.trim().toLowerCase();
@@ -506,12 +453,6 @@
             toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
         }
 
-        function addToCart() {
-            const currentCount = parseInt(document.querySelector('.cart-count').textContent);
-            document.querySelector('.cart-count').textContent = currentCount + 1;
-            alert('Product added to cart!');
-        }
-
         // Add event listener for search input
         document.getElementById('search-input').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
@@ -519,9 +460,6 @@
                 handleSearchClick();
             }
         });
-
-        // Initialize cart count
-        document.querySelector('.cart-count').textContent = '0';
     </script>
 </body>
 </html>

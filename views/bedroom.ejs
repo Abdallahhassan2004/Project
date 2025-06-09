@@ -219,9 +219,7 @@
         <div class="header-container">
             <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
             <h1 class="logo"><a href="/">Sense</a></h1>
-            <a href="/cart" class="cart">bag <span></span>
-                <span class="cart-count">0</span>
-            </a>
+            <a href="/cart" class="cart">cart <span class="cart-count">0</span></a>
         </div>
 
         <div class="full-menu" id="fullMenu">
@@ -277,104 +275,11 @@
 
     <!-- Product List Section -->
     <div class="product-list">
-        <% const bedroomProducts = [
-            {
-                id: 1,
-                image: 'b1/5.jpg',
-                price: '£1,299',
-                title: 'Modern Bedroom Set',
-                alt: 'Modern bedroom with contemporary furniture',
-                description: 'A stunning modern bedroom set featuring a comfortable bed, matching nightstands, and a stylish dresser. Perfect for creating a contemporary sleeping space.',
-                thumbnails: [
-                    'b1/1.jpg',
-                    'b1/2.jpg',
-                    'b1/3.jpg',
-                    'b1/4.jpg',
-                    'b1/5.jpg'
-                ]
-            },
-            {
-                id: 2,
-                image: 'b2/5.jpg',
-                price: '£1,499',
-                title: 'Contemporary Bedroom',
-                alt: 'Contemporary bedroom design',
-                description: 'Elegant contemporary bedroom set with premium materials and sophisticated design. Includes a spacious bed, matching furniture, and modern decor elements.',
-                thumbnails: [
-                    'b2/1.jpg',
-                    'b2/2.jpg',
-                    'b2/3.jpg',
-                    'b2/4.jpg',
-                    'b2/5.jpg'
-                ]
-            },
-            {
-                id: 3,
-                image: 'b3/5.jpg',
-                price: '£1,699',
-                title: 'Luxury Bedroom Space',
-                alt: 'Luxury bedroom interior',
-                description: 'Premium luxury bedroom collection featuring high-end furniture pieces, elegant lighting, and sophisticated design elements for a truly luxurious space.',
-                thumbnails: [
-                    'b3/1.jpg',
-                    'b3/2.jpg',
-                    'b3/3.jpg',
-                    'b3/4.jpg',
-                    'b3/5.jpg'
-                ]
-            },
-            {
-                id: 4,
-                image: 'b4/5.jpg',
-                price: '£1,399',
-                title: 'Minimalist Bedroom',
-                alt: 'Minimalist bedroom design',
-                description: 'Clean and minimalist bedroom set with essential furniture pieces and subtle design elements. Perfect for those who appreciate simplicity and functionality.',
-                thumbnails: [
-                    'b4/1.jpg',
-                    'b4/2.jpg',
-                    'b4/3.jpg',
-                    'b4/4.jpg',
-                    'b4/5.jpg'
-                ]
-            },
-            {
-                id: 5,
-                image: 'b5/5.jpg',
-                price: '£1,599',
-                title: 'Scandinavian Bedroom',
-                alt: 'Scandinavian style bedroom',
-                description: 'Beautiful Scandinavian-inspired bedroom set featuring natural materials, light colors, and functional design. Creates a warm and inviting atmosphere.',
-                thumbnails: [
-                    'b5/1.jpg',
-                    'b5/2.jpg',
-                    'b5/3.jpg',
-                    'b5/4.jpg',
-                    'b5/5.jpg'
-                ]
-            },
-            {
-                id: 6,
-                image: 'b6/5.jpg',
-                price: '£1,799',
-                title: 'Art Deco Bedroom',
-                alt: 'Art deco bedroom interior',
-                description: 'Stunning Art Deco bedroom collection featuring bold geometric patterns, luxurious materials, and sophisticated design elements for a timeless look.',
-                thumbnails: [
-                    'b6/1.jpg',
-                    'b6/2.jpg',
-                    'b6/3.jpg',
-                    'b6/4.jpg',
-                    'b6/5.jpg'
-                ]
-            }
-        ]; %>
-
-        <% bedroomProducts.forEach(product => { %>
+        <% products.forEach(product => { %>
             <div class="product">
-                <img src="<%= '/Images/bedrooms/' + product.image %>" alt="<%= product.alt %>" onclick="showProductDetails('<%= product.id %>')">
+                <img src="<%= '/Images/bedrooms/' + product.image %>" alt="<%= product.name %>" onclick="showProductDetails('<%= product._id %>')">
                 <p class="price"><%= product.price %></p>
-                <a href="#" class="product-title" onclick="showProductDetails('<%= product.id %>')"><%= product.title %></a>
+                <a href="#" class="product-title" onclick="showProductDetails('<%= product._id %>')"><%= product.name %></a>
             </div>
         <% }); %>
     </div>
@@ -384,13 +289,20 @@
         <div class="details-content">
             <span class="close-details" onclick="closeProductDetails()">&times;</span>
             <div class="image-gallery">
-                <div class="thumbnail-images" id="thumbnailContainer"></div>
-                <img src="" alt="Main product image" class="main-image" id="modalMainImage">
+                <div class="thumbnail-images">
+                    <% products.forEach(product => { %>
+                        <img src="<%= '/Images/bedrooms/' + product.image %>" 
+                             alt="<%= product.name %>" 
+                             class="thumbnail" 
+                             onclick="updateMainImage(this.src)">
+                    <% }); %>
+                </div>
+                <img id="modalMainImage" src="" alt="Main product image" class="main-image">
             </div>
             <div class="product-info">
-                <h2 class="product-title" id="modalProductTitle"></h2>
-                <p class="product-price" id="modalProductPrice"></p>
-                <p class="product-description" id="modalProductDescription"></p>
+                <h2 id="modalProductTitle" class="product-title"></h2>
+                <p id="modalProductPrice" class="product-price"></p>
+                <p id="modalProductDescription" class="product-description"></p>
                 <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
             </div>
             <!-- You May Also Like Section -->
@@ -446,29 +358,18 @@
     </footer>
 
     <script>
-        const bedroomProducts = <%- JSON.stringify(bedroomProducts) %>;
+        const products = <%- JSON.stringify(products) %>;
+        let currentProduct = null;
 
         function showProductDetails(productId) {
-            const product = bedroomProducts.find(p => p.id === parseInt(productId));
-            if (!product) return;
+            currentProduct = products.find(p => p._id === productId);
+            if (!currentProduct) return;
 
             // Update modal content
-            document.getElementById('modalMainImage').src = '/Images/bedrooms/' + product.image;
-            document.getElementById('modalProductTitle').textContent = product.title;
-            document.getElementById('modalProductPrice').textContent = product.price;
-            document.getElementById('modalProductDescription').textContent = product.description;
-
-            // Update thumbnails
-            const thumbnailContainer = document.getElementById('thumbnailContainer');
-            thumbnailContainer.innerHTML = '';
-            product.thumbnails.forEach(thumb => {
-                const img = document.createElement('img');
-                img.src = '/Images/bedrooms/' + thumb;
-                img.alt = 'Thumbnail';
-                img.className = 'thumbnail';
-                img.onclick = () => document.getElementById('modalMainImage').src = '/Images/bedrooms/' + thumb;
-                thumbnailContainer.appendChild(img);
-            });
+            document.getElementById('modalMainImage').src = '/Images/bedrooms/' + currentProduct.image;
+            document.getElementById('modalProductTitle').textContent = currentProduct.name;
+            document.getElementById('modalProductPrice').textContent = currentProduct.price;
+            document.getElementById('modalProductDescription').textContent = currentProduct.description;
 
             // Show modal
             document.getElementById('productDetails').style.display = 'block';
@@ -476,7 +377,53 @@
 
         function closeProductDetails() {
             document.getElementById('productDetails').style.display = 'none';
+            currentProduct = null;
         }
+
+        function updateMainImage(src) {
+            document.getElementById('modalMainImage').src = src;
+        }
+
+        function addToCart() {
+            if (!currentProduct) return;
+
+            fetch(`/cart/add/${currentProduct._id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Product added to cart!');
+                    updateCartCount();
+                    closeProductDetails();
+                } else {
+                    alert('Error adding product to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding product to cart');
+            });
+        }
+
+        // Update cart count when page loads
+        async function updateCartCount() {
+            try {
+                const response = await fetch('/cart/count');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.querySelector('.cart-count').textContent = data.count;
+                }
+            } catch (error) {
+                console.error('Error updating cart count:', error);
+            }
+        }
+
+        // Call updateCartCount when page loads
+        document.addEventListener('DOMContentLoaded', updateCartCount);
 
         function handleSearchClick() {
             const query = document.getElementById('search-input').value.trim().toLowerCase();
@@ -505,23 +452,6 @@
             menu.classList.toggle("active");
             toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
         }
-
-        function addToCart() {
-            const currentCount = parseInt(document.querySelector('.cart-count').textContent);
-            document.querySelector('.cart-count').textContent = currentCount + 1;
-            alert('Product added to cart!');
-        }
-
-        // Add event listener for search input
-        document.getElementById('search-input').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                handleSearchClick();
-            }
-        });
-
-        // Initialize cart count
-        document.querySelector('.cart-count').textContent = '0';
     </script>
 </body>
 </html>

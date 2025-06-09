@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product - Admin Panel</title>
+    <link rel="stylesheet" href="/CSS/admin.css">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background: #333;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background: #444;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .help-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Panel</h1>
+        <nav>
+            <ul>
+                <li><a href="/admin">Dashboard</a></li>
+                <li><a href="/admin/products">Products</a></li>
+                <li><a href="/admin/add-product" class="active">Add Product</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="form-container">
+            <h2>Add New Product</h2>
+            <form id="addProductForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="name">Product Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="Living Room">Living Room</option>
+                        <option value="Bedroom">Bedroom</option>
+                        <option value="Kitchen">Kitchen</option>
+                        <option value="Dining">Dining</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Price (£)</label>
+                    <input type="number" id="price" name="price" min="0" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="mainImage">Main Image Path</label>
+                    <input type="text" id="mainImage" name="mainImage" required 
+                           placeholder="e.g., dining/d1/1d.webp for dining products">
+                    <small class="help-text">
+                        Enter the path relative to /Images/ directory. Examples:<br>
+                        - For dining: dining/d1/1d.webp<br>
+                        - For bedroom: bedrooms/b1/1.jpg<br>
+                        - For kitchen: kitchen/kitchen1/d1.jpg<br>
+                        - For living room: livingRooms/L1/L1.avif
+                    </small>
+                    <div class="image-preview" id="mainImagePreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="thumbnails">Thumbnail Image Paths (one per line)</label>
+                    <textarea id="thumbnails" name="thumbnails" required 
+                              placeholder="e.g., dining/d1/1d.webp&#10;dining/d1/2d.webp&#10;dining/d1/3d.webp"></textarea>
+                    <small class="help-text">
+                        Enter each thumbnail path on a new line. Make sure all images exist in the /Images/ directory.
+                    </small>
+                    <div class="image-preview" id="thumbnailsPreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="alt">Alt Text</label>
+                    <input type="text" id="alt" name="alt" required>
+                </div>
+
+                <button type="submit" class="submit-btn">Add Product</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Preview images as they're entered
+        document.getElementById('mainImage').addEventListener('input', function(e) {
+            const preview = document.getElementById('mainImagePreview');
+            const imagePath = e.target.value;
+            preview.innerHTML = `<img src="/Images/${imagePath}" alt="Main image preview" onerror="this.style.display='none'">`;
+        });
+
+        document.getElementById('thumbnails').addEventListener('input', function(e) {
+            const preview = document.getElementById('thumbnailsPreview');
+            const urls = e.target.value.split('\n').filter(url => url.trim());
+            preview.innerHTML = urls.map(url => 
+                `<img src="/Images/${url}" alt="Thumbnail preview" onerror="this.style.display='none'">`
+            ).join('');
+        });
+
+        // Handle form submission
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            const category = document.getElementById('category').value;
+            const mainImage = document.getElementById('mainImage').value;
+            const thumbnails = document.getElementById('thumbnails').value.split('\n').filter(url => url.trim());
+
+            // Validate image paths based on category
+            const categoryPaths = {
+                'Dining': 'dining/',
+                'Bedroom': 'bedrooms/',
+                'Kitchen': 'kitchen/',
+                'Living Room': 'livingRooms/'
+            };
+
+            const expectedPath = categoryPaths[category];
+            if (!mainImage.startsWith(expectedPath)) {
+                alert(`Main image path should start with "${expectedPath}" for ${category} products`);
+                return;
+            }
+
+            const invalidThumbnails = thumbnails.filter(url => !url.startsWith(expectedPath));
+            if (invalidThumbnails.length > 0) {
+                alert(`All thumbnail paths should start with "${expectedPath}" for ${category} products`);
+                return;
+            }
+
+            const formData = {
+                name: document.getElementById('name').value,
+                category: category,
+                price: `£${document.getElementById('price').value}`,
+                description: document.getElementById('description').value,
+                images: {
+                    main: mainImage,
+                    thumbnails: thumbnails
+                },
+                alt: document.getElementById('alt').value
+            };
+
+            try {
+                const response = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert('Product added successfully!');
+                    window.location.href = '/admin/products';
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error adding product. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html> 
