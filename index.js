@@ -11,9 +11,6 @@ const Product = require('./models/Product');
 
 // Import routes
 const authRoutes = require('./routes/auth');
-const roomRoutes = require('./routes/rooms');
-const bookingRoutes = require('./routes/bookings');
-const reviewRoutes = require('./routes/reviews');
 const productRoutes = require('./routes/products');
 
 // Initialize express app
@@ -30,8 +27,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-// Session middleware
 app.use(session({
     secret: process.env.JWT_SECRET || 'your-secret-key-for-development',
     resave: true,
@@ -82,14 +77,9 @@ app.use((err, req, res, next) => {
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/api/rooms', roomRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/reviews', reviewRoutes);
 app.use('/api/products', productRoutes);
 
 // Protected admin routes
-app.use('/api/admin/rooms', adminAuth, roomRoutes);
-app.use('/api/admin/bookings', adminAuth, bookingRoutes);
 app.use('/api/admin/products', adminAuth, productRoutes);
 
 // Cart Routes
