@@ -29,13 +29,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
     secret: process.env.JWT_SECRET || 'your-secret-key-for-development',
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     cookie: { 
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         httpOnly: true,
-        sameSite: 'lax'
+        sameSite: 'strict'
     }
 }));
 
