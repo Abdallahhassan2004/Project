@@ -276,10 +276,10 @@
     <!-- Product List Section -->
     <div class="product-list">
         <% products.forEach(product => { %>
-            <div class="product">
-                <img src="<%= '/Images/livingRooms/' + product.image %>" alt="<%= product.name %>" onclick="showProductDetails('<%= product._id %>')">
+            <div class="product" data-product-id="<%= product._id %>" style="cursor: pointer;">
+                <img src="/Images/<%= product.images.main %>" alt="<%= product.name %>">
                 <p class="price"><%= product.price %></p>
-                <a href="#" class="product-title" onclick="showProductDetails('<%= product._id %>')"><%= product.name %></a>
+                <p class="product-title"><%= product.name %></p>
             </div>
         <% }); %>
     </div>
@@ -289,14 +289,7 @@
         <div class="details-content">
             <span class="close-details" onclick="closeProductDetails()">&times;</span>
             <div class="image-gallery">
-                <div class="thumbnail-images">
-                    <% products.forEach(product => { %>
-                        <img src="<%= '/Images/livingRooms/' + product.image %>" 
-                             alt="<%= product.name %>" 
-                             class="thumbnail" 
-                             onclick="updateMainImage(this.src)">
-                    <% }); %>
-                </div>
+                <div class="thumbnail-images" id="thumbnailImages"></div>
                 <img id="modalMainImage" src="" alt="Main product image" class="main-image">
             </div>
             <div class="product-info">
@@ -361,12 +354,29 @@
         const products = <%- JSON.stringify(products) %>;
         let currentProduct = null;
 
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.product').forEach(div => {
+                div.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    showProductDetails(productId);
+                });
+            });
+        });
+
         function showProductDetails(productId) {
             currentProduct = products.find(p => p._id === productId);
             if (!currentProduct) return;
 
-            // Update modal content
-            document.getElementById('modalMainImage').src = '/Images/livingRooms/' + currentProduct.image;
+            // Set main image
+            document.getElementById('modalMainImage').src = '/Images/' + currentProduct.images.main;
+
+            // Set thumbnails
+            const thumbnailsDiv = document.getElementById('thumbnailImages');
+            thumbnailsDiv.innerHTML = currentProduct.images.thumbnails.map(thumb =>
+                `<img src="/Images/${thumb}" class="thumbnail" onclick="updateMainImage('/Images/${thumb}')">`
+            ).join('');
+
+            // Set other product info
             document.getElementById('modalProductTitle').textContent = currentProduct.name;
             document.getElementById('modalProductPrice').textContent = currentProduct.price;
             document.getElementById('modalProductDescription').textContent = currentProduct.description;

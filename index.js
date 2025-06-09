@@ -32,10 +32,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        secure: true,
+        secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         httpOnly: true,
-        sameSite: 'strict'
+        sameSite: 'lax' // Changed from 'strict' to 'lax' for better compatibility
     }
 }));
 
@@ -135,11 +135,17 @@ app.get('/cart/count', (req, res) => {
 app.post('/cart/add/:id', async (req, res) => {
     try {
         const productId = req.params.id;
+        console.log('Adding product to cart:', productId);
+        console.log('Current session cart:', req.session.cart);
+        
         const product = await Product.findById(productId);
         
         if (!product) {
+            console.log('Product not found:', productId);
             return res.status(404).json({ error: 'Product not found' });
         }
+
+        console.log('Found product:', product.name);
 
         if (!req.session.cart) {
             req.session.cart = [];
@@ -149,26 +155,42 @@ app.post('/cart/add/:id', async (req, res) => {
         
         if (existingItem) {
             existingItem.quantity += 1;
+            console.log('Updated existing item quantity:', existingItem.quantity);
         } else {
             // Ensure price is stored as a number
             const price = parseFloat(product.price) || 0;
-            req.session.cart.push({
+            const newItem = {
                 id: product._id,
                 name: product.name,
                 price: price,
                 image: product.images.main,
                 quantity: 1
-            });
+            };
+            req.session.cart.push(newItem);
+            console.log('Added new item to cart:', newItem);
         }
 
-        // Calculate new total
-        const total = req.session.cart.reduce((sum, item) => {
-            const price = parseFloat(item.price) || 0;
-            return sum + (price * item.quantity);
-        }, 0);
+        // Save session explicitly
+        req.session.save((err) => {
+            if (err) {
+                console.error('Error saving session:', err);
+                return res.status(500).json({ error: 'Error saving cart' });
+            }
+            
+            console.log('Session saved successfully');
+            console.log('Updated cart:', req.session.cart);
 
-        const cartCount = req.session.cart.reduce((sum, item) => sum + item.quantity, 0);
-        res.json({ success: true, cartCount, total });
+            // Calculate new total
+            const total = req.session.cart.reduce((sum, item) => {
+                const price = parseFloat(item.price) || 0;
+                return sum + (price * item.quantity);
+            }, 0);
+
+            const cartCount = req.session.cart.reduce((sum, item) => sum + item.quantity, 0);
+            console.log('Cart count:', cartCount, 'Total:', total);
+            
+            res.json({ success: true, cartCount, total });
+        });
     } catch (error) {
         console.error('Error adding to cart:', error);
         res.status(500).json({ error: 'Error adding to cart' });
