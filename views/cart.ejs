@@ -11,40 +11,17 @@
     <!-- Header -->
     <header id="main-header">
         <div class="header-container">
-            <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
             <h1 class="logo"><a href="/">Sense</a></h1>
             <div class="nav-links">
-                <a href="/home">Home</a>
+                <a href="/">Home</a>
                 <a href="/living">Living</a>
                 <a href="/bedroom">Bedroom</a>
                 <a href="/dining">Dining</a>
                 <a href="/kitchen">Kitchen</a>
-                
-               
             </div>
             <a href="/cart" class="cart">cart <span class="cart-count">0</span></a>
         </div>
     </header>
-
-    <!-- Full Menu -->
-    <div class="full-menu" id="fullMenu">
-        <div class="menu-left">
-            <div class="menu-columns">
-                <div class="column">
-                    <h2>Navigation</h2>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/rooms">Rooms</a></li>
-                        <li><a href="/dining">Dining</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="menu-right">
-            <img src="/Images/logo.png" alt="Sense Logo">
-        </div>
-    </div>
 
     <main class="cart-container">
         <div class="section-title">
@@ -71,6 +48,7 @@
                             </button>
                         </div>
                     <% }); %>
+                    <a href="/dining" class="continue-shopping">← Continue Shopping</a>
                 </div>
 
                 <div class="cart-right">
@@ -88,7 +66,7 @@
                             <span>Total</span>
                             <span>EGP <%= cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2) %></span>
                         </div>
-                        <a href="/checkout" class="checkout-btn" style="display: block; text-align: center; text-decoration: none; background-color: #333; color: white; padding: 1rem; border-radius: 4px; margin-top: 1rem; transition: background-color 0.3s;">Proceed to Checkout</a>
+                        <a href="/checkout" class="checkout-btn" style="text-decoration: none;">Proceed to Checkout</a>
                     </div>
                 </div>
             </div>
@@ -103,12 +81,6 @@
     </main>
 
     <script>
-        // Toggle menu
-        function toggleMenu() {
-            const menu = document.getElementById('fullMenu');
-            menu.classList.toggle('show');
-        }
-
         // Update quantity
         async function updateQuantity(productId, change) {
             try {
@@ -151,6 +123,8 @@
 
         // Remove item
         async function removeItem(productId) {
+            if (!confirm('Are you sure you want to remove this item?')) return;
+
             try {
                 const response = await fetch(`/cart/remove/${productId}`, {
                     method: 'POST'
@@ -198,8 +172,10 @@
             }
         }
 
-        // Call updateCartCount when page loads
-        document.addEventListener('DOMContentLoaded', updateCartCount);
+        // Initialize cart functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+        });
     </script>
 </body>
 </html>

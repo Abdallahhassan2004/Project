@@ -43,7 +43,7 @@
                 <!-- 🔍 Search Bar -->
                 <div class="menu-search">
                     <input type="text" id="search-input" placeholder="Search for products..." />
-                    <button onclick="handleSearchClick()">Search</button>
+                    <button class="search-button">Search</button>
                 </div>
 
                 <!-- Menu Columns -->
@@ -103,10 +103,10 @@
         </div>
         <div class="clickable-image-grid">
             <% const rooms = [
-                { name: 'Living Room', img: 'intr.jpg', link: 'living.html' },
-                { name: 'Bedroom', img: 'bedroom1.jpg', link: 'bedroom.html' },
-                { name: 'Dining', img: 'JapandiDining4.jpg', link: 'dining.html' },
-                { name: 'Kitchen', img: 'kitchen2.jpg', link: 'kitchen.html' }
+                { name: 'Living Room', img: 'intr.jpg', link: '/living' },
+                { name: 'Bedroom', img: 'bedroom1.jpg', link: '/bedroom' },
+                { name: 'Dining', img: 'JapandiDining4.jpg', link: '/dining' },
+                { name: 'Kitchen', img: 'kitchen2.jpg', link: '/kitchen' }
             ]; %>
             <% rooms.forEach(room => { %>
                 <div class="image-container" data-name="<%= room.name %>">
@@ -180,23 +180,16 @@
     </footer>
 
     <script>
-        document.getElementById('search-input').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                handleSearchClick();
-            }
-        });
-
         function handleSearchClick() {
             const query = document.getElementById('search-input').value.trim().toLowerCase();
             const roomPages = {
-                "living": "living.html",
-                "living room": "living.html",
-                "bed": "bedroom.html",
-                "bedroom": "bedroom.html",
-                "kitchen": "kitchen.html",
-                "dining": "dining.html",
-                "dining room": "dining.html"
+                "living": "/living",
+                "living room": "/living",
+                "bed": "/bedroom",
+                "bedroom": "/bedroom",
+                "kitchen": "/kitchen",
+                "dining": "/dining",
+                "dining room": "/dining"
             };
 
             const matchedKey = Object.keys(roomPages).find(key => query.includes(key));
@@ -208,10 +201,42 @@
             }
         }
 
+        // Add event listener for search input
+        document.getElementById('search-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearchClick();
+            }
+        });
+
+        // Add click event listener for search button
+        document.querySelector('.search-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            handleSearchClick();
+        });
+
+        // Update cart count when page loads
+        async function updateCartCount() {
+            try {
+                const response = await fetch('/cart/count');
+                if (response.ok) {
+                    const data = await response.json();
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = data.count;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating cart count:', error);
+            }
+        }
+
+        // Call updateCartCount when page loads
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+
         function toggleMenu() {
             const menu = document.getElementById("fullMenu");
             const toggleBtn = document.querySelector(".menu-toggle");
-
             menu.classList.toggle("active");
             toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
         }
@@ -224,12 +249,6 @@
             const heroHeight = hero.offsetHeight;
             header.classList.toggle("scrolled", window.scrollY >= heroHeight - 80);
         });
-
-        function updateCartCount(count) {
-            document.querySelector('.cart-count').textContent = count;
-        }
-
-        updateCartCount(3);
     </script>
 </body>
 </html>

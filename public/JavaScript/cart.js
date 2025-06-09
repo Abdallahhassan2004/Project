@@ -8,41 +8,46 @@ if (!localStorage.getItem('cart')) {
 
 
 // Update cart count in header
-function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const cartCountElement = document.querySelector('.cart-count');
-    if (cartCountElement) {
-        cartCountElement.textContent = totalItems;
+async function updateCartCount() {
+    try {
+        const response = await fetch('/cart/count');
+        if (response.ok) {
+            const data = await response.json();
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = data.count;
+            }
+        }
+    } catch (error) {
+        console.error('Error updating cart count:', error);
     }
 }
 
 // Add item to cart
-function addToCart(product) {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    
-    // Check if item already exists in cart
-    const existingItem = cart.find(item => item.id === product.id);
-    
-    if (existingItem) {
-        if (existingItem.quantity >= 3) {
-            alert('Maximum 3 items allowed per product');
-            return;
-        }
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            quantity: 1
+async function addToCart(product) {
+    try {
+        const response = await fetch(`/cart/add/${product._id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
+
+        if (!response.ok) {
+            throw new Error('Failed to add item to cart');
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            alert('Product added to cart!');
+            updateCartCount();
+        } else {
+            alert('Error adding product to cart');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error adding product to cart');
     }
-    
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    
 }
 
 // Load cart items
@@ -88,36 +93,53 @@ function loadCartItems() {
 }
 
 // Update quantity
-function updateQuantity(productId, change) {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const item = cart.find(item => item.id === productId);
-    
-    if (item) {
-        const newQuantity = item.quantity + change;
-        if (newQuantity < 1) {
-            removeFromCart(productId);
-            return;
+async function updateQuantity(productId, change) {
+    try {
+        const response = await fetch(`/cart/update/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ change })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update quantity');
         }
-        if (newQuantity > 3) {
-            alert('Maximum 3 items allowed per product');
-            return;
+
+        const data = await response.json();
+        if (data.success) {
+            updateCartCount();
+            loadCartItems();
         }
-        item.quantity = newQuantity;
-        localStorage.setItem('cart', JSON.stringify(cart));
-        loadCartItems();
-        updateCartCount();
+    } catch (error) {
+        console.error('Error updating quantity:', error);
+        alert('Failed to update quantity. Please try again.');
     }
 }
 
 // Remove from cart
-function removeFromCart(productId) {
+async function removeFromCart(productId) {
     if (!confirm('Are you sure you want to remove this item?')) return;
     
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const updatedCart = cart.filter(item => item.id !== productId);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-    loadCartItems();
-    updateCartCount();
+    try {
+        const response = await fetch(`/cart/remove/${productId}`, {
+            method: 'POST'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to remove item');
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            updateCartCount();
+            loadCartItems();
+        }
+    } catch (error) {
+        console.error('Error removing item:', error);
+        alert('Failed to remove item. Please try again.');
+    }
 }
 
 // Update total
