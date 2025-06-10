@@ -47,45 +47,11 @@ exports.login = async (req, res) => {
 
         // Update last login
         user.lastLogin = new Date();
-
-        // Merge session cart with user's persistent cart if session cart exists
-        if (req.session.cart && req.session.cart.length > 0) {
-            if (!user.cart) {
-                user.cart = [];
-            }
-
-            // Merge session cart items with user cart
-            req.session.cart.forEach(sessionItem => {
-                const existingItem = user.cart.find(userItem => 
-                    userItem.id.toString() === sessionItem.id
-                );
-                
-                if (existingItem) {
-                    existingItem.quantity += sessionItem.quantity;
-                } else {
-                    user.cart.push({
-                        id: sessionItem.id,
-                        name: sessionItem.name,
-                        price: sessionItem.price,
-                        image: sessionItem.image,
-                        quantity: sessionItem.quantity
-                    });
-                }
-            });
-
-            // Clear session cart after merging
-            req.session.cart = [];
-            console.log('Merged session cart with user cart');
-        }
-
         await user.save();
 
         // Create token
         const token = jwt.sign(
-            { 
-                userId: user._id,
-                role: user.role 
-            },
+            { userId: user._id, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
@@ -97,9 +63,13 @@ exports.login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000
         });
 
-        // Redirect to home page
-        res.redirect('/');
+        // Redirect based on role
+        if (user.role === 'admin') {
+            return res.redirect('/admin');
+        }
 
+        // Default redirect for regular users
+        res.redirect('/');
     } catch (error) {
         console.error('Login error:', error);
         res.render('login', {

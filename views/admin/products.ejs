@@ -74,7 +74,7 @@
                             </td>
                             <td><%= product.name %></td>
                             <td><%= product.category %></td>
-                            <td><%= product.price %></td>
+                            <td><%= product.price.replace('£', 'EGP ') %></td>
                             <td class="action-buttons">
                                 <button onclick="editProduct('<%= product._id %>')">Edit</button>
                                 <button onclick="deleteProduct('<%= product._id %>')">Delete</button>

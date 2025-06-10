@@ -20,7 +20,6 @@
         <% }); %>
     </div>
 
-    <!-- Hero Section with video background -->
     <div class="hero">
         <video autoplay muted loop playsinline>
             <source src="<%= '/videos/welcome.mp4' %>" type="video/mp4" />
@@ -29,16 +28,15 @@
         <h1>Welcome to Our Site</h1>
     </div>
 
-    <!-- Header -->
     <header id="main-header">
         <div class="header-container">
             <%- include('partials/menu') %>
             <h1 class="logo"><a href="/">Sense</a></h1>
-            <a href="/cart" class="cart">cart <span class="cart-count">0</span></a>
+            <a href="/cart" class="cart">Cart <span class="cart-count">0</span></a>
+            
         </div>
     </header>
 
-    <!-- Image & Style Intro Section -->
     <section class="style-intro-section">
         <div class="floating-images">
             <% const decorImages = ['img3.jpg', 'img2.jpg', 'img4.jpg', 'img1.jpg']; %>
@@ -57,7 +55,6 @@
         </div>
     </section>
 
-    <!-- Shop by Room -->
     <section class="shop-by-room-section">
         <div class="section-title">
             <h2 class="shop-by-room-title">Shop By Room</h2>
@@ -80,7 +77,6 @@
         </div>
     </section>
 
-    <!-- About Section -->
     <section id="about-section" class="about-section">
         <div class="about-content">
             <h2 class="section-title">OUR FURNITURE <br>STORY</h2>
@@ -102,7 +98,6 @@
         </div>
     </section>
 
-    <!-- Newsletter Section -->
     <section class="newsletter-section">
         <div class="newsletter-content">
             <h2>Be a part of our club</h2>
@@ -113,7 +108,22 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Google Map Section -->
+    <section id="map-section" class="map-section" style="padding: 40px 20px; background: #f9f9f9;">
+        <h2 style="text-align: center;">Find Us</h2>
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3451.122436092392!2d31.3317916!3d30.1127281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14583e3b75ec2c2d%3A0x5f95e31fa6c2d8b5!2sHeliopolis%2C%20Cairo%20Governorate%2C%20Egypt!5e0!3m2!1sen!2seg!4v1717841871500!5m2!1sen!2seg" 
+                width="80%" 
+                height="400" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </section>
+
     <footer>
         <div class="footer-wrapper">
             <div class="footer-grid">
@@ -151,14 +161,24 @@
                 console.error('Error fetching cart count:', error);
             });
 
-        window.addEventListener("scroll", function () {
-            const header = document.getElementById("main-header");
-            const hero = document.querySelector(".hero");
-            if (!hero) return;
-
-            const heroHeight = hero.offsetHeight;
-            header.classList.toggle("scrolled", window.scrollY >= heroHeight - 80);
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
         });
+
+        // Optional: function to update cart count
+        function updateCartCount(count) {
+            const cartCountSpan = document.querySelector('.cart-count');
+            if (cartCountSpan) cartCountSpan.textContent = count;
+        }
     </script>
 </body>
 </html>

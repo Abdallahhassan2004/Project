@@ -13,6 +13,7 @@ const Product = require('./models/Product');
 // Import routes
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
+const adminController = require('./controllers/adminController');
 
 // Initialize express app
 const app = express();
@@ -20,7 +21,7 @@ const app = express();
 // Set default JWT secret if not in environment
 if (!process.env.JWT_SECRET) {
     console.warn('Warning: JWT_SECRET not set in environment variables. Using default secret key.');
-    process.env.JWT_SECRET = 'your-secret-key-for-development';
+    process.env.JWT_SECRET = 'd8a6a937cabdcd3cbefa25972833067aa96d9c30b0cb1f0861dce7c50554135a';
 }
 
 // Middleware
@@ -29,14 +30,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
-    secret: process.env.JWT_SECRET || 'your-secret-key-for-development',
+    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'd8a6a937cabdcd3cbefa25972833067aa96d9c30b0cb1f0861dce7c50554135a',
     resave: false,
     saveUninitialized: false,
     cookie: { 
         secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         httpOnly: true,
-        sameSite: 'lax' // Changed from 'strict' to 'lax' for better compatibility
+        sameSite: 'lax'
     }
 }));
 
@@ -81,7 +82,10 @@ app.use((err, req, res, next) => {
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/api/products', productRoutes);
+
+// Admin routes
+app.get('/admin', adminAuth, adminController.getAdminPage);
+app.get('/admin/users', adminAuth, adminController.getUsersPage);
 
 // Protected admin routes
 app.use('/api/admin/products', adminAuth, productRoutes);
