@@ -217,47 +217,9 @@
     <!-- Header -->
     <header id="main-header">
         <div class="header-container">
-            <div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+            <%- include('partials/menu') %>
             <h1 class="logo"><a href="/">Sense</a></h1>
             <a href="/cart" class="cart">cart <span class="cart-count">0</span></a>
-        </div>
-
-        <div class="full-menu" id="fullMenu">
-            <div class="menu-left">
-                <!-- 🔍 Search Bar -->
-                <div class="menu-search">
-                    <input type="text" id="search-input" placeholder="Search for products..." />
-                    <button onclick="handleSearchClick()">Search</button>
-                </div>
-
-                <!-- Menu Columns -->
-                <div class="menu-columns">
-                    <div class="column">
-                        <h2>Sense</h2>
-                        <ul>
-                            <li><a href="/#about-section">About</a></li>
-                            <li><a href="/#contact-section">Contact</a></li>
-                            <li><a href="/login">Log In</a></li>
-                            <li><a href="/signup">Sign Up</a></li>
-                        </ul>
-                    </div>
-                    <div class="column">
-                        <h2>SHOP</h2>
-                        <ul>
-                            <li><a href="/">Home</a></li>
-                            <li><a href="/living">Living Room</a></li>
-                            <li><a href="/bedroom">Bedroom</a></li>
-                            <li><a href="/kitchen">Kitchen</a></li>
-                            <li><a href="/dining">Dining Room</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Image Section -->
-            <div class="menu-right">
-                <img src="<%= '/Images/Home/intro5.jpg' %>" alt="Hm1" />
-            </div>
         </div>
     </header>
 
@@ -303,7 +265,7 @@
                 <h2 id="modalProductTitle" class="product-title"></h2>
                 <p id="modalProductPrice" class="product-price"></p>
                 <p id="modalProductDescription" class="product-description"></p>
-                <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+                <button class="add-to-cart-btn" onclick="addToCartLocal()">Add to Cart</button>
             </div>
             <!-- You May Also Like Section -->
             <div class="related-products">
@@ -361,6 +323,11 @@
         const products = <%- JSON.stringify(products) %>;
         let currentProduct = null;
 
+        // Test if global function is available
+        console.log('Page loaded, checking global functions:');
+        console.log('window.addToCart exists:', typeof window.addToCart);
+        console.log('window.updateCartCount exists:', typeof window.updateCartCount);
+
         function showProductDetails(productId) {
             currentProduct = products.find(p => p._id === productId);
             if (!currentProduct) return;
@@ -384,46 +351,21 @@
             document.getElementById('modalMainImage').src = src;
         }
 
-        function addToCart() {
+        function addToCartLocal() {
             if (!currentProduct) return;
+            // Call the global addToCart function directly
+            window.addToCart(currentProduct._id);
+        }
 
-            fetch(`/cart/add/${currentProduct._id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+        // Update cart count on page load
+        fetch('/cart/count')
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    alert('Product added to cart!');
-                    updateCartCount();
-                    closeProductDetails();
-                } else {
-                    alert('Error adding product to cart');
-                }
+                updateCartCount(data.count);
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Error adding product to cart');
+                console.error('Error fetching cart count:', error);
             });
-        }
-
-        // Update cart count when page loads
-        async function updateCartCount() {
-            try {
-                const response = await fetch('/cart/count');
-                if (response.ok) {
-                    const data = await response.json();
-                    document.querySelector('.cart-count').textContent = data.count;
-                }
-            } catch (error) {
-                console.error('Error updating cart count:', error);
-            }
-        }
-
-        // Call updateCartCount when page loads
-        document.addEventListener('DOMContentLoaded', updateCartCount);
 
         function handleSearchClick() {
             const query = document.getElementById('search-input').value.trim().toLowerCase();

@@ -124,6 +124,24 @@ input:focus {
     border-color: #333;
 }
 
+/* Form hints styling */
+.form-hint {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: #666;
+    font-style: italic;
+}
+
+/* Input validation states */
+input:invalid {
+    border-color: #e74c3c;
+}
+
+input:valid {
+    border-color: #27ae60;
+}
+
 /* Order Summary Styles */
 .checkout-right {
     background-color: #f9f9f9;

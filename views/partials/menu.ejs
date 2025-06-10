@@ -1,0 +1,154 @@
+<!-- Menu Toggle Button -->
+<div class="menu-toggle animate-icon" onclick="toggleMenu()">☰</div>
+
+<!-- Menu Content -->
+<div class="full-menu" id="fullMenu">
+    <div class="menu-left">
+        <!-- 🔍 Search Bar -->
+        <div class="menu-search">
+            <input type="text" id="search-input" placeholder="Search for products..." />
+            <button class="search-button">Search</button>
+        </div>
+
+        <!-- Menu Columns -->
+        <div class="menu-columns">
+            <div class="column">
+                <h2>Sense</h2>
+                <ul>
+                    <li><a href="/#about-section">About</a></li>
+                    <li><a href="/#contact-section">Contact</a></li>
+                    <% if (locals.user && user) { %>
+                        <li><a href="/auth/logout">Log Out</a></li>
+                        <li><span>Welcome, <%= user.username %></span></li>
+                    <% } else { %>
+                        <li><a href="/auth/login">Log In</a></li>
+                        <li><a href="/auth/signup">Sign Up</a></li>
+                    <% } %>
+                </ul>
+            </div>
+            <div class="column">
+                <h2>SHOP</h2>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/living">Living Room</a></li>
+                    <li><a href="/bedroom">Bedroom</a></li>
+                    <li><a href="/kitchen">Kitchen</a></li>
+                    <li><a href="/dining">Dining Room</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Image Section -->
+    <div class="menu-right">
+        <img src="<%= '/Images/Home/intro5.jpg' %>" alt="Hm1" />
+    </div>
+</div>
+
+<script>
+// Global addToCart function that handles authentication
+window.addToCart = function(productId) {
+    fetch(`/cart/add/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.status === 401) {
+            // User is not authenticated, redirect to login
+            window.location.href = '/auth/login';
+            return;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data && data.success) {
+            alert('Product added to cart!');
+            updateCartCount(data.cartCount);
+            // Close product modal if it exists
+            const modal = document.getElementById('productDetails');
+            if (modal && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        } else if (data && data.redirect) {
+            // User needs to log in - redirect directly
+            window.location.href = data.redirect;
+        } else if (data && data.error) {
+            alert(data.error || 'Error adding product to cart');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // If there's an error, it might be due to authentication
+        // Redirect to login page
+        window.location.href = '/auth/login';
+    });
+};
+
+// Global updateCartCount function
+window.updateCartCount = function(count) {
+    const cartCountElement = document.querySelector('.cart-count');
+    if (cartCountElement) {
+        cartCountElement.textContent = count;
+    }
+};
+
+// Prevent back button access after logout
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        // Page was loaded from back-forward cache
+        window.location.reload();
+    }
+});
+
+// Prevent caching of pages
+window.addEventListener('beforeunload', function() {
+    // Clear any cached data
+    sessionStorage.clear();
+});
+
+function toggleMenu() {
+    const menu = document.getElementById("fullMenu");
+    const toggleBtn = document.querySelector(".menu-toggle");
+    menu.classList.toggle("active");
+    toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
+}
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.querySelector('.search-button');
+    
+    if (searchInput && searchButton) {
+        searchButton.addEventListener('click', handleSearch);
+        searchInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearch();
+            }
+        });
+    }
+});
+
+function handleSearch() {
+    const query = document.getElementById('search-input').value.trim().toLowerCase();
+    const roomPages = {
+        "living": "/living",
+        "living room": "/living",
+        "bed": "/bedroom",
+        "bedroom": "/bedroom",
+        "kitchen": "/kitchen",
+        "dining": "/dining",
+        "dining room": "/dining"
+    };
+
+    const matchedKey = Object.keys(roomPages).find(key => query.includes(key));
+
+    if (matchedKey) {
+        window.location.href = roomPages[matchedKey];
+    } else {
+        alert("No matching room found. Try: living, bed, kitchen, dining.");
+    }
+}
+</script> 

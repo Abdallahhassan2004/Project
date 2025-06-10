@@ -6,7 +6,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
 const connectDB = require('./models/db');
-const { auth, adminAuth } = require('./middleware/auth');
+const { auth, adminAuth, requireAuth } = require('./middleware/auth');
+const userData = require('./middleware/userData');
 const Product = require('./models/Product');
 
 // Import routes
@@ -38,6 +39,9 @@ app.use(session({
         sameSite: 'lax' // Changed from 'strict' to 'lax' for better compatibility
     }
 }));
+
+// Apply userData middleware globally to make user data available to all templates
+app.use(userData);
 
 // Add session check middleware
 app.use((req, res, next) => {
@@ -83,14 +87,26 @@ app.use('/api/products', productRoutes);
 app.use('/api/admin/products', adminAuth, productRoutes);
 
 // Cart Routes
-app.get('/cart', (req, res) => {
+app.get('/cart', requireAuth, async (req, res) => {
     try {
-        // Initialize cart if it doesn't exist
-        if (!req.session.cart) {
-            req.session.cart = [];
+        console.log('=== LOADING CART PAGE ===');
+        console.log('User ID:', req.user.userId);
+        
+        const User = require('./models/User');
+        const user = await User.findById(req.user.userId);
+        
+        if (!user) {
+            console.log('User not found, redirecting to login');
+            return res.redirect('/auth/login');
         }
 
-        const cart = req.session.cart;
+        console.log('User found:', user.username);
+        console.log('User cart from database:', user.cart);
+        
+        const cart = user.cart || [];
+        console.log('Cart array:', cart);
+        console.log('Cart length:', cart.length);
+        
         // Calculate total with proper number parsing
         const total = cart.reduce((sum, item) => {
             const price = parseFloat(item.price) || 0;
@@ -100,16 +116,20 @@ app.get('/cart', (req, res) => {
         
         const itemCount = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
         
+        console.log('Calculated total:', total);
+        console.log('Calculated item count:', itemCount);
+        
         // Always provide all required variables
         const viewData = {
             title: 'Shopping Cart | Sense',
             cart: cart,
             total: total,
             itemCount: itemCount,
-            user: req.session.user || null
+            user: res.locals.user
         };
 
         console.log('Rendering cart with data:', viewData);
+        console.log('=== END LOADING CART PAGE ===');
         res.render('cart', viewData);
     } catch (error) {
         console.error('Error loading cart:', error);
@@ -121,10 +141,28 @@ app.get('/cart', (req, res) => {
     }
 });
 
-app.get('/cart/count', (req, res) => {
+app.get('/cart/count', async (req, res) => {
     try {
-        const cart = req.session.cart || [];
-        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        // Check if user is authenticated using the same logic as userData middleware
+        const token = req.cookies.token;
+        let count = 0;
+        
+        if (token) {
+            try {
+                const jwt = require('jsonwebtoken');
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                const User = require('./models/User');
+                const user = await User.findById(decoded.userId);
+                
+                if (user && user.cart) {
+                    count = user.cart.reduce((sum, item) => sum + item.quantity, 0);
+                }
+            } catch (error) {
+                // Invalid token, return 0 count
+                console.log('Invalid token in cart count request');
+            }
+        }
+        
         res.json({ count });
     } catch (error) {
         console.error('Error getting cart count:', error);
@@ -132,11 +170,12 @@ app.get('/cart/count', (req, res) => {
     }
 });
 
-app.post('/cart/add/:id', async (req, res) => {
+app.post('/cart/add/:id', auth, async (req, res) => {
     try {
         const productId = req.params.id;
-        console.log('Adding product to cart:', productId);
-        console.log('Current session cart:', req.session.cart);
+        console.log('=== ADDING PRODUCT TO CART ===');
+        console.log('Product ID:', productId);
+        console.log('User ID:', req.user.userId);
         
         const product = await Product.findById(productId);
         
@@ -146,70 +185,111 @@ app.post('/cart/add/:id', async (req, res) => {
         }
 
         console.log('Found product:', product.name);
+        console.log('Product structure:', {
+            name: product.name,
+            price: product.price,
+            hasImages: !!product.images,
+            hasImage: !!product.image,
+            imagesMain: product.images?.main,
+            image: product.image
+        });
 
-        if (!req.session.cart) {
-            req.session.cart = [];
+        // Get user from database
+        const User = require('./models/User');
+        const user = await User.findById(req.user.userId);
+        
+        if (!user) {
+            console.log('User not found');
+            return res.status(401).json({ error: 'User not found' });
         }
 
-        const existingItem = req.session.cart.find(item => item.id === productId);
+        console.log('User found:', user.username);
+        console.log('Current cart before update:', user.cart);
+
+        // Initialize cart if it doesn't exist
+        if (!user.cart) {
+            user.cart = [];
+            console.log('Initialized empty cart');
+        }
+
+        // Check if item already exists in cart
+        const existingItem = user.cart.find(item => item.id.toString() === productId);
         
         if (existingItem) {
             existingItem.quantity += 1;
             console.log('Updated existing item quantity:', existingItem.quantity);
         } else {
-            // Ensure price is stored as a number
-            const price = parseFloat(product.price) || 0;
+            // Add new item to cart
+            let imagePath;
+            if (product.images && product.images.main) {
+                // Living/Dining products
+                imagePath = product.images.main;
+                console.log('Using images.main path:', imagePath);
+            } else if (product.image) {
+                // Bedroom/Kitchen products
+                imagePath = product.image;
+                console.log('Using image path:', imagePath);
+            } else {
+                imagePath = 'default.jpg';
+                console.log('Using default image path');
+            }
+            
             const newItem = {
                 id: product._id,
                 name: product.name,
-                price: price,
-                image: product.images.main,
+                price: parseFloat(product.price) || 0,
+                image: imagePath,
                 quantity: 1
             };
-            req.session.cart.push(newItem);
+            user.cart.push(newItem);
             console.log('Added new item to cart:', newItem);
         }
 
-        // Save session explicitly
-        req.session.save((err) => {
-            if (err) {
-                console.error('Error saving session:', err);
-                return res.status(500).json({ error: 'Error saving cart' });
-            }
-            
-            console.log('Session saved successfully');
-            console.log('Updated cart:', req.session.cart);
+        console.log('Cart after update:', user.cart);
 
-            // Calculate new total
-            const total = req.session.cart.reduce((sum, item) => {
-                const price = parseFloat(item.price) || 0;
-                return sum + (price * item.quantity);
-            }, 0);
+        // Save user with updated cart
+        await user.save();
+        console.log('User cart saved successfully');
 
-            const cartCount = req.session.cart.reduce((sum, item) => sum + item.quantity, 0);
-            console.log('Cart count:', cartCount, 'Total:', total);
-            
-            res.json({ success: true, cartCount, total });
-        });
+        // Calculate new total and count
+        const total = user.cart.reduce((sum, item) => {
+            const price = parseFloat(item.price) || 0;
+            return sum + (price * item.quantity);
+        }, 0);
+
+        const cartCount = user.cart.reduce((sum, item) => sum + item.quantity, 0);
+        console.log('Final cart count:', cartCount, 'Total:', total);
+        console.log('=== END ADDING PRODUCT ===');
+        
+        res.json({ success: true, cartCount, total });
     } catch (error) {
         console.error('Error adding to cart:', error);
         res.status(500).json({ error: 'Error adding to cart' });
     }
 });
 
-app.post('/cart/remove/:id', (req, res) => {
+app.post('/cart/remove/:id', auth, async (req, res) => {
     try {
         const productId = req.params.id;
-        req.session.cart = req.session.cart.filter(item => item.id !== productId);
+        const User = require('./models/User');
+        const user = await User.findById(req.user.userId);
+        
+        if (!user) {
+            return res.status(401).json({ error: 'User not found' });
+        }
+
+        // Remove item from cart
+        user.cart = user.cart.filter(item => item.id.toString() !== productId);
+        await user.save();
         
         // Recalculate total with proper number parsing
-        const total = req.session.cart.reduce((sum, item) => {
+        const total = user.cart.reduce((sum, item) => {
             const price = parseFloat(item.price) || 0;
             const quantity = parseInt(item.quantity) || 0;
             return sum + (price * quantity);
         }, 0);
         
-        const cartCount = req.session.cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+        const cartCount = user.cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
         res.json({ success: true, cartCount, total });
     } catch (error) {
         console.error('Error removing from cart:', error);
@@ -217,27 +297,37 @@ app.post('/cart/remove/:id', (req, res) => {
     }
 });
 
-app.post('/cart/update/:id', (req, res) => {
+app.post('/cart/update/:id', auth, async (req, res) => {
     try {
         const productId = req.params.id;
         const change = parseInt(req.body.change);
-        const item = req.session.cart.find(item => item.id === productId);
+        
+        const User = require('./models/User');
+        const user = await User.findById(req.user.userId);
+        
+        if (!user) {
+            return res.status(401).json({ error: 'User not found' });
+        }
+
+        const item = user.cart.find(item => item.id.toString() === productId);
         
         if (item) {
             item.quantity = Math.max(0, item.quantity + change);
             if (item.quantity === 0) {
-                req.session.cart = req.session.cart.filter(i => i.id !== productId);
+                user.cart = user.cart.filter(i => i.id.toString() !== productId);
             }
         }
 
+        await user.save();
+
         // Recalculate total with proper number parsing
-        const total = req.session.cart.reduce((sum, item) => {
+        const total = user.cart.reduce((sum, item) => {
             const price = parseFloat(item.price) || 0;
             const quantity = parseInt(item.quantity) || 0;
             return sum + (price * quantity);
         }, 0);
         
-        const cartCount = req.session.cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+        const cartCount = user.cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
         res.json({ success: true, cartCount, total });
     } catch (error) {
         console.error('Error updating cart:', error);
@@ -267,19 +357,21 @@ app.post('/cart/checkout', async (req, res) => {
 });
 
 // Checkout Routes
-app.get('/checkout', (req, res) => {
+app.get('/checkout', requireAuth, async (req, res) => {
     try {
         console.log('Accessing checkout route');
-        console.log('Session:', req.session);
+        console.log('User ID from auth:', req.user.userId);
         
-        // Initialize cart if it doesn't exist
-        if (!req.session.cart) {
-            console.log('No cart in session, initializing empty cart');
-            req.session.cart = [];
+        const User = require('./models/User');
+        const user = await User.findById(req.user.userId);
+        
+        if (!user) {
+            console.log('User not found in DB, redirecting to login');
+            return res.redirect('/auth/login');
         }
 
-        const cart = req.session.cart;
-        console.log('Cart contents:', cart);
+        const cart = user.cart || []; // Get cart from user document
+        console.log('Cart contents for checkout:', cart);
         
         if (!cart || cart.length === 0) {
             console.log('Cart is empty, redirecting to cart page');
@@ -301,7 +393,7 @@ app.get('/checkout', (req, res) => {
             cart: cart,
             total: total,
             itemCount: itemCount,
-            user: req.session.user || null
+            user: res.locals.user // Use res.locals.user for template user data
         };
 
         console.log('Rendering checkout with data:', viewData);
@@ -316,7 +408,7 @@ app.get('/checkout', (req, res) => {
     }
 });
 
-app.post('/checkout/process', (req, res) => {
+app.post('/checkout/process', auth, async (req, res) => {
     try {
         // Here you would typically:
         // 1. Process the payment
@@ -324,8 +416,15 @@ app.post('/checkout/process', (req, res) => {
         // 3. Clear the cart
         // 4. Send confirmation email
         
-        // For now, we'll just clear the cart and redirect to a success page
-        req.session.cart = [];
+        // For now, we'll clear the cart from the user's database record and redirect to a success page
+        const User = require('./models/User');
+        const user = await User.findById(req.user.userId);
+
+        if (user) {
+            user.cart = []; // Clear the persistent cart
+            await user.save();
+            console.log('User cart cleared from database after checkout.');
+        }
         
         res.redirect('/checkout/success');
     } catch (error) {

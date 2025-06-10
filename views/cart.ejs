@@ -11,14 +11,8 @@
     <!-- Header -->
     <header id="main-header">
         <div class="header-container">
+            <%- include('partials/menu') %>
             <h1 class="logo"><a href="/">Sense</a></h1>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/living">Living</a>
-                <a href="/bedroom">Bedroom</a>
-                <a href="/dining">Dining</a>
-                <a href="/kitchen">Kitchen</a>
-            </div>
             <a href="/cart" class="cart">cart <span class="cart-count">0</span></a>
         </div>
     </header>
@@ -33,7 +27,18 @@
                 <div class="cart-left">
                     <% cart.forEach(item => { %>
                         <div class="cart-item" data-id="<%= item.id %>">
-                            <img src="/Images/<%= item.image %>" alt="<%= item.name %>">
+                            <% 
+                            // Determine the correct image path
+                            let imageSrc;
+                            if (item.image.includes('/')) {
+                                // Already has category path (living/dining)
+                                imageSrc = '/Images/' + item.image;
+                            } else {
+                                // Just image name (bedroom/kitchen) - default to bedrooms for now
+                                imageSrc = '/Images/bedrooms/' + item.image;
+                            }
+                            %>
+                            <img src="<%= imageSrc %>" alt="<%= item.name %>">
                             <div class="item-details">
                                 <h3><%= item.name %></h3>
                                 <p class="price">EGP <%= parseFloat(item.price).toFixed(2) %></p>
@@ -48,7 +53,7 @@
                             </button>
                         </div>
                     <% }); %>
-                    <a href="/dining" class="continue-shopping">← Continue Shopping</a>
+                    <a href="javascript:history.back()" class="continue-shopping">← Continue Shopping</a>
                 </div>
 
                 <div class="cart-right">
@@ -75,12 +80,16 @@
                 <i class="fas fa-shopping-cart"></i>
                 <h2>Your cart is empty</h2>
                 <p>Looks like you haven't added any items to your cart yet.</p>
-                <a href="/dining" class="continue-shopping">Continue Shopping</a>
+                <a href="javascript:history.back()" class="continue-shopping">Continue Shopping</a>
             </div>
         <% } %>
     </main>
 
     <script>
+        // Debug: Log cart data
+        console.log('Cart data received:', <%- JSON.stringify(cart) %>);
+        console.log('Cart length:', <%- cart ? cart.length : 0 %>);
+        
         // Update quantity
         async function updateQuantity(productId, change) {
             try {
@@ -160,22 +169,14 @@
         }
 
         // Update cart count when page loads
-        async function updateCartCount() {
-            try {
-                const response = await fetch('/cart/count');
-                if (response.ok) {
-                    const data = await response.json();
-                    document.querySelector('.cart-count').textContent = data.count;
-                }
-            } catch (error) {
-                console.error('Error updating cart count:', error);
-            }
-        }
-
-        // Initialize cart functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCartCount();
-        });
+        fetch('/cart/count')
+            .then(response => response.json())
+            .then(data => {
+                updateCartCount(data.count);
+            })
+            .catch(error => {
+                console.error('Error fetching cart count:', error);
+            });
     </script>
 </body>
 </html>
