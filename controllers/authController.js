@@ -99,6 +99,47 @@ exports.signup = async (req, res) => {
             });
         }
 
+        // Enhanced password validation
+        if (password.length < 8) {
+            return res.render('signup', {
+                error: 'Password must be at least 8 characters long',
+                username,
+                email
+            });
+        }
+
+        if (!/[A-Z]/.test(password)) {
+            return res.render('signup', {
+                error: 'Password must contain at least 1 uppercase letter',
+                username,
+                email
+            });
+        }
+
+        if (!/[a-z]/.test(password)) {
+            return res.render('signup', {
+                error: 'Password must contain at least 1 lowercase letter',
+                username,
+                email
+            });
+        }
+
+        if (!/[0-9]/.test(password)) {
+            return res.render('signup', {
+                error: 'Password must contain at least 1 number',
+                username,
+                email
+            });
+        }
+
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+            return res.render('signup', {
+                error: 'Password must contain at least 1 special character',
+                username,
+                email
+            });
+        }
+
         if (!terms) {
             return res.render('signup', {
                 error: 'Please agree to the terms and conditions',
@@ -279,9 +320,38 @@ exports.resetPassword = async (req, res) => {
             });
         }
 
+        // Enhanced password validation
         if (password.length < 8) {
             return res.render('reset-password', {
                 error: 'Password must be at least 8 characters long',
+                token: token
+            });
+        }
+
+        if (!/[A-Z]/.test(password)) {
+            return res.render('reset-password', {
+                error: 'Password must contain at least 1 uppercase letter',
+                token: token
+            });
+        }
+
+        if (!/[a-z]/.test(password)) {
+            return res.render('reset-password', {
+                error: 'Password must contain at least 1 lowercase letter',
+                token: token
+            });
+        }
+
+        if (!/[0-9]/.test(password)) {
+            return res.render('reset-password', {
+                error: 'Password must contain at least 1 number',
+                token: token
+            });
+        }
+
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+            return res.render('reset-password', {
+                error: 'Password must contain at least 1 special character',
                 token: token
             });
         }
