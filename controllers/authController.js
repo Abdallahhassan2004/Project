@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const { sendPasswordResetEmail } = require('../config/email');
 
 // Get login page
 exports.getLoginPage = (req, res) => {
@@ -164,7 +165,8 @@ exports.logout = (req, res) => {
 exports.getForgotPasswordPage = (req, res) => {
     res.render('forgot-password', {
         title: 'Forgot Password',
-        error: req.query.error
+        error: req.query.error,
+        success: req.query.success
     });
 };
 
@@ -173,11 +175,20 @@ exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
 
+        // Validate email
+        if (!email) {
+            return res.render('forgot-password', {
+                error: 'Please enter your email address',
+                email: ''
+            });
+        }
+
+        // Find user
         const user = await User.findOne({ email });
         if (!user) {
             return res.render('forgot-password', {
-                error: 'No account found with that email',
-                email
+                error: 'No account found with that email address',
+                email: email
             });
         }
 
@@ -187,13 +198,24 @@ exports.forgotPassword = async (req, res) => {
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
         await user.save();
 
-        // Send reset email
+        // Create reset URL
         const resetUrl = `${req.protocol}://${req.get('host')}/auth/reset-password/${resetToken}`;
-        // TODO: Implement email sending functionality
-
-        res.render('forgot-password', {
-            success: 'Password reset instructions sent to your email'
-        });
+        
+        // Send reset email
+        const emailSent = await sendPasswordResetEmail(user.email, resetUrl);
+        
+        if (emailSent) {
+            res.render('forgot-password', {
+                success: 'Password reset instructions have been sent to your email address',
+                email: ''
+            });
+        } else {
+            res.render('forgot-password', {
+                error: 'Failed to send reset email. Please try again.',
+                email: email
+            });
+        }
+        
     } catch (error) {
         console.error('Forgot password error:', error);
         res.render('forgot-password', {
@@ -206,56 +228,90 @@ exports.forgotPassword = async (req, res) => {
 // Get reset password page
 exports.getResetPasswordPage = async (req, res) => {
     try {
-        const user = await User.findOne({
-            resetPasswordToken: req.params.token,
-            resetPasswordExpires: { $gt: Date.now() }
-        });
-
-        if (!user) {
-            return res.redirect('/auth/forgot-password?error=Invalid or expired reset token');
-        }
-
-        res.render('reset-password', {
-            title: 'Reset Password',
-            token: req.params.token,
-            error: req.query.error
-        });
-    } catch (error) {
-        console.error('Reset password page error:', error);
-        res.redirect('/auth/forgot-password?error=An error occurred');
-    }
-};
-
-// Handle reset password
-exports.resetPassword = async (req, res) => {
-    try {
-        const { password, confirmPassword } = req.body;
         const { token } = req.params;
 
-        if (password !== confirmPassword) {
-            return res.render('reset-password', {
-                error: 'Passwords do not match',
-                token
-            });
-        }
-
+        // Find user with valid token
         const user = await User.findOne({
             resetPasswordToken: token,
             resetPasswordExpires: { $gt: Date.now() }
         });
 
         if (!user) {
-            return res.redirect('/auth/forgot-password?error=Invalid or expired reset token');
+            return res.render('reset-password', {
+                error: 'Password reset token is invalid or has expired',
+                token: ''
+            });
+        }
+
+        res.render('reset-password', {
+            title: 'Reset Password',
+            token: token,
+            error: req.query.error
+        });
+        
+    } catch (error) {
+        console.error('Reset password page error:', error);
+        res.render('reset-password', {
+            error: 'An error occurred. Please try again.',
+            token: ''
+        });
+    }
+};
+
+// Handle reset password
+exports.resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password, confirmPassword } = req.body;
+
+        // Validate input
+        if (!password || !confirmPassword) {
+            return res.render('reset-password', {
+                error: 'Please fill in all fields',
+                token: token
+            });
+        }
+
+        if (password !== confirmPassword) {
+            return res.render('reset-password', {
+                error: 'Passwords do not match',
+                token: token
+            });
+        }
+
+        if (password.length < 8) {
+            return res.render('reset-password', {
+                error: 'Password must be at least 8 characters long',
+                token: token
+            });
+        }
+
+        // Find user with valid token
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.render('reset-password', {
+                error: 'Password reset token is invalid or has expired',
+                token: ''
+            });
         }
 
         // Hash new password
         const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Update user password and clear reset token
+        user.password = hashedPassword;
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
         await user.save();
 
-        res.redirect('/auth/login?success=Password reset successful');
+        // Redirect to login with success message
+        res.redirect('/auth/login?success=Password has been reset successfully. You can now log in with your new password.');
+        
     } catch (error) {
         console.error('Reset password error:', error);
         res.render('reset-password', {
