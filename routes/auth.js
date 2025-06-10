@@ -18,7 +18,7 @@ router.get('/login', loginController.getLoginPage);
 router.post('/login', loginController.login);
 router.post('/logout', (req, res) => {
     res.clearCookie('token');
-    res.redirect('/auth/login');
+    res.redirect('/');
 });
 
 // Signup routes - using authController

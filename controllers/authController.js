@@ -158,7 +158,7 @@ exports.signup = async (req, res) => {
 // Logout user
 exports.logout = (req, res) => {
     res.clearCookie('token');
-    res.redirect('/auth/login');
+    res.redirect('/');
 };
 
 // Get forgot password page
