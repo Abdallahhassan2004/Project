@@ -86,6 +86,7 @@ app.use('/auth', authRoutes);
 // Admin routes
 app.get('/admin', adminAuth, adminController.getAdminPage);
 app.get('/admin/users', adminAuth, adminController.getUsersPage);
+app.get('/admin/orders', adminAuth, adminController.getOrdersPage);
 
 // Test admin route for debugging
 app.get('/admin/test', adminAuth, (req, res) => {
@@ -629,22 +630,38 @@ app.get('/checkout', requireAuth, async (req, res) => {
 
 app.post('/checkout/process', auth, async (req, res) => {
     try {
-        // Here you would typically:
-        // 1. Process the payment
-        // 2. Create an order in the database
-        // 3. Clear the cart
-        // 4. Send confirmation email
-        
-        // For now, we'll clear the cart from the user's database record and redirect to a success page
         const User = require('./models/User');
+        const Order = require('./models/Order');
         const user = await User.findById(req.user.userId);
 
-        if (user) {
-            user.cart = []; // Clear the persistent cart
-            await user.save();
-            console.log('User cart cleared from database after checkout.');
+        if (!user || !user.cart || user.cart.length === 0) {
+            return res.status(400).json({ error: 'Cart is empty' });
         }
-        
+
+        // Calculate total
+        const total = user.cart.reduce((sum, item) => {
+            const price = parseFloat(item.price) || 0;
+            const quantity = parseInt(item.quantity) || 0;
+            return sum + (price * quantity);
+        }, 0);
+
+        // Create new order
+        const newOrder = new Order({
+            user: user._id,
+            products: user.cart.map(item => ({
+                product: item.id,
+                quantity: item.quantity
+            })),
+            total: total,
+            status: 'Pending'
+        });
+
+        await newOrder.save();
+
+        // Clear the user's cart
+        user.cart = [];
+        await user.save();
+
         res.redirect('/checkout/success');
     } catch (error) {
         console.error('Error processing checkout:', error);

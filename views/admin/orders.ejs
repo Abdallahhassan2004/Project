@@ -156,12 +156,8 @@
                 <div class="number"><%= orders.filter(o => o.status === 'Pending').length %></div>
             </div>
             <div class="stat-item">
-                <h4><i class="fas fa-check-circle"></i> Completed</h4>
-                <div class="number"><%= orders.filter(o => o.status === 'Completed').length %></div>
-            </div>
-            <div class="stat-item">
-                <h4><i class="fas fa-times-circle"></i> Cancelled</h4>
-                <div class="number"><%= orders.filter(o => o.status === 'Cancelled').length %></div>
+                <h4><i class="fas fa-truck"></i> Delivered</h4>
+                <div class="number"><%= orders.filter(o => o.status === 'Delivered').length %></div>
             </div>
         </div>
 
@@ -195,18 +191,18 @@
                     <tbody>
                         <% orders.forEach(order => { %>
                             <tr>
-                                <td><strong>#<%= order.id %></strong></td>
-                                <td><%= order.user %></td>
-                                <td><%= order.product %></td>
+                                <td><strong>#<%= order._id %></strong></td>
+                                <td><%= order.user ? order.user.username : 'N/A' %></td>
                                 <td>
-                                    <span class="order-status status-<%= order.status.toLowerCase() %>">
-                                        <%= order.status %>
-                                    </span>
+                                    <% order.products.forEach(item => { %>
+                                        <div><%= item.product ? item.product.name : 'N/A' %> (x<%= item.quantity %>)</div>
+                                    <% }) %>
                                 </td>
-                                <td><%= order.datePlaced %></td>
-                                <td><%= order.lastEdited %></td>
+                                <td><%= order.status %></td>
+                                <td><%= order.createdAt ? order.createdAt.toLocaleDateString() : '' %></td>
+                                <td><%= order.updatedAt ? order.updatedAt.toLocaleDateString() : '' %></td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" onclick="updateOrderStatus('<%= order.id %>')">
+                                    <button class="btn btn-primary btn-sm" onclick="updateOrderStatus('<%= order._id %>')">
                                         <i class="fas fa-edit"></i> Update Status
                                     </button>
                                 </td>

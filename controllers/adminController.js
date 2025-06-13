@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Order = require('../models/Order');
 
 exports.getAdminPage = (req, res) => {
     res.render('admin', {
@@ -36,6 +37,28 @@ exports.getUsersPage = async (req, res) => {
         console.error('Error fetching users:', error);
         res.status(500).render('error', {
             message: 'An error occurred while fetching users'
+        });
+    }
+};
+
+// Get orders page
+exports.getOrdersPage = async (req, res) => {
+    try {
+        const orders = await Order.find()
+            .populate('user', 'username email')
+            .populate('products.product', 'name')
+            .sort({ createdAt: -1 });
+        console.log('Orders fetched for admin:', orders);
+
+        res.render('admin/orders', {
+            title: 'Order Management',
+            orders: orders,
+            active: 'orders'
+        });
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).render('error', {
+            message: 'An error occurred while fetching orders'
         });
     }
 };
