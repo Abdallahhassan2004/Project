@@ -40,20 +40,20 @@
         <!-- Stats Cards -->
         <div class="stats-grid fade-in">
             <div class="stat-card">
-                <h3><i class="fas fa-shopping-bag"></i> Today's Orders</h3>
-                <p class="stat-number"><%= todaysOrders %></p>
+                <h3><i class="fas fa-shopping-bag"></i> Total Products</h3>
+                <p class="stat-number"><%= totalProducts %></p>
             </div>
             <div class="stat-card">
-                <h3><i class="fas fa-chart-bar"></i> Total Orders</h3>
-                <p class="stat-number"><%= totalOrders %></p>
+                <h3><i class="fas fa-users"></i> Total Users</h3>
+                <p class="stat-number"><%= totalUsers %></p>
             </div>
             <div class="stat-card">
-                <h3><i class="fas fa-clock"></i> Pending Orders</h3>
-                <p class="stat-number"><%= pendingOrders %></p>
+                <h3><i class="fas fa-user"></i> Regular Users</h3>
+                <p class="stat-number"><%= regularUsers %></p>
             </div>
             <div class="stat-card">
-                <h3><i class="fas fa-times-circle"></i> Cancelled Orders</h3>
-                <p class="stat-number"><%= cancelledOrders %></p>
+                <h3><i class="fas fa-tags"></i> Categories</h3>
+                <p class="stat-number"><%= categories.length %></p>
             </div>
         </div>
 
@@ -69,18 +69,16 @@
                             <th>Category</th>
                             <th>Price</th>
                             <th>Date Added</th>
-                            <th>Last Edited</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% products.forEach(product => { %>
                             <tr>
-                                <td><strong>#<%= product.id %></strong></td>
+                                <td><strong>#<%= product._id %></strong></td>
                                 <td><%= product.name %></td>
                                 <td><span class="badge badge-secondary"><%= product.category %></span></td>
                                 <td><strong>EGP <%= product.price %></strong></td>
-                                <td><%= product.dateAdded %></td>
-                                <td><%= product.lastEdited %></td>
+                                <td><%= product.createdAt ? product.createdAt.toLocaleDateString() : '' %></td>
                             </tr>
                         <% }); %>
                     </tbody>
@@ -97,29 +95,52 @@
                         <tr>
                             <th>Order ID</th>
                             <th>Customer</th>
-                            <th>Product</th>
+                            <th>Products</th>
                             <th>Status</th>
                             <th>Date Placed</th>
-                            <th>Last Updated</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% orders.forEach(order => { %>
                             <tr>
-                                <td><strong>#<%= order.id %></strong></td>
-                                <td><%= order.user %></td>
-                                <td><%= order.product %></td>
+                                <td><strong>#<%= order._id %></strong></td>
+                                <td><%= order.user ? order.user.username : 'N/A' %></td>
                                 <td>
-                                    <% if (order.status === 'Pending') { %>
-                                        <span class="badge badge-pending"><%= order.status %></span>
-                                    <% } else if (order.status === 'Completed') { %>
-                                        <span class="badge badge-completed"><%= order.status %></span>
-                                    <% } else { %>
-                                        <span class="badge badge-cancelled"><%= order.status %></span>
-                                    <% } %>
+                                    <% order.products.forEach(item => { %>
+                                        <div><%= item.product ? item.product.name : 'N/A' %> (x<%= item.quantity %>)</div>
+                                    <% }) %>
                                 </td>
-                                <td><%= order.datePlaced %></td>
-                                <td><%= order.lastEdited %></td>
+                                <td><%= order.status %></td>
+                                <td><%= order.createdAt ? order.createdAt.toLocaleDateString() : '' %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Recent Users -->
+        <section class="recent-section fade-in">
+            <h2><i class="fas fa-users"></i> Recent Users</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Date Registered</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <td><strong>#<%= user._id %></strong></td>
+                                <td><%= user.username %></td>
+                                <td><%= user.email %></td>
+                                <td><%= user.role %></td>
+                                <td><%= user.createdAt ? user.createdAt.toLocaleDateString() : '' %></td>
                             </tr>
                         <% }); %>
                     </tbody>

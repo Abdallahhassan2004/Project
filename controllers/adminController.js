@@ -1,27 +1,38 @@
 const User = require('../models/User');
 const Order = require('../models/Order');
+const Product = require('../models/Product');
 
-exports.getAdminPage = (req, res) => {
-    res.render('admin', {
-      title: 'Admin Panel',
-      todaysOrders: 128,
-      totalOrders: 15265,
-      pendingOrders: 327,
-      cancelledOrders: 1360,
-      siteViews: 45678,
-      products: [
-        { id: 1, name: 'Traditional Dining Set', category: 'Dining', price: '£1,499', dateAdded: '2025-05-01', lastEdited: '2025-05-10' },
-        { id: 2, name: 'Modern Sofa', category: 'Living Room', price: '£899', dateAdded: '2025-04-15', lastEdited: '2025-05-05' }
-      ],
-      orders: [
-        { id: 101, user: 'John Doe', product: 'Modern Dining Set', status: 'Pending', datePlaced: '2025-05-10', lastEdited: '2025-05-11' },
-        { id: 102, user: 'Jane Smith', product: 'Traditional Sofa', status: 'Shipped', datePlaced: '2025-05-09', lastEdited: '2025-05-10' }
-      ],
-      users: [
-        { id: 1, name: 'John Doe', email: 'john.doe@example.com', dateRegistered: '2025-04-15', lastEdited: '2025-05-12' },
-        { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', dateRegistered: '2025-04-20', lastEdited: '2025-05-10' }
-      ]
-    });
+exports.getAdminPage = async (req, res) => {
+    try {
+        // Fetch latest products
+        const latestProducts = await Product.find().sort({ createdAt: -1 }).limit(5);
+        const totalProducts = latestProducts.length;
+        const totalUsers = await User.countDocuments();
+        const regularUsers = await User.countDocuments({ role: 'user' });
+        const categories = await Product.distinct('category');
+        const latestOrders = await Order.find()
+            .populate('user', 'username email')
+            .populate('products.product', 'name')
+            .sort({ createdAt: -1 })
+            .limit(5);
+        const latestUsers = await User.find().select('-password').sort({ createdAt: -1 }).limit(5);
+
+        res.render('admin', {
+            title: 'Admin Panel',
+            totalProducts,
+            totalUsers,
+            regularUsers,
+            categories,
+            products: latestProducts,
+            orders: latestOrders,
+            users: latestUsers
+        });
+    } catch (error) {
+        console.error('Error fetching admin dashboard data:', error);
+        res.status(500).render('error', {
+            message: 'An error occurred while fetching admin dashboard data'
+        });
+    }
 };
 
 // Get users page
