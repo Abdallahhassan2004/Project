@@ -793,16 +793,7 @@ app.get('/dining/dining5', (req, res) => {
     });
 });
 
-app.get('/dining/dining6', (req, res) => {
-    res.render('dining/dining6', {
-        product: {
-            title: 'Glass Modernity Dining Set',
-            price: '£550',
-            availability: 'In Stock',
-            description: 'Contemporary glass dining set that brings light and space to your dining area. Features a tempered glass table with modern metal frame.'
-        }
-    });
-});
+
 
 // Add Product Page
 app.get('/admin/add-product', adminAuth, (req, res) => {
