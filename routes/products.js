@@ -39,16 +39,22 @@ router.get('/:id', async (req, res) => {
 // Admin routes (these will be protected by adminAuth middleware)
 // Add a new product
 router.post('/', async (req, res) => {
-    const product = new Product({
-        name: req.body.name,
-        category: req.body.category,
-        price: req.body.price,
-        description: req.body.description,
-        images: req.body.images,
-        alt: req.body.alt
-    });
-
     try {
+        // Format price with EGP
+        const priceNum = parseFloat(req.body.price);
+        if (isNaN(priceNum) || priceNum < 0) {
+            return res.status(400).json({ message: 'Invalid price' });
+        }
+        
+        const product = new Product({
+            name: req.body.name,
+            category: req.body.category,
+            price: `EGP ${priceNum.toFixed(2)}`,
+            description: req.body.description,
+            images: req.body.images,
+            alt: req.body.alt
+        });
+
         const newProduct = await product.save();
         res.status(201).json(newProduct);
     } catch (error) {
@@ -59,19 +65,153 @@ router.post('/', async (req, res) => {
 // Update a product
 router.patch('/:id', async (req, res) => {
     try {
+        console.log('=== UPDATE PRODUCT ROUTE ===');
+        console.log('Product ID:', req.params.id);
+        console.log('User:', req.user);
+        console.log('Request body:', req.body);
+        
         const product = await Product.findById(req.params.id);
         if (!product) {
+            console.log('Product not found');
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        Object.keys(req.body).forEach(key => {
-            product[key] = req.body[key];
+        console.log('Product found:', product.name);
+
+        // Extract and validate form data
+        const { name, category, price, description, mainImage, thumbnails, alt } = req.body;
+
+        // Strict validation
+        const validationErrors = [];
+
+        // Name validation
+        if (!name || !name.trim()) {
+            validationErrors.push('Product name is required');
+        } else if (name.trim().length < 3) {
+            validationErrors.push('Product name must be at least 3 characters');
+        } else if (name.trim().length > 100) {
+            validationErrors.push('Product name cannot exceed 100 characters');
+        } else if (!/^[a-zA-Z0-9\s\-_.,&()]+$/.test(name.trim())) {
+            validationErrors.push('Product name contains invalid characters');
+        }
+
+        // Category validation
+        const validCategories = ['Living Room', 'Bedroom', 'Kitchen', 'Dining'];
+        if (!category || !validCategories.includes(category)) {
+            validationErrors.push('Please select a valid category');
+        }
+
+        // Price validation
+        const priceNum = parseFloat(price);
+        if (!price || isNaN(priceNum) || priceNum < 0) {
+            validationErrors.push('Please enter a valid positive price');
+        } else if (priceNum > 999999.99) {
+            validationErrors.push('Price cannot exceed 999,999.99');
+        }
+
+        // Description validation
+        if (!description || !description.trim()) {
+            validationErrors.push('Description is required');
+        } else if (description.trim().length < 10) {
+            validationErrors.push('Description must be at least 10 characters');
+        } else if (description.trim().length > 1000) {
+            validationErrors.push('Description cannot exceed 1000 characters');
+        }
+
+        // Main image validation
+        if (!mainImage || !mainImage.trim()) {
+            validationErrors.push('Main image path is required');
+        } else if (!/^[a-zA-Z0-9\/\-_.]+$/.test(mainImage.trim())) {
+            validationErrors.push('Invalid main image path format');
+        }
+
+        // Thumbnails validation
+        if (!thumbnails || !thumbnails.trim()) {
+            validationErrors.push('At least one thumbnail image is required');
+        } else {
+            const thumbnailArray = thumbnails.split('\n').filter(url => url.trim());
+            if (thumbnailArray.length === 0) {
+                validationErrors.push('At least one thumbnail image is required');
+            } else if (thumbnailArray.length > 10) {
+                validationErrors.push('Maximum 10 thumbnail images allowed');
+            } else {
+                const invalidPaths = thumbnailArray.filter(url => !/^[a-zA-Z0-9\/\-_.]+$/.test(url.trim()));
+                if (invalidPaths.length > 0) {
+                    validationErrors.push('Some thumbnail paths have invalid format');
+                }
+            }
+        }
+
+        // Alt text validation
+        if (!alt || !alt.trim()) {
+            validationErrors.push('Alt text is required');
+        } else if (alt.trim().length < 3) {
+            validationErrors.push('Alt text must be at least 3 characters');
+        } else if (alt.trim().length > 200) {
+            validationErrors.push('Alt text cannot exceed 200 characters');
+        }
+
+        // Category-specific image path validation
+        const categoryPaths = {
+            'Living Room': 'livingRooms/',
+            'Bedroom': 'bedrooms/',
+            'Kitchen': 'kitchen/',
+            'Dining': 'dining/'
+        };
+
+        const expectedPath = categoryPaths[category];
+        if (mainImage && !mainImage.startsWith(expectedPath)) {
+            validationErrors.push(`Main image path should start with "${expectedPath}" for ${category} products`);
+        }
+
+        const thumbnailArray = thumbnails ? thumbnails.split('\n').filter(url => url.trim()) : [];
+        const invalidThumbnails = thumbnailArray.filter(url => !url.startsWith(expectedPath));
+        if (invalidThumbnails.length > 0) {
+            validationErrors.push(`All thumbnail paths should start with "${expectedPath}" for ${category} products`);
+        }
+
+        // If there are validation errors, return them
+        if (validationErrors.length > 0) {
+            console.log('Validation errors:', validationErrors);
+            return res.status(400).json({ 
+                message: 'Validation failed',
+                errors: validationErrors 
+            });
+        }
+
+        // Update product with validated data
+        product.name = name.trim();
+        product.category = category;
+        product.price = `EGP ${priceNum.toFixed(2)}`;
+        product.description = description.trim();
+        product.images = {
+            main: mainImage.trim(),
+            thumbnails: thumbnailArray
+        };
+        product.alt = alt.trim();
+
+        console.log('Updating product with data:', {
+            name: product.name,
+            category: product.category,
+            price: product.price,
+            description: product.description,
+            images: product.images,
+            alt: product.alt
         });
 
         const updatedProduct = await product.save();
-        res.json(updatedProduct);
+        console.log('Product updated successfully');
+
+        res.json({
+            message: 'Product updated successfully',
+            product: updatedProduct
+        });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Error updating product:', error);
+        res.status(500).json({ 
+            message: 'Error updating product',
+            error: error.message 
+        });
     }
 });
 

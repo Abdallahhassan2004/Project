@@ -4,15 +4,6 @@ const authController = require('../controllers/authController');
 const loginController = require('../controllers/loginController');
 const { auth } = require('../middleware/auth');
 
-// Admin registration routes
-router.get('/admin/register', (req, res) => {
-    res.render('admin-register', {
-        title: 'Admin Registration',
-        error: req.query.error
-    });
-});
-router.post('/admin/register', authController.registerAdmin);
-
 // Authentication routes - using loginController for login/logout
 router.get('/login', loginController.getLoginPage);
 router.post('/login', loginController.login);

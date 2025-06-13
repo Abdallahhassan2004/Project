@@ -103,6 +103,59 @@
             font-weight: 700;
             color: var(--text-dark);
         }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        /* Validation styles */
+        .validation-message {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            min-height: 1.2rem;
+        }
+        
+        .validation-message.error {
+            color: #e74c3c;
+        }
+        
+        .validation-message.success {
+            color: #27ae60;
+        }
+        
+        .form-control.error {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 0.2rem rgba(231, 76, 60, 0.25);
+        }
+        
+        .form-control.success {
+            border-color: #27ae60;
+            box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+        }
+        
+        .image-preview {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .image-preview img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid #ddd;
+        }
+        
+        .image-preview img:hover {
+            border-color: #3498db;
+        }
     </style>
 </head>
 <body>
@@ -118,7 +171,6 @@
                 <li><a href="/admin/add-product"><i class="fas fa-plus-circle"></i> Add Product</a></li>
                 <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
                 <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
-                <li><a href="/admin/settings"><i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="/" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
@@ -213,6 +265,88 @@
 
     <!-- Hidden Logout Form -->
     <form id="logoutForm" action="/auth/logout" method="POST" style="display: none;"></form>
+
+    <!-- Edit Product Modal -->
+    <div id="editProductModal" class="modal">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                <h3><i class="fas fa-edit"></i> Edit Product</h3>
+                <button class="close" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editProductForm" onsubmit="handleEditSubmit(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="editProductId" name="productId">
+                    
+                    <div class="form-group">
+                        <label for="editName"><i class="fas fa-tag"></i> Product Name *</label>
+                        <input type="text" id="editName" name="name" class="form-control" required 
+                               placeholder="Enter product name (3-100 characters)" minlength="3" maxlength="100">
+                        <div class="validation-message" id="editNameValidation"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCategory"><i class="fas fa-folder"></i> Category *</label>
+                        <select id="editCategory" name="category" class="form-control" required>
+                            <option value="">Select category</option>
+                            <option value="Living Room">Living Room</option>
+                            <option value="Bedroom">Bedroom</option>
+                            <option value="Kitchen">Kitchen</option>
+                            <option value="Dining">Dining</option>
+                        </select>
+                        <div class="validation-message" id="editCategoryValidation"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPrice"><i class="fas fa-money-bill"></i> Price (EGP) *</label>
+                        <input type="number" id="editPrice" name="price" class="form-control" required 
+                               placeholder="Enter price (e.g., 299.99)" min="0" step="0.01">
+                        <div class="validation-message" id="editPriceValidation"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editDescription"><i class="fas fa-align-left"></i> Description *</label>
+                        <textarea id="editDescription" name="description" class="form-control" required 
+                                  placeholder="Enter product description (10-1000 characters)" rows="4" minlength="10" maxlength="1000"></textarea>
+                        <div class="validation-message" id="editDescriptionValidation"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editMainImage"><i class="fas fa-image"></i> Main Image Path *</label>
+                        <input type="text" id="editMainImage" name="mainImage" class="form-control" required 
+                               placeholder="Enter main image path (e.g., livingRooms/L1/L1.avif)">
+                        <div class="validation-message" id="editMainImageValidation"></div>
+                        <div class="image-preview" id="editMainImagePreview"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editThumbnails"><i class="fas fa-images"></i> Thumbnail Images *</label>
+                        <textarea id="editThumbnails" name="thumbnails" class="form-control" required 
+                                  placeholder="Enter thumbnail image paths (one per line)&#10;e.g.:&#10;livingRooms/L1/L1.avif&#10;livingRooms/L1/L1-2.avif" rows="4"></textarea>
+                        <div class="validation-message" id="editThumbnailsValidation"></div>
+                        <div class="image-preview" id="editThumbnailsPreview"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editAlt"><i class="fas fa-eye"></i> Alt Text *</label>
+                        <input type="text" id="editAlt" name="alt" class="form-control" required 
+                               placeholder="Enter alt text for accessibility (3-200 characters)" minlength="3" maxlength="200">
+                        <div class="validation-message" id="editAltValidation"></div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="editSubmitBtn">
+                        <i class="fas fa-save"></i> Update Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         // Notification system
@@ -330,7 +464,291 @@
         }
 
         function editProduct(id) {
-            window.location.href = `/admin/edit-product/${id}`;
+            // Find the product data
+            const products = <%- JSON.stringify(products) %>;
+            const product = products.find(p => p._id === id);
+            
+            if (!product) {
+                showNotification('Product not found', 'error');
+                return;
+            }
+            
+            // Populate the form with current product data
+            document.getElementById('editProductId').value = product._id;
+            document.getElementById('editName').value = product.name;
+            document.getElementById('editCategory').value = product.category;
+            
+            // Extract numeric value from EGP price
+            const priceValue = product.price.replace(/EGP\s*/, '').replace(/£\s*/, '');
+            document.getElementById('editPrice').value = priceValue;
+            
+            document.getElementById('editDescription').value = product.description;
+            document.getElementById('editMainImage').value = product.images.main;
+            document.getElementById('editThumbnails').value = product.images.thumbnails.join('\n');
+            document.getElementById('editAlt').value = product.alt;
+            
+            // Show image previews
+            updateEditImagePreviews();
+            
+            // Clear previous validation messages
+            clearValidationMessages();
+            
+            // Show the modal
+            document.getElementById('editProductModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editProductModal').style.display = 'none';
+            clearValidationMessages();
+        }
+
+        function clearValidationMessages() {
+            const validationElements = document.querySelectorAll('.validation-message');
+            validationElements.forEach(el => {
+                el.textContent = '';
+                el.className = 'validation-message';
+            });
+            
+            const formControls = document.querySelectorAll('.form-control');
+            formControls.forEach(el => {
+                el.classList.remove('error', 'success');
+            });
+        }
+
+        function updateEditImagePreviews() {
+            // Main image preview
+            const mainImage = document.getElementById('editMainImage').value;
+            const mainPreview = document.getElementById('editMainImagePreview');
+            if (mainImage.trim()) {
+                mainPreview.innerHTML = `<img src="/Images/${mainImage}" alt="Main image preview" onerror="this.style.display='none'">`;
+            } else {
+                mainPreview.innerHTML = '';
+            }
+            
+            // Thumbnails preview
+            const thumbnails = document.getElementById('editThumbnails').value;
+            const thumbnailsPreview = document.getElementById('editThumbnailsPreview');
+            const thumbnailArray = thumbnails.split('\n').filter(url => url.trim());
+            if (thumbnailArray.length > 0) {
+                thumbnailsPreview.innerHTML = thumbnailArray.map(url => 
+                    `<img src="/Images/${url}" alt="Thumbnail preview" onerror="this.style.display='none'">`
+                ).join('');
+            } else {
+                thumbnailsPreview.innerHTML = '';
+            }
+        }
+
+        // Real-time validation
+        function validateField(fieldName, value) {
+            const validationElement = document.getElementById(`${fieldName}Validation`);
+            const inputElement = document.getElementById(fieldName);
+            
+            let isValid = true;
+            let message = '';
+            
+            switch (fieldName) {
+                case 'editName':
+                    if (!value.trim()) {
+                        message = 'Product name is required';
+                        isValid = false;
+                    } else if (value.length < 3) {
+                        message = 'Product name must be at least 3 characters';
+                        isValid = false;
+                    } else if (value.length > 100) {
+                        message = 'Product name cannot exceed 100 characters';
+                        isValid = false;
+                    } else if (!/^[a-zA-Z0-9\s\-_.,&()]+$/.test(value)) {
+                        message = 'Product name contains invalid characters';
+                        isValid = false;
+                    } else {
+                        message = '✓ Valid product name';
+                    }
+                    break;
+                    
+                case 'editCategory':
+                    if (!value) {
+                        message = 'Please select a category';
+                        isValid = false;
+                    } else {
+                        message = '✓ Category selected';
+                    }
+                    break;
+                    
+                case 'editPrice':
+                    const price = parseFloat(value);
+                    if (!value.trim()) {
+                        message = 'Price is required';
+                        isValid = false;
+                    } else if (isNaN(price) || price < 0) {
+                        message = 'Please enter a valid positive number';
+                        isValid = false;
+                    } else if (price > 999999.99) {
+                        message = 'Price cannot exceed 999,999.99';
+                        isValid = false;
+                    } else {
+                        message = '✓ Valid price';
+                    }
+                    break;
+                    
+                case 'editDescription':
+                    if (!value.trim()) {
+                        message = 'Description is required';
+                        isValid = false;
+                    } else if (value.length < 10) {
+                        message = 'Description must be at least 10 characters';
+                        isValid = false;
+                    } else if (value.length > 1000) {
+                        message = 'Description cannot exceed 1000 characters';
+                        isValid = false;
+                    } else {
+                        message = '✓ Valid description';
+                    }
+                    break;
+                    
+                case 'editMainImage':
+                    if (!value.trim()) {
+                        message = 'Main image path is required';
+                        isValid = false;
+                    } else if (!/^[a-zA-Z0-9\/\-_.]+$/.test(value)) {
+                        message = 'Invalid image path format';
+                        isValid = false;
+                    } else {
+                        message = '✓ Valid image path';
+                    }
+                    break;
+                    
+                case 'editThumbnails':
+                    const thumbnailArray = value.split('\n').filter(url => url.trim());
+                    if (thumbnailArray.length === 0) {
+                        message = 'At least one thumbnail image is required';
+                        isValid = false;
+                    } else if (thumbnailArray.length > 10) {
+                        message = 'Maximum 10 thumbnail images allowed';
+                        isValid = false;
+                    } else {
+                        const invalidPaths = thumbnailArray.filter(url => !/^[a-zA-Z0-9\/\-_.]+$/.test(url.trim()));
+                        if (invalidPaths.length > 0) {
+                            message = 'Some thumbnail paths have invalid format';
+                            isValid = false;
+                        } else {
+                            message = `✓ ${thumbnailArray.length} valid thumbnail(s)`;
+                        }
+                    }
+                    break;
+                    
+                case 'editAlt':
+                    if (!value.trim()) {
+                        message = 'Alt text is required';
+                        isValid = false;
+                    } else if (value.length < 3) {
+                        message = 'Alt text must be at least 3 characters';
+                        isValid = false;
+                    } else if (value.length > 200) {
+                        message = 'Alt text cannot exceed 200 characters';
+                        isValid = false;
+                    } else {
+                        message = '✓ Valid alt text';
+                    }
+                    break;
+            }
+            
+            // Update validation display
+            validationElement.textContent = message;
+            validationElement.className = `validation-message ${isValid ? 'success' : 'error'}`;
+            inputElement.className = `form-control ${isValid ? 'success' : 'error'}`;
+            
+            return isValid;
+        }
+
+        async function handleEditSubmit(event) {
+            event.preventDefault();
+            
+            // Validate all fields
+            const fields = ['editName', 'editCategory', 'editPrice', 'editDescription', 'editMainImage', 'editThumbnails', 'editAlt'];
+            let allValid = true;
+            
+            fields.forEach(fieldName => {
+                const value = document.getElementById(fieldName).value;
+                if (!validateField(fieldName, value)) {
+                    allValid = false;
+                }
+            });
+            
+            if (!allValid) {
+                showNotification('Please fix all validation errors before submitting', 'error');
+                return;
+            }
+            
+            // Additional validation for image paths based on category
+            const category = document.getElementById('editCategory').value;
+            const mainImage = document.getElementById('editMainImage').value;
+            const thumbnails = document.getElementById('editThumbnails').value;
+            
+            const categoryPaths = {
+                'Living Room': 'livingRooms/',
+                'Bedroom': 'bedrooms/',
+                'Kitchen': 'kitchen/',
+                'Dining': 'dining/'
+            };
+            
+            const expectedPath = categoryPaths[category];
+            if (!mainImage.startsWith(expectedPath)) {
+                showNotification(`Main image path should start with "${expectedPath}" for ${category} products`, 'error');
+                return;
+            }
+            
+            const thumbnailArray = thumbnails.split('\n').filter(url => url.trim());
+            const invalidThumbnails = thumbnailArray.filter(url => !url.startsWith(expectedPath));
+            if (invalidThumbnails.length > 0) {
+                showNotification(`All thumbnail paths should start with "${expectedPath}" for ${category} products`, 'error');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('editSubmitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            submitBtn.disabled = true;
+            
+            // Prepare form data
+            const formData = new URLSearchParams();
+            formData.append('name', document.getElementById('editName').value.trim());
+            formData.append('category', document.getElementById('editCategory').value);
+            formData.append('price', document.getElementById('editPrice').value);
+            formData.append('description', document.getElementById('editDescription').value.trim());
+            formData.append('mainImage', document.getElementById('editMainImage').value.trim());
+            formData.append('thumbnails', document.getElementById('editThumbnails').value);
+            formData.append('alt', document.getElementById('editAlt').value.trim());
+            
+            try {
+                const productId = document.getElementById('editProductId').value;
+                const response = await fetch(`/api/admin/products/${productId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString()
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showNotification('Product updated successfully!', 'success');
+                    closeEditModal();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    const errorText = await response.text();
+                    showNotification('Error updating product: ' + errorText, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error updating product: ' + error.message, 'error');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         }
 
         // Test routes function
@@ -373,6 +791,32 @@
             const elements = document.querySelectorAll('.fade-in');
             elements.forEach((element, index) => {
                 element.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // Add validation event listeners
+            const editFields = ['editName', 'editCategory', 'editPrice', 'editDescription', 'editMainImage', 'editThumbnails', 'editAlt'];
+            editFields.forEach(fieldName => {
+                const element = document.getElementById(fieldName);
+                if (element) {
+                    element.addEventListener('input', function() {
+                        validateField(fieldName, this.value);
+                    });
+                    
+                    element.addEventListener('blur', function() {
+                        validateField(fieldName, this.value);
+                    });
+                }
+            });
+            
+            // Add image preview listeners
+            document.getElementById('editMainImage').addEventListener('input', updateEditImagePreviews);
+            document.getElementById('editThumbnails').addEventListener('input', updateEditImagePreviews);
+            
+            // Close modal when clicking outside
+            document.getElementById('editProductModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeEditModal();
+                }
             });
         });
     </script>
