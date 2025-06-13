@@ -4,63 +4,223 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-    <link rel="stylesheet" href="<%= '/CSS/users.css' %>">
-    <script src="<%= '/JavaScript/admin.js' %>" defer></script>
-    <script src="<%= '/JavaScript/orders.js' %>" defer></script>
+    <link rel="stylesheet" href="/CSS/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/JavaScript/admin.js" defer></script>
+    <script src="/JavaScript/orders.js" defer></script>
+    <style>
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-pending {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+            color: var(--white);
+        }
+        
+        .status-completed {
+            background: linear-gradient(135deg, var(--success-color), #229954);
+            color: var(--white);
+        }
+        
+        .status-cancelled {
+            background: linear-gradient(135deg, var(--danger-color), #c0392b);
+            color: var(--white);
+        }
+        
+        .status-processing {
+            background: linear-gradient(135deg, var(--accent-color), #2980b9);
+            color: var(--white);
+        }
+        
+        .actions-bar {
+            background: var(--white);
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .stat-item h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Admin Panel</h1>
-        <nav>
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-crown"></i> Admin Panel</h2>
+        </div>
+        <nav class="sidebar-nav">
             <ul>
-                <li><a href="/admin" class="<%= active === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
-                <li><a href="/admin/users" class="<%= active === 'users' ? 'active' : '' %>">Users</a></li>
-                <li><a href="/admin/orders" class="<%= active === 'orders' ? 'active' : '' %>">Orders</a></li>
-                <li><a href="/admin/products" class="<%= active === 'products' ? 'active' : '' %>">Products</a></li>
-                <li><a href="/admin/settings" class="<%= active === 'settings' ? 'active' : '' %>">Settings</a></li>
+                <li><a href="/admin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="/admin/add-product"><i class="fas fa-plus-circle"></i> Add Product</a></li>
+                <li><a href="/admin/orders" class="active"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="/admin/settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="/" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
-    </header>
-    <main>
-        <h2>Order Management</h2>
-        <section id="orders">
-            <div class="actions">
-                <button onclick="exportOrders()">Export Orders</button>
-                <input type="text" id="orderSearch" placeholder="Search Orders..." oninput="filterOrders()">
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <div class="dashboard-header fade-in">
+            <h1><i class="fas fa-shopping-cart"></i> Order Management</h1>
+            <div class="date">
+                <i class="fas fa-calendar-alt"></i>
+                <%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>User</th>
-                        <th>Product</th>
-                        <th>Status</th>
-                        <th>Date Placed</th>
-                        <th>Last Edited</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% orders.forEach(order => { %>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-summary fade-in">
+            <div class="stat-item">
+                <h4><i class="fas fa-shopping-bag"></i> Total Orders</h4>
+                <div class="number"><%= orders.length %></div>
+            </div>
+            <div class="stat-item">
+                <h4><i class="fas fa-clock"></i> Pending</h4>
+                <div class="number"><%= orders.filter(o => o.status === 'Pending').length %></div>
+            </div>
+            <div class="stat-item">
+                <h4><i class="fas fa-check-circle"></i> Completed</h4>
+                <div class="number"><%= orders.filter(o => o.status === 'Completed').length %></div>
+            </div>
+            <div class="stat-item">
+                <h4><i class="fas fa-times-circle"></i> Cancelled</h4>
+                <div class="number"><%= orders.filter(o => o.status === 'Cancelled').length %></div>
+            </div>
+        </div>
+
+        <!-- Actions Bar -->
+        <div class="actions-bar fade-in">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="orderSearch" class="search-input" placeholder="Search orders by ID, user, or product..." oninput="filterOrders()">
+            </div>
+            <button class="btn btn-secondary" onclick="exportOrders()">
+                <i class="fas fa-download"></i> Export Orders
+            </button>
+        </div>
+
+        <!-- Orders Table -->
+        <section class="recent-section fade-in">
+            <h2><i class="fas fa-list"></i> All Orders</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
                         <tr>
-                            <td><%= order.id %></td>
-                            <td><%= order.user %></td>
-                            <td><%= order.product %></td>
-                            <td><%= order.status %></td>
-                            <td><%= order.datePlaced %></td>
-                            <td><%= order.lastEdited %></td>
-                            <td>
-                                <button onclick="updateOrderStatus('<%= order.id %>')">Update Status</button>
-                            </td>
+                            <th>Order ID</th>
+                            <th>User</th>
+                            <th>Product</th>
+                            <th>Status</th>
+                            <th>Date Placed</th>
+                            <th>Last Edited</th>
+                            <th>Actions</th>
                         </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <% orders.forEach(order => { %>
+                            <tr>
+                                <td><strong>#<%= order.id %></strong></td>
+                                <td><%= order.user %></td>
+                                <td><%= order.product %></td>
+                                <td>
+                                    <span class="order-status status-<%= order.status.toLowerCase() %>">
+                                        <%= order.status %>
+                                    </span>
+                                </td>
+                                <td><%= order.datePlaced %></td>
+                                <td><%= order.lastEdited %></td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="updateOrderStatus('<%= order.id %>')">
+                                        <i class="fas fa-edit"></i> Update Status
+                                    </button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
-    <footer>
-        <p>&copy; <%= new Date().getFullYear() %> Admin Panel</p>
-    </footer>
+
+    <!-- Hidden Logout Form -->
+    <form id="logoutForm" action="/auth/logout" method="POST" style="display: none;"></form>
 
     <script>
         function exportOrders() {
@@ -81,8 +241,16 @@
 
         function updateOrderStatus(orderId) {
             // This should be replaced with actual status update functionality
-            alert(`Updating status for order ${orderId}...`);
+            alert(Updating status for order ${orderId}...);
         }
+
+        // Add smooth animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((element, index) => {
+                element.style.animationDelay = ${index * 0.1}s;
+            });
+        });
     </script>
 </body>
 </html>

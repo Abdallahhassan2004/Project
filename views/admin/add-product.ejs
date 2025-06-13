@@ -5,39 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Product - Admin Panel</title>
     <link rel="stylesheet" href="/CSS/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .form-container {
-            max-width: 800px;
-            margin: 2rem auto;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, var(--accent-color), #2980b9);
+            color: var(--white);
             padding: 2rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .form-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .form-body {
+            padding: 2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
         }
 
-        label {
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9rem;
         }
 
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea {
+        .form-control {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
             font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
         }
 
-        textarea {
-            min-height: 100px;
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
             resize: vertical;
         }
 
@@ -52,136 +89,351 @@
             width: 100%;
             height: 150px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: var(--border-radius-sm);
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .image-preview img:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-color);
         }
 
         .submit-btn {
-            background: #333;
-            color: white;
+            background: linear-gradient(135deg, var(--success-color), #229954);
+            color: var(--white);
             padding: 1rem 2rem;
             border: none;
-            border-radius: 4px;
+            border-radius: var(--border-radius-sm);
             cursor: pointer;
             font-size: 1rem;
+            font-weight: 600;
             width: 100%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .submit-btn:hover {
-            background: #444;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
         }
 
         .error {
-            color: red;
+            color: var(--danger-color);
             font-size: 0.9rem;
             margin-top: 0.25rem;
         }
 
         .help-text {
             font-size: 0.8rem;
-            color: #666;
+            color: var(--text-light);
             margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: var(--light-bg);
+            border-radius: var(--border-radius-sm);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .form-footer {
+            padding: 1.5rem 2rem;
+            background: var(--light-bg);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .form-actions {
+            background: var(--light-bg);
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-sm);
+            color: var(--white);
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: var(--transition);
+            max-width: 400px;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--success-color), #229954);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger-color), #c0392b);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            margin-left: auto;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .notification-close:hover {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Admin Panel</h1>
-        <nav>
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-crown"></i> Admin Panel</h2>
+        </div>
+        <nav class="sidebar-nav">
             <ul>
-                <li><a href="/admin">Dashboard</a></li>
-                <li><a href="/admin/products">Products</a></li>
-                <li><a href="/admin/add-product" class="active">Add Product</a></li>
+                <li><a href="/admin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="/admin/add-product" class="active"><i class="fas fa-plus-circle"></i> Add Product</a></li>
+                <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="/admin/settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="/" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
-    </header>
+    </aside>
 
-    <main>
-        <div class="form-container">
-            <h2>Add New Product</h2>
+    <!-- Main Content -->
+    <main id="main-content">
+        <div class="dashboard-header fade-in">
+            <h1><i class="fas fa-plus-circle"></i> Add New Product</h1>
+            <div class="date">
+                <i class="fas fa-calendar-alt"></i>
+                <%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </div>
+        </div>
+
+        <div class="form-container fade-in">
+            <div class="form-header">
+                <h2><i class="fas fa-box-open"></i> Product Information</h2>
+            </div>
+            
             <form id="addProductForm" onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label for="name">Product Name</label>
-                    <input type="text" id="name" name="name" required>
+                <div class="form-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name"><i class="fas fa-tag"></i> Product Name</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category"><i class="fas fa-folder"></i> Category</label>
+                            <select id="category" name="category" class="form-control" required>
+                                <option value="">Select a category</option>
+                                <option value="Living Room">Living Room</option>
+                                <option value="Bedroom">Bedroom</option>
+                                <option value="Kitchen">Kitchen</option>
+                                <option value="Dining">Dining</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price"><i class="fas fa-dollar-sign"></i> Price (EGP)</label>
+                            <input type="number" id="price" name="price" class="form-control" min="0" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="alt"><i class="fas fa-image"></i> Alt Text</label>
+                            <input type="text" id="alt" name="alt" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="description"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea id="description" name="description" class="form-control" required></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="mainImage"><i class="fas fa-image"></i> Main Image Path</label>
+                        <input type="text" id="mainImage" name="mainImage" class="form-control" required 
+                               placeholder="e.g., dining/d1/1d.webp for dining products">
+                        <div class="help-text">
+                            <strong>Path Guidelines:</strong><br>
+                            • Dining: dining/d1/1d.webp<br>
+                            • Bedroom: bedrooms/b1/1.jpg<br>
+                            • Kitchen: kitchen/kitchen1/d1.jpg<br>
+                            • Living Room: livingRooms/L1/L1.avif
+                        </div>
+                        <div class="image-preview" id="mainImagePreview"></div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="thumbnails"><i class="fas fa-images"></i> Thumbnail Image Paths (one per line)</label>
+                        <textarea id="thumbnails" name="thumbnails" class="form-control" required 
+                                  placeholder="e.g., dining/d1/1d.webp&#10;dining/d1/2d.webp&#10;dining/d1/3d.webp"></textarea>
+                        <div class="help-text">
+                            Enter each thumbnail path on a new line. Make sure all images exist in the /Images/ directory.
+                        </div>
+                        <div class="image-preview" id="thumbnailsPreview"></div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select id="category" name="category" required>
-                        <option value="">Select a category</option>
-                        <option value="Living Room">Living Room</option>
-                        <option value="Bedroom">Bedroom</option>
-                        <option value="Kitchen">Kitchen</option>
-                        <option value="Dining">Dining</option>
-                    </select>
+                <div class="form-footer">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
                 </div>
-
-                <div class="form-group">
-                    <label for="price">Price (EGP)</label>
-                    <input type="number" id="price" name="price" min="0" step="0.01" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="mainImage">Main Image Path</label>
-                    <input type="text" id="mainImage" name="mainImage" required 
-                           placeholder="e.g., dining/d1/1d.webp for dining products">
-                    <small class="help-text">
-                        Enter the path relative to /Images/ directory. Examples:<br>
-                        - For dining: dining/d1/1d.webp<br>
-                        - For bedroom: bedrooms/b1/1.jpg<br>
-                        - For kitchen: kitchen/kitchen1/d1.jpg<br>
-                        - For living room: livingRooms/L1/L1.avif
-                    </small>
-                    <div class="image-preview" id="mainImagePreview"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="thumbnails">Thumbnail Image Paths (one per line)</label>
-                    <textarea id="thumbnails" name="thumbnails" required 
-                              placeholder="e.g., dining/d1/1d.webp&#10;dining/d1/2d.webp&#10;dining/d1/3d.webp"></textarea>
-                    <small class="help-text">
-                        Enter each thumbnail path on a new line. Make sure all images exist in the /Images/ directory.
-                    </small>
-                    <div class="image-preview" id="thumbnailsPreview"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="alt">Alt Text</label>
-                    <input type="text" id="alt" name="alt" required>
-                </div>
-
-                <button type="submit" class="submit-btn">Add Product</button>
             </form>
         </div>
     </main>
 
+    <!-- Hidden Logout Form -->
+    <form id="logoutForm" action="/auth/logout" method="POST" style="display: none;"></form>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
     <script>
+        // Notification system
+        function showNotification(message, type = 'success', duration = 5000) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = notification ${type};
+            
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'}"></i>
+                    <span>${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Auto remove after duration
+            if (duration > 0) {
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.classList.remove('show');
+                        setTimeout(() => {
+                            if (notification.parentElement) {
+                                notification.remove();
+                            }
+                        }, 300);
+                    }
+                }, duration);
+            }
+        }
+
         // Preview images as they're entered
         document.getElementById('mainImage').addEventListener('input', function(e) {
             const preview = document.getElementById('mainImagePreview');
             const imagePath = e.target.value;
-            preview.innerHTML = `<img src="/Images/${imagePath}" alt="Main image preview" onerror="this.style.display='none'">`;
+            if (imagePath.trim()) {
+                preview.innerHTML = <img src="/Images/${imagePath}" alt="Main image preview" onerror="this.style.display='none'">;
+            } else {
+                preview.innerHTML = '';
+            }
         });
 
         document.getElementById('thumbnails').addEventListener('input', function(e) {
             const preview = document.getElementById('thumbnailsPreview');
             const urls = e.target.value.split('\n').filter(url => url.trim());
-            preview.innerHTML = urls.map(url => 
-                `<img src="/Images/${url}" alt="Thumbnail preview" onerror="this.style.display='none'">`
-            ).join('');
+            if (urls.length > 0) {
+                preview.innerHTML = urls.map(url => 
+                    <img src="/Images/${url}" alt="Thumbnail preview" onerror="this.style.display='none'">
+                ).join('');
+            } else {
+                preview.innerHTML = '';
+            }
+        });
+
+        // Auto-generate alt text based on product name
+        document.getElementById('name').addEventListener('input', function(e) {
+            const productName = e.target.value.trim();
+            const altField = document.getElementById('alt');
+            
+            if (productName && !altField.value.trim()) {
+                // Generate alt text from product name
+                const altText = ${productName} - Furniture Product;
+                altField.value = altText;
+            }
+        });
+
+        // Validate price input
+        document.getElementById('price').addEventListener('input', function(e) {
+            const price = parseFloat(e.target.value);
+            if (price < 0) {
+                e.target.value = 0;
+                showNotification('Price cannot be negative', 'warning');
+            }
         });
 
         // Handle form submission
         async function handleSubmit(event) {
             event.preventDefault();
 
+            // Get form values
+            const name = document.getElementById('name').value.trim();
             const category = document.getElementById('category').value;
-            const mainImage = document.getElementById('mainImage').value;
-            const thumbnails = document.getElementById('thumbnails').value.split('\n').filter(url => url.trim());
+            const price = document.getElementById('price').value;
+            const description = document.getElementById('description').value.trim();
+            const mainImage = document.getElementById('mainImage').value.trim();
+            const thumbnails = document.getElementById('thumbnails').value;
+            const alt = document.getElementById('alt').value.trim();
+
+            // Basic validation
+            if (!name || !category || !price || !description || !mainImage || !thumbnails || !alt) {
+                showNotification('Please fill in all required fields', 'warning');
+                return;
+            }
+
+            if (parseFloat(price) <= 0) {
+                showNotification('Price must be greater than 0', 'warning');
+                return;
+            }
+
+            const thumbnailArray = thumbnails.split('\n').filter(url => url.trim());
+            if (thumbnailArray.length === 0) {
+                showNotification('At least one thumbnail image is required', 'warning');
+                return;
+            }
 
             // Validate image paths based on category
             const categoryPaths = {
@@ -193,49 +445,60 @@
 
             const expectedPath = categoryPaths[category];
             if (!mainImage.startsWith(expectedPath)) {
-                alert(`Main image path should start with "${expectedPath}" for ${category} products`);
+                showNotification(Main image path should start with "${expectedPath}" for ${category} products, 'warning');
                 return;
             }
 
-            const invalidThumbnails = thumbnails.filter(url => !url.startsWith(expectedPath));
+            const invalidThumbnails = thumbnailArray.filter(url => !url.startsWith(expectedPath));
             if (invalidThumbnails.length > 0) {
-                alert(`All thumbnail paths should start with "${expectedPath}" for ${category} products`);
+                showNotification(All thumbnail paths should start with "${expectedPath}" for ${category} products, 'warning');
                 return;
             }
 
-            const formData = {
-                name: document.getElementById('name').value,
-                category: category,
-                price: `EGP ${document.getElementById('price').value}`,
-                description: document.getElementById('description').value,
-                images: {
-                    main: mainImage,
-                    thumbnails: thumbnails
-                },
-                alt: document.getElementById('alt').value
-            };
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Product...';
+            submitBtn.disabled = true;
 
+            // Create URL-encoded data instead of FormData
+            const formData = new URLSearchParams();
+            formData.append('name', name);
+            formData.append('category', category);
+            formData.append('price', price);
+            formData.append('description', description);
+            formData.append('mainImage', mainImage);
+            formData.append('thumbnails', thumbnails);
+            formData.append('alt', alt);
+            
             try {
-                const response = await fetch('/api/products', {
+                const response = await fetch('/admin/add-product', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify(formData)
+                    body: formData.toString()
                 });
 
                 if (response.ok) {
-                    alert('Product added successfully!');
-                    window.location.href = '/admin/products';
+                    const result = await response.json();
+                    showNotification('Product added successfully! Redirecting to products page...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/admin/products';
+                    }, 2000);
                 } else {
-                    const error = await response.json();
-                    alert(`Error: ${error.message}`);
+                    const errorText = await response.text();
+                    showNotification('Error adding product: ' + errorText, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error adding product. Please try again.');
+                showNotification('Error adding product: ' + error.message, 'error');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
         }
     </script>
 </body>
-</html> 
+</html>

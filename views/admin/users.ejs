@@ -4,38 +4,396 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-    <link rel="stylesheet" href="<%= '/CSS/users.css' %>">
-    <script src="<%= '/JavaScript/admin.js' %>" defer></script>
-    <script src="<%= '/JavaScript/users.js' %>" defer></script>
+    <link rel="stylesheet" href="/CSS/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/JavaScript/admin.js" defer></script>
+    <script src="/JavaScript/users.js" defer></script>
+    <style>
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .user-role {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .role-admin {
+            background: linear-gradient(135deg, var(--danger-color), #c0392b);
+            color: var(--white);
+        }
+        
+        .role-user {
+            background: linear-gradient(135deg, var(--accent-color), #2980b9);
+            color: var(--white);
+        }
+        
+        .user-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-active {
+            background: linear-gradient(135deg, var(--success-color), #229954);
+            color: var(--white);
+        }
+        
+        .status-inactive {
+            background: linear-gradient(135deg, var(--text-light), #95a5a6);
+            color: var(--white);
+        }
+        
+        .actions-bar {
+            background: var(--white);
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .stat-item h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-heavy);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--accent-color), #2980b9);
+            color: var(--white);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--light-bg);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-sm);
+            color: var(--white);
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: var(--transition);
+            max-width: 400px;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--success-color), #229954);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger-color), #c0392b);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            margin-left: auto;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        /* Password Requirements */
+        .password-requirements {
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: var(--light-bg);
+            border-radius: var(--border-radius-sm);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .password-requirements small {
+            font-weight: 600;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-requirements ul {
+            margin: 0;
+            padding-left: 1rem;
+            list-style: none;
+        }
+
+        .password-requirements li {
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            position: relative;
+        }
+
+        .password-requirements li::before {
+            content: '❌';
+            margin-right: 0.5rem;
+            color: var(--danger-color);
+        }
+
+        .password-requirements li.valid::before {
+            content: '✅';
+            color: var(--success-color);
+        }
+
+        .password-requirements li.valid {
+            color: var(--success-color);
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Admin Panel</h1>
-        <nav>
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-crown"></i> Admin Panel</h2>
+        </div>
+        <nav class="sidebar-nav">
             <ul>
-                <li><a href="/admin" class="<%= active === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
-                <li><a href="/admin/users" class="<%= active === 'users' ? 'active' : '' %>">Users</a></li>
-                <li><a href="/admin/orders" class="<%= active === 'orders' ? 'active' : '' %>">Orders</a></li>
-                <li><a href="/admin/products" class="<%= active === 'products' ? 'active' : '' %>">Products</a></li>
-                <li><a href="/admin/settings" class="<%= active === 'settings' ? 'active' : '' %>">Settings</a></li>
+                <li><a href="/admin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="/admin/add-product"><i class="fas fa-plus-circle"></i> Add Product</a></li>
+                <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="/admin/users" class="active"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="/admin/settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="/" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
-    </header>
-    <main>
-        <h2>User Management</h2>
-        <section id="users">
-            <div class="actions">
-                <button onclick="addNewUser()">Add New User</button>
-                <input type="text" id="userSearch" placeholder="Search Users..." oninput="filterUsers()">
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <div class="dashboard-header fade-in">
+            <h1><i class="fas fa-users"></i> User Management</h1>
+            <div class="date">
+                <i class="fas fa-calendar-alt"></i>
+                <%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
             </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-summary fade-in">
+            <div class="stat-item">
+                <h4><i class="fas fa-users"></i> Total Users</h4>
+                <div class="number"><%= users.length %></div>
+            </div>
+            <div class="stat-item">
+                <h4><i class="fas fa-user-shield"></i> Admins</h4>
+                <div class="number"><%= users.filter(u => u.role === 'admin').length %></div>
+            </div>
+            <div class="stat-item">
+                <h4><i class="fas fa-user"></i> Regular Users</h4>
+                <div class="number"><%= users.filter(u => u.role === 'user').length %></div>
+            </div>
+            <div class="stat-item">
+                <h4><i class="fas fa-check-circle"></i> Active</h4>
+                <div class="number"><%= users.filter(u => u.status === 'active').length %></div>
+            </div>
+        </div>
+
+        <!-- Actions Bar -->
+        <div class="actions-bar fade-in">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="userSearch" class="search-input" placeholder="Search users by name or email..." oninput="filterUsers()">
+            </div>
+            <button class="btn btn-primary" onclick="openAddUserModal()">
+                <i class="fas fa-plus"></i> Add User
+            </button>
+        </div>
+
+        <!-- Users Table -->
+        <section class="recent-section fade-in">
+            <h2><i class="fas fa-list"></i> All Users</h2>
+            <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>User ID</th>
+                            <th>User</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Status</th>
                         <th>Last Login</th>
                         <th>Actions</th>
                     </tr>
@@ -43,42 +401,276 @@
                 <tbody>
                     <% users.forEach(user => { %>
                         <tr>
-                            <td><%= user.id %></td>
-                            <td><%= user.name %></td>
+                                <td>
+                                    <div class="user-avatar">
+                                        <%= user.name.charAt(0).toUpperCase() %>
+                                    </div>
+                                </td>
+                                <td><strong><%= user.name %></strong></td>
                             <td><%= user.email %></td>
-                            <td><%= user.role %></td>
-                            <td><%= user.status %></td>
+                                <td>
+                                    <span class="user-role role-<%= user.role %>">
+                                        <%= user.role %>
+                                    </span>
+                                </td>
                             <td><%= user.lastLogin %></td>
                             <td>
-                                <button onclick="editUser('<%= user.id %>')">Edit</button>
-                                <button onclick="deleteUser('<%= user.id %>')">Delete</button>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-danger btn-sm" onclick="deleteUser('<%= user.id %>', '<%= user.name %>', '<%= user.email %>', '<%= user.role %>')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
                             </td>
                         </tr>
                     <% }); %>
                 </tbody>
             </table>
+            </div>
         </section>
     </main>
-    <footer>
-        <p>&copy; <%= new Date().getFullYear() %> Admin Panel</p>
-    </footer>
+
+    <!-- Hidden Logout Form -->
+    <form id="logoutForm" action="/auth/logout" method="POST" style="display: none;"></form>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Add New User</h3>
+                <button class="close" onclick="closeAddUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addUserForm" onsubmit="handleAddUser(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="username" name="username" class="form-control" required 
+                               placeholder="Enter username (3-20 characters)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required 
+                               placeholder="Enter email address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="password" name="password" class="form-control" required 
+                               placeholder="Enter password (min 8 characters)">
+                        <div class="password-requirements" id="passwordRequirements" style="display: none;">
+                            <small>Password must contain:</small>
+                            <ul>
+                                <li id="req-length">At least 8 characters</li>
+                                <li id="req-lower">One lowercase letter</li>
+                                <li id="req-upper">One uppercase letter</li>
+                                <li id="req-number">One number</li>
+                                <li id="req-special">One special character</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required 
+                               placeholder="Confirm password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="role"><i class="fas fa-user-shield"></i> Role</label>
+                        <select id="role" name="role" class="form-control" required>
+                            <option value="">Select role</option>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddUserModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
+                <button class="close" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this user?</p>
+                <p><strong>This action cannot be undone.</strong></p>
+                <div id="deleteUserInfo" style="background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0;">
+                    <strong>User Details:</strong>
+                    <div id="deleteUserDetails"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">
+                    <i class="fas fa-trash"></i> Delete User
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        function addNewUser() {
-            // This should be replaced with actual add user functionality
-            alert('Adding new user...');
-        }
-
-        function editUser(userId) {
-            // This should be replaced with actual edit functionality
-            alert(`Editing user ${userId}...`);
-        }
-
-        function deleteUser(userId) {
-            // This should be replaced with actual delete functionality
-            if (confirm(`Are you sure you want to delete user ${userId}?`)) {
-                alert(`Deleting user ${userId}...`);
+        // Notification system
+        function showNotification(message, type = 'success', duration = 5000) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = notification ${type};
+            
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'}"></i>
+                    <span>${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Auto remove after duration
+            if (duration > 0) {
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.classList.remove('show');
+                        setTimeout(() => {
+                            if (notification.parentElement) {
+                                notification.remove();
+                            }
+                        }, 300);
+                    }
+                }, duration);
             }
+        }
+
+        // Modal functions
+        function openAddUserModal() {
+            const modal = document.getElementById('addUserModal');
+            modal.style.display = 'flex';
+            // Clear form
+            document.getElementById('addUserForm').reset();
+        }
+
+        function closeAddUserModal() {
+            const modal = document.getElementById('addUserModal');
+            modal.style.display = 'none';
+        }
+
+        // Delete modal functions
+        let userToDelete = null;
+
+        function openDeleteModal(userId, username, email, role) {
+            userToDelete = userId;
+            const modal = document.getElementById('deleteModal');
+            const detailsDiv = document.getElementById('deleteUserDetails');
+            
+            detailsDiv.innerHTML = `
+                <div><strong>Username:</strong> ${username}</div>
+                <div><strong>Email:</strong> ${email}</div>
+                <div><strong>Role:</strong> <span class="user-role role-${role}">${role}</span></div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.style.display = 'none';
+            userToDelete = null;
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('addUserModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddUserModal();
+            }
+        });
+
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+
+        // Confirm delete function
+        function confirmDelete() {
+            if (!userToDelete) {
+                showNotification('No user selected for deletion', 'error');
+                return;
+            }
+
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            const originalText = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            confirmBtn.disabled = true;
+
+            // Make DELETE request
+            fetch(/admin/delete-user/${userToDelete}, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                console.log('Delete response status:', response.status);
+                
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+            })
+            .then(data => {
+                console.log('User deleted successfully:', data);
+                showNotification('User deleted successfully!', 'success');
+                closeDeleteModal();
+                
+                // Reload page to update the table
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Error deleting user:', error);
+                showNotification('Error deleting user: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Reset button state
+                confirmBtn.innerHTML = originalText;
+                confirmBtn.disabled = false;
+            });
+        }
+
+        function deleteUser(userId, username, email, role) {
+            openDeleteModal(userId, username, email, role);
         }
 
         function filterUsers() {
@@ -90,6 +682,183 @@
                 const text = row.textContent.toLowerCase();
                 row.style.display = text.includes(searchTerm) ? '' : 'none';
             });
+        }
+
+        // Add smooth animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((element, index) => {
+                element.style.animationDelay = ${index * 0.1}s;
+            });
+        });
+
+        // Real-time validation
+        document.getElementById('username').addEventListener('input', function(e) {
+            const username = e.target.value.trim();
+            const isValid = username.length >= 3 && username.length <= 20 && /^[a-zA-Z0-9_]+$/.test(username);
+            e.target.style.borderColor = isValid ? '#27ae60' : '#e74c3c';
+        });
+
+        document.getElementById('email').addEventListener('input', function(e) {
+            const email = e.target.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = emailRegex.test(email);
+            e.target.style.borderColor = isValid ? '#27ae60' : '#e74c3c';
+        });
+
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const requirements = document.getElementById('passwordRequirements');
+            
+            // Show requirements when user starts typing
+            if (password.length > 0) {
+                requirements.style.display = 'block';
+            } else {
+                requirements.style.display = 'none';
+            }
+            
+            const hasLength = password.length >= 8;
+            const hasLower = /(?=.*[a-z])/.test(password);
+            const hasUpper = /(?=.*[A-Z])/.test(password);
+            const hasNumber = /(?=.*\d)/.test(password);
+            const hasSpecial = /(?=.[!@#$%^&()_+\-=\[\]{};':"\\|,.<>\/?])/.test(password);
+            
+            // Update requirement indicators
+            document.getElementById('req-length').classList.toggle('valid', hasLength);
+            document.getElementById('req-lower').classList.toggle('valid', hasLower);
+            document.getElementById('req-upper').classList.toggle('valid', hasUpper);
+            document.getElementById('req-number').classList.toggle('valid', hasNumber);
+            document.getElementById('req-special').classList.toggle('valid', hasSpecial);
+            
+            const isValid = hasLength && hasLower && hasUpper && hasNumber && hasSpecial;
+            e.target.style.borderColor = isValid ? '#27ae60' : '#e74c3c';
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function(e) {
+            const confirmPassword = e.target.value;
+            const password = document.getElementById('password').value;
+            const isValid = confirmPassword === password && confirmPassword.length > 0;
+            e.target.style.borderColor = isValid ? '#27ae60' : '#e74c3c';
+        });
+
+        // Handle add user form submission
+        async function handleAddUser(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const role = document.getElementById('role').value;
+
+            // Strict validation
+            if (!username || !email || !password || !confirmPassword || !role) {
+                showNotification('Please fill in all fields', 'warning');
+                return;
+            }
+
+            // Username validation
+            if (username.length < 3 || username.length > 20) {
+                showNotification('Username must be between 3 and 20 characters', 'warning');
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showNotification('Username can only contain letters, numbers, and underscores', 'warning');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Please enter a valid email address', 'warning');
+                return;
+            }
+
+            // Password validation
+            if (password.length < 8) {
+                showNotification('Password must be at least 8 characters long', 'warning');
+                return;
+            }
+
+            if (!/(?=.*[a-z])/.test(password)) {
+                showNotification('Password must contain at least one lowercase letter', 'warning');
+                return;
+            }
+
+            if (!/(?=.*[A-Z])/.test(password)) {
+                showNotification('Password must contain at least one uppercase letter', 'warning');
+                return;
+            }
+
+            if (!/(?=.*\d)/.test(password)) {
+                showNotification('Password must contain at least one number', 'warning');
+                return;
+            }
+
+            if (!/(?=.[!@#$%^&()_+\-=\[\]{};':"\\|,.<>\/?])/.test(password)) {
+                showNotification('Password must contain at least one special character', 'warning');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match', 'warning');
+                return;
+            }
+
+            // Role validation
+            if (!['user', 'admin'].includes(role)) {
+                showNotification('Please select a valid role', 'warning');
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding User...';
+            submitBtn.disabled = true;
+
+            // Create form data
+            const formData = new URLSearchParams();
+            formData.append('username', username);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('role', role);
+
+            try {
+                console.log('Sending request to /admin/add-user');
+                const response = await fetch('/admin/add-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString()
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showNotification('User added successfully!', 'success');
+                    closeAddUserModal();
+                    // Reload page to show new user
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    showNotification('Error adding user: ' + errorText, 'error');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                showNotification('Error adding user: ' + error.message, 'error');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         }
     </script>
 </body>
