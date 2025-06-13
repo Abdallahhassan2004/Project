@@ -766,12 +766,12 @@ app.get('/dining/dining6', (req, res) => {
 });
 
 // Add Product Page
-app.get('/admin/add-product', (req, res) => {
+app.get('/admin/add-product', adminAuth, (req, res) => {
     res.render('admin/add-product');
 });
 
 // Handle Add Product Form Submission
-app.post('/admin/add-product', async (req, res) => {
+app.post('/admin/add-product', adminAuth, async (req, res) => {
     try {
         console.log('Received form data:', req.body);
         

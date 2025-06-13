@@ -335,7 +335,7 @@
             // Set thumbnails
             const thumbnailsDiv = document.getElementById('thumbnailImages');
             thumbnailsDiv.innerHTML = currentProduct.images.thumbnails.map(thumb =>
-                <img src="/Images/${thumb}" class="thumbnail" onclick="updateMainImage('/Images/${thumb}')">
+                `<img src="/Images/${thumb}" class="thumbnail" onclick="updateMainImage('/Images/${thumb}')">`
             ).join('');
 
             // Set other product info

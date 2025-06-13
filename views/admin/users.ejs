@@ -403,20 +403,20 @@
                         <tr>
                                 <td>
                                     <div class="user-avatar">
-                                        <%= user.name.charAt(0).toUpperCase() %>
+                                        <%= user.username.charAt(0).toUpperCase() %>
                                     </div>
                                 </td>
-                                <td><strong><%= user.name %></strong></td>
+                                <td><strong><%= user.username %></strong></td>
                             <td><%= user.email %></td>
                                 <td>
                                     <span class="user-role role-<%= user.role %>">
                                         <%= user.role %>
                                     </span>
                                 </td>
-                            <td><%= user.lastLogin %></td>
+                            <td><%= user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never' %></td>
                             <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-danger btn-sm" onclick="deleteUser('<%= user.id %>', '<%= user.name %>', '<%= user.email %>', '<%= user.role %>')">
+                                        <button class="btn btn-danger btn-sm" onclick="deleteUser('<%= user._id %>', '<%= user.username %>', '<%= user.email %>', '<%= user.role %>')">
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
                                     </div>
@@ -535,7 +535,7 @@
         function showNotification(message, type = 'success', duration = 5000) {
             const container = document.getElementById('notificationContainer');
             const notification = document.createElement('div');
-            notification.className = notification ${type};
+            notification.className = `notification ${type}`;
             
             notification.innerHTML = `
                 <div class="notification-content">
@@ -631,7 +631,7 @@
             confirmBtn.disabled = true;
 
             // Make DELETE request
-            fetch(/admin/delete-user/${userToDelete}, {
+            fetch(`/admin/delete-user/${userToDelete}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -688,7 +688,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const elements = document.querySelectorAll('.fade-in');
             elements.forEach((element, index) => {
-                element.style.animationDelay = ${index * 0.1}s;
+                element.style.animationDelay = `${index * 0.1}s`;
             });
         });
 

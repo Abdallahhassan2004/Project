@@ -327,7 +327,7 @@
         function showNotification(message, type = 'success', duration = 5000) {
             const container = document.getElementById('notificationContainer');
             const notification = document.createElement('div');
-            notification.className = notification ${type};
+            notification.className = `notification ${type}`;
             
             notification.innerHTML = `
                 <div class="notification-content">
@@ -366,7 +366,7 @@
             const preview = document.getElementById('mainImagePreview');
             const imagePath = e.target.value;
             if (imagePath.trim()) {
-                preview.innerHTML = <img src="/Images/${imagePath}" alt="Main image preview" onerror="this.style.display='none'">;
+                preview.innerHTML = `<img src="/Images/${imagePath}" alt="Main image preview" onerror="this.style.display='none'">`;
             } else {
                 preview.innerHTML = '';
             }
@@ -377,7 +377,7 @@
             const urls = e.target.value.split('\n').filter(url => url.trim());
             if (urls.length > 0) {
                 preview.innerHTML = urls.map(url => 
-                    <img src="/Images/${url}" alt="Thumbnail preview" onerror="this.style.display='none'">
+                    `<img src="/Images/${url}" alt="Thumbnail preview" onerror="this.style.display='none'">`
                 ).join('');
             } else {
                 preview.innerHTML = '';
@@ -391,7 +391,7 @@
             
             if (productName && !altField.value.trim()) {
                 // Generate alt text from product name
-                const altText = ${productName} - Furniture Product;
+                const altText = `${productName} - Furniture Product`;
                 altField.value = altText;
             }
         });
@@ -445,13 +445,13 @@
 
             const expectedPath = categoryPaths[category];
             if (!mainImage.startsWith(expectedPath)) {
-                showNotification(Main image path should start with "${expectedPath}" for ${category} products, 'warning');
+                showNotification(`Main image path should start with "${expectedPath}" for ${category} products`, 'warning');
                 return;
             }
 
             const invalidThumbnails = thumbnailArray.filter(url => !url.startsWith(expectedPath));
             if (invalidThumbnails.length > 0) {
-                showNotification(All thumbnail paths should start with "${expectedPath}" for ${category} products, 'warning');
+                showNotification(`All thumbnail paths should start with "${expectedPath}" for ${category} products`, 'warning');
                 return;
             }
 

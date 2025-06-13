@@ -29,14 +29,7 @@ exports.getUsersPage = async (req, res) => {
         const users = await User.find().select('-password');
         res.render('admin/users', {
             title: 'User Management',
-            users: users.map(user => ({
-                id: user._id,
-                name: user.username,
-                email: user.email,
-                role: user.role,
-                status: 'Active',
-                lastLogin: user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'
-            })),
+            users: users,
             active: 'users'
         });
     } catch (error) {
