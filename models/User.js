@@ -58,6 +58,21 @@ userSchema.pre('save', function(next) {
     next();
 });
 
+// Static method to remove a product from all users' carts
+userSchema.statics.removeProductFromAllCarts = async function(productId) {
+    try {
+        const result = await this.updateMany(
+            { 'cart.id': productId },
+            { $pull: { cart: { id: productId } } }
+        );
+        console.log(`Removed product ${productId} from ${result.modifiedCount} users' carts`);
+        return result;
+    } catch (error) {
+        console.error('Error removing product from carts:', error);
+        throw error;
+    }
+};
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User; 

@@ -78,15 +78,53 @@ router.patch('/:id', async (req, res) => {
 // Delete a product
 router.delete('/:id', async (req, res) => {
     try {
+        console.log('=== DELETE PRODUCT ROUTE (productRoutes) ===');
+        console.log('Product ID:', req.params.id);
+        console.log('User:', req.user);
+        
         const product = await Product.findById(req.params.id);
         if (!product) {
+            console.log('Product not found');
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        await product.deleteOne();
-        res.json({ message: 'Product deleted' });
+        console.log('Product found:', product.name);
+
+        // Remove product from all users' carts first
+        const User = require('../models/User');
+        console.log('Removing product from all carts...');
+        const cartCleanupResult = await User.removeProductFromAllCarts(req.params.id);
+        console.log('Cart cleanup result:', cartCleanupResult);
+        
+        // Delete the product
+        console.log('Deleting product from database...');
+        await Product.findByIdAndDelete(req.params.id);
+        console.log('Product deleted successfully');
+        
+        console.log(`Product ${req.params.id} deleted successfully and removed from all carts`);
+        
+        // Notify connected clients about the cart cleanup
+        if (global.notifyCartClients) {
+            global.notifyCartClients({
+                type: 'product_removed',
+                productId: req.params.id,
+                productName: product.name,
+                message: `Product "${product.name}" has been removed and is no longer available.`,
+                usersAffected: cartCleanupResult.modifiedCount
+            });
+        }
+        
+        res.json({ 
+            message: 'Product deleted successfully',
+            removedFromCarts: true,
+            usersAffected: cartCleanupResult.modifiedCount
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error deleting product:', error);
+        res.status(500).json({ 
+            message: 'Error deleting product',
+            error: error.message 
+        });
     }
 });
 

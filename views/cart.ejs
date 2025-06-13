@@ -6,6 +6,22 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/CSS/cart.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+        }
+        
+        .cart-item.fade-out {
+            animation: fadeOut 0.5s ease forwards;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -18,6 +34,9 @@
     </header>
 
     <main class="cart-container">
+        <!-- Notification Container -->
+        <div id="notificationContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+        
         <div class="section-title">
             <h2>Shopping Cart</h2>
         </div>
@@ -90,6 +109,115 @@
         console.log('Cart data received:', <%- JSON.stringify(cart) %>);
         console.log('Cart length:', <%- cart ? cart.length : 0 %>);
         
+        // Notification system
+        function showNotification(message, type = 'info', duration = 5000) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                background: ${type === 'warning' ? '#f39c12' : type === 'error' ? '#e74c3c' : '#3498db'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                max-width: 300px;
+                word-wrap: break-word;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-${type === 'warning' ? 'exclamation-triangle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; cursor: pointer; margin-left: auto;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Auto remove
+            if (duration > 0) {
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.style.transform = 'translateX(100%)';
+                        setTimeout(() => {
+                            if (notification.parentElement) {
+                                notification.remove();
+                            }
+                        }, 300);
+                    }
+                }, duration);
+            }
+        }
+
+        // Check for cart cleanup on page load
+        async function checkCartCleanup() {
+            try {
+                const response = await fetch('/api/cart/notifications');
+                const data = await response.json();
+                
+                // Check if cart has any items that might have been removed
+                const cartItems = document.querySelectorAll('.cart-item');
+                if (cartItems.length === 0 && <%- cart ? cart.length : 0 %> > 0) {
+                    showNotification('Some products in your cart are no longer available and have been removed.', 'warning');
+                }
+            } catch (error) {
+                console.error('Error checking cart cleanup:', error);
+            }
+        }
+
+        // Check for cart cleanup when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            checkCartCleanup();
+            setupRealTimeNotifications();
+        });
+        
+        // Setup real-time notifications
+        function setupRealTimeNotifications() {
+            const eventSource = new EventSource('/api/cart/events');
+            
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'product_removed') {
+                        showNotification(data.message, 'warning');
+                        
+                        // Check if the removed product is in the current user's cart
+                        const cartItem = document.querySelector(`[data-id="${data.productId}"]`);
+                        if (cartItem) {
+                            // Remove the item from the cart display
+                            cartItem.style.animation = 'fadeOut 0.5s ease';
+                            setTimeout(() => {
+                                cartItem.remove();
+                                // Reload page to update totals
+                                window.location.reload();
+                            }, 500);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing SSE data:', error);
+                }
+            };
+            
+            eventSource.onerror = function(error) {
+                console.error('SSE connection error:', error);
+                // Try to reconnect after 5 seconds
+                setTimeout(() => {
+                    setupRealTimeNotifications();
+                }, 5000);
+            };
+        }
+        
         // Update quantity
         async function updateQuantity(productId, change) {
             try {
@@ -126,7 +254,7 @@
                 window.location.reload();
             } catch (error) {
                 console.error('Error updating quantity:', error);
-                alert('Failed to update quantity. Please try again.');
+                showNotification('Failed to update quantity. Please try again.', 'error');
             }
         }
 
@@ -164,7 +292,14 @@
                 window.location.reload();
             } catch (error) {
                 console.error('Error removing item:', error);
-                alert('Failed to remove item. Please try again.');
+                showNotification('Failed to remove item. Please try again.', 'error');
+            }
+        }
+
+        function updateCartCount(count) {
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = count;
             }
         }
 

@@ -96,6 +96,28 @@ app.get('/admin/test', adminAuth, (req, res) => {
     });
 });
 
+// Test admin authentication
+app.get('/api/admin/test-auth', adminAuth, (req, res) => {
+    res.json({ 
+        message: 'Admin authentication working',
+        user: req.user 
+    });
+});
+
+// Test product routes
+app.get('/api/admin/test-products', adminAuth, async (req, res) => {
+    try {
+        const products = await Product.find().limit(1);
+        res.json({ 
+            message: 'Product routes working',
+            productCount: products.length,
+            sampleProduct: products[0] ? { id: products[0]._id, name: products[0].name } : null
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error testing products', error: error.message });
+    }
+});
+
 // Add user route
 app.post('/admin/add-user', adminAuth, async (req, res) => {
     try {
@@ -834,7 +856,7 @@ app.post('/admin/add-product', adminAuth, async (req, res) => {
 });
 
 // Admin Products Page
-app.get('/admin/products', async (req, res) => {
+app.get('/admin/products', adminAuth, async (req, res) => {
     try {
         const products = await Product.find();
         res.render('admin/products', { 
@@ -847,6 +869,62 @@ app.get('/admin/products', async (req, res) => {
         res.status(500).send('Error loading products');
     }
 });
+
+// Get cart cleanup notifications
+app.get('/api/cart/notifications', async (req, res) => {
+    try {
+        // This endpoint can be used to check if any products were removed from cart
+        // For now, we'll return a simple status
+        res.json({ 
+            message: 'Cart is up to date',
+            lastChecked: new Date().toISOString()
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error checking cart notifications' });
+    }
+});
+
+// Server-Sent Events for real-time cart notifications
+app.get('/api/cart/events', (req, res) => {
+    res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*'
+    });
+
+    // Send initial connection message
+    res.write('data: {"type": "connected", "message": "Cart notification stream connected"}\n\n');
+
+    // Store the response object for later use
+    if (!global.cartNotificationClients) {
+        global.cartNotificationClients = new Set();
+    }
+    global.cartNotificationClients.add(res);
+
+    // Remove client when connection closes
+    req.on('close', () => {
+        global.cartNotificationClients.delete(res);
+    });
+});
+
+// Function to notify all connected clients about cart changes
+function notifyCartClients(data) {
+    if (global.cartNotificationClients) {
+        const message = `data: ${JSON.stringify(data)}\n\n`;
+        global.cartNotificationClients.forEach(client => {
+            try {
+                client.write(message);
+            } catch (error) {
+                // Remove disconnected clients
+                global.cartNotificationClients.delete(client);
+            }
+        });
+    }
+}
+
+// Make notifyCartClients globally available
+global.notifyCartClients = notifyCartClients;
 
 // 404 handler
 app.use((req, res) => {
