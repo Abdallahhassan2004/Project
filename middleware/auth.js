@@ -67,24 +67,53 @@ const auth = async (req, res, next) => {
 
 // Admin authentication middleware
 const adminAuth = async (req, res, next) => {
+    console.log('=== ADMIN AUTH MIDDLEWARE ===');
+    console.log('Request path:', req.path);
+    console.log('Request method:', req.method);
+    console.log('Cookies:', req.cookies);
+    
     try {
         const token = req.cookies.token;
+        console.log('Token found:', !!token);
         
         if (!token) {
-            return res.status(401).json({ message: 'Authentication required' });
+            console.log('No token found');
+            // Check if it's an API request or web request
+            if (req.path.startsWith('/api/')) {
+                return res.status(401).json({ message: 'Authentication required' });
+            } else {
+                return res.redirect('/auth/login');
+            }
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('Token decoded:', decoded);
         const user = await User.findById(decoded.userId);
+        console.log('User found:', !!user);
+        console.log('User role:', user?.role);
 
         if (!user) {
-            return res.status(401).json({ message: 'User not found' });
+            console.log('User not found in database');
+            // Check if it's an API request or web request
+            if (req.path.startsWith('/api/')) {
+                return res.status(401).json({ message: 'User not found' });
+            } else {
+                res.clearCookie('token');
+                return res.redirect('/auth/login');
+            }
         }
 
         if (user.role !== 'admin') {
-            return res.status(403).json({ message: 'Admin access required' });
+            console.log('User is not admin, role:', user.role);
+            // Check if it's an API request or web request
+            if (req.path.startsWith('/api/')) {
+                return res.status(403).json({ message: 'Admin access required' });
+            } else {
+                return res.redirect('/auth/login');
+            }
         }
 
+        console.log('Admin authentication successful');
         req.user = {
             userId: user._id,
             role: user.role
@@ -92,7 +121,14 @@ const adminAuth = async (req, res, next) => {
         req.token = token;
         next();
     } catch (error) {
-        res.status(401).json({ message: 'Please authenticate', error: error.message });
+        console.error('Admin auth error:', error);
+        // Check if it's an API request or web request
+        if (req.path.startsWith('/api/')) {
+            res.status(401).json({ message: 'Please authenticate', error: error.message });
+        } else {
+            res.clearCookie('token');
+            res.redirect('/auth/login');
+        }
     }
 };
 

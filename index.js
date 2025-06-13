@@ -87,6 +87,199 @@ app.use('/auth', authRoutes);
 app.get('/admin', adminAuth, adminController.getAdminPage);
 app.get('/admin/users', adminAuth, adminController.getUsersPage);
 
+// Test admin route for debugging
+app.get('/admin/test', adminAuth, (req, res) => {
+    res.json({ 
+        success: true, 
+        message: 'Admin authentication working',
+        user: req.user 
+    });
+});
+
+// Add user route
+app.post('/admin/add-user', adminAuth, async (req, res) => {
+    try {
+        console.log('=== ADDING NEW USER ===');
+        console.log('Route reached successfully');
+        console.log('Request body:', req.body);
+        console.log('User making request:', req.user);
+        
+        const { username, email, password, role } = req.body;
+        
+        // Validation
+        if (!username || !email || !password || !role) {
+            console.log('Missing required fields');
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        
+        // Username validation
+        if (username.length < 3 || username.length > 20) {
+            return res.status(400).json({ error: 'Username must be between 3 and 20 characters' });
+        }
+        
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            return res.status(400).json({ error: 'Username can only contain letters, numbers, and underscores' });
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Please enter a valid email address' });
+        }
+        
+        // Password validation
+        if (password.length < 8) {
+            return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+        }
+        
+        if (!/(?=.*[a-z])/.test(password)) {
+            return res.status(400).json({ error: 'Password must contain at least one lowercase letter' });
+        }
+        
+        if (!/(?=.*[A-Z])/.test(password)) {
+            return res.status(400).json({ error: 'Password must contain at least one uppercase letter' });
+        }
+        
+        if (!/(?=.*\d)/.test(password)) {
+            return res.status(400).json({ error: 'Password must contain at least one number' });
+        }
+        
+        if (!/(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/.test(password)) {
+            return res.status(400).json({ error: 'Password must contain at least one special character' });
+        }
+        
+        if (!['user', 'admin'].includes(role)) {
+            return res.status(400).json({ error: 'Invalid role' });
+        }
+        
+        // Check if email already exists
+        const User = require('./models/User');
+        const existingUser = await User.findOne({ email: email.toLowerCase() });
+        
+        if (existingUser) {
+            console.log('Email already exists:', email);
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+        
+        // Check if username already exists
+        const existingUsername = await User.findOne({ username: username });
+        
+        if (existingUsername) {
+            console.log('Username already exists:', username);
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+        
+        // Hash password
+        const bcrypt = require('bcryptjs');
+        const saltRounds = 12;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        
+        // Create new user
+        const newUser = new User({
+            username: username.trim(),
+            email: email.toLowerCase().trim(),
+            password: hashedPassword,
+            role: role
+        });
+        
+        await newUser.save();
+        console.log('User created successfully:', newUser.username);
+        console.log('=== END ADDING USER ===');
+        
+        res.status(201).json({ 
+            success: true, 
+            message: 'User created successfully',
+            user: {
+                id: newUser._id,
+                username: newUser.username,
+                email: newUser.email,
+                role: newUser.role,
+                createdAt: newUser.createdAt
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error adding user:', error);
+        
+        // Handle mongoose validation errors
+        if (error.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({ error: errors.join(', ') });
+        }
+        
+        // Handle duplicate key errors
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern)[0];
+            return res.status(400).json({ error: `${field} already exists` });
+        }
+        
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Delete user route
+app.delete('/admin/delete-user/:userId', adminAuth, async (req, res) => {
+    try {
+        console.log('=== DELETING USER ===');
+        console.log('User ID to delete:', req.params.userId);
+        console.log('Admin making request:', req.user);
+        
+        const { userId } = req.params;
+        
+        // Validate user ID
+        if (!userId || !require('mongoose').Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: 'Invalid user ID' });
+        }
+        
+        // Check if user exists
+        const User = require('./models/User');
+        const userToDelete = await User.findById(userId);
+        
+        if (!userToDelete) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        // Prevent admin from deleting themselves
+        if (userToDelete._id.toString() === req.user.userId) {
+            return res.status(400).json({ error: 'You cannot delete your own account' });
+        }
+        
+        // Prevent deleting the last admin (if this is an admin being deleted)
+        if (userToDelete.role === 'admin') {
+            const adminCount = await User.countDocuments({ role: 'admin' });
+            if (adminCount <= 1) {
+                return res.status(400).json({ error: 'Cannot delete the last admin user' });
+            }
+        }
+        
+        // Delete the user
+        await User.findByIdAndDelete(userId);
+        
+        console.log('User deleted successfully:', userToDelete.username);
+        console.log('=== END DELETING USER ===');
+        
+        res.json({ 
+            success: true, 
+            message: 'User deleted successfully',
+            deletedUser: {
+                id: userToDelete._id,
+                username: userToDelete.username,
+                email: userToDelete.email,
+                role: userToDelete.role
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        
+        if (error.name === 'CastError') {
+            return res.status(400).json({ error: 'Invalid user ID format' });
+        }
+        
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Protected admin routes
 app.use('/api/admin/products', adminAuth, productRoutes);
 
@@ -575,6 +768,69 @@ app.get('/dining/dining6', (req, res) => {
 // Add Product Page
 app.get('/admin/add-product', (req, res) => {
     res.render('admin/add-product');
+});
+
+// Handle Add Product Form Submission
+app.post('/admin/add-product', async (req, res) => {
+    try {
+        console.log('Received form data:', req.body);
+        
+        const { name, category, price, description, mainImage, thumbnails, alt } = req.body;
+        
+        // Validate required fields
+        if (!name || !category || !price || !description || !mainImage || !thumbnails || !alt) {
+            console.log('Missing fields:', { name, category, price, description, mainImage, thumbnails, alt });
+            return res.status(400).send('All fields are required');
+        }
+        
+        // Process thumbnails (split by newline and filter empty lines)
+        const thumbnailArray = thumbnails.split('\n')
+            .map(thumbnail => thumbnail.trim())
+            .filter(thumbnail => thumbnail.length > 0);
+        
+        if (thumbnailArray.length === 0) {
+            return res.status(400).send('At least one thumbnail image is required');
+        }
+        
+        // Create new product
+        const newProduct = new Product({
+            name: name.trim(),
+            category: category,
+            price: `EGP ${parseFloat(price).toFixed(2)}`,
+            description: description.trim(),
+            images: {
+                main: mainImage.trim(),
+                thumbnails: thumbnailArray
+            },
+            alt: alt.trim()
+        });
+        
+        // Save to database
+        const savedProduct = await newProduct.save();
+        
+        console.log('Product added successfully:', savedProduct);
+        res.status(201).json({ 
+            success: true, 
+            message: 'Product added successfully',
+            product: savedProduct 
+        });
+        
+    } catch (error) {
+        console.error('Error adding product:', error);
+        
+        // Handle validation errors
+        if (error.name === 'ValidationError') {
+            const validationErrors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).send(`Validation Error: ${validationErrors.join(', ')}`);
+        }
+        
+        // Handle duplicate key errors
+        if (error.code === 11000) {
+            return res.status(400).send('A product with this name already exists');
+        }
+        
+        res.status(500).send('Internal server error while adding product');
+    }
 });
 
 // Admin Products Page

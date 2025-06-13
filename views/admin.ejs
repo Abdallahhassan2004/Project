@@ -6,56 +6,60 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/CSS/admin.css">
     <script src="/JavaScript/admin.js" defer></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Sidebar -->
     <aside id="sidebar">
         <div class="sidebar-header">
-            <h2>Admin Panel</h2>
+            <h2><i class="fas fa-crown"></i> Admin Panel</h2>
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="/admin">Dashboard</a></li>
-                <li><a href="/admin/products">Products</a></li>
-                <li><a href="/admin/orders">Orders</a></li>
-                <li><a href="/admin/users">Users</a></li>
-                <li><a href="/admin/settings">Settings</a></li>
-                <li><a href="/" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">Logout</a></li>
+                <li><a href="/admin" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="/admin/settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="/" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
     </aside>
 
     <!-- Main Content -->
     <main id="main-content">
-        <div class="dashboard-header">
-            <h1>Dashboard</h1>
-            <div class="date">Today: <%= new Date().toLocaleDateString() %></div>
+        <div class="dashboard-header fade-in">
+            <h1><i class="fas fa-chart-line"></i> Dashboard Overview</h1>
+            <div class="date">
+                <i class="fas fa-calendar-alt"></i>
+                <%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </div>
         </div>
 
         <!-- Stats Cards -->
-        <div class="stats-grid">
+        <div class="stats-grid fade-in">
             <div class="stat-card">
-                <h3>Today's Orders</h3>
+                <h3><i class="fas fa-shopping-bag"></i> Today's Orders</h3>
                 <p class="stat-number"><%= todaysOrders %></p>
             </div>
             <div class="stat-card">
-                <h3>Total Orders</h3>
+                <h3><i class="fas fa-chart-bar"></i> Total Orders</h3>
                 <p class="stat-number"><%= totalOrders %></p>
             </div>
             <div class="stat-card">
-                <h3>Pending Orders</h3>
+                <h3><i class="fas fa-clock"></i> Pending Orders</h3>
                 <p class="stat-number"><%= pendingOrders %></p>
             </div>
             <div class="stat-card">
-                <h3>Cancelled Orders</h3>
+                <h3><i class="fas fa-times-circle"></i> Cancelled Orders</h3>
                 <p class="stat-number"><%= cancelledOrders %></p>
             </div>
         </div>
 
         <!-- Recent Products -->
-        <section class="recent-section">
-            <h2>Recent Products</h2>
+        <section class="recent-section fade-in">
+            <h2><i class="fas fa-box-open"></i> Recent Products</h2>
             <div class="table-container">
                 <table>
                     <thead>
@@ -71,10 +75,10 @@
                     <tbody>
                         <% products.forEach(product => { %>
                             <tr>
-                                <td><%= product.id %></td>
+                                <td><strong>#<%= product.id %></strong></td>
                                 <td><%= product.name %></td>
-                                <td><%= product.category %></td>
-                                <td><%= product.price %></td>
+                                <td><span class="badge badge-secondary"><%= product.category %></span></td>
+                                <td><strong>EGP <%= product.price %></strong></td>
                                 <td><%= product.dateAdded %></td>
                                 <td><%= product.lastEdited %></td>
                             </tr>
@@ -85,8 +89,8 @@
         </section>
 
         <!-- Recent Orders -->
-        <section class="recent-section">
-            <h2>Recent Orders</h2>
+        <section class="recent-section fade-in">
+            <h2><i class="fas fa-shopping-cart"></i> Recent Orders</h2>
             <div class="table-container">
                 <table>
                     <thead>
@@ -102,10 +106,18 @@
                     <tbody>
                         <% orders.forEach(order => { %>
                             <tr>
-                                <td><%= order.id %></td>
+                                <td><strong>#<%= order.id %></strong></td>
                                 <td><%= order.user %></td>
                                 <td><%= order.product %></td>
-                                <td><%= order.status %></td>
+                                <td>
+                                    <% if (order.status === 'Pending') { %>
+                                        <span class="badge badge-pending"><%= order.status %></span>
+                                    <% } else if (order.status === 'Completed') { %>
+                                        <span class="badge badge-completed"><%= order.status %></span>
+                                    <% } else { %>
+                                        <span class="badge badge-cancelled"><%= order.status %></span>
+                                    <% } %>
+                                </td>
                                 <td><%= order.datePlaced %></td>
                                 <td><%= order.lastEdited %></td>
                             </tr>
@@ -118,5 +130,15 @@
 
     <!-- Hidden Logout Form -->
     <form id="logoutForm" action="/auth/logout" method="POST" style="display: none;"></form>
+
+    <script>
+        // Add smooth animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.stat-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
 </body>
 </html>
