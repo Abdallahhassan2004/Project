@@ -415,7 +415,11 @@
                             <td><%= user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never' %></td>
                             <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-danger btn-sm" onclick="deleteUser('<%= user._id %>', '<%= user.username %>', '<%= user.email %>', '<%= user.role %>')">
+                                        <button class="btn btn-danger btn-sm delete-user-btn" 
+                                                data-id="<%= user._id %>" 
+                                                data-name="<%= user.username %>" 
+                                                data-email="<%= user.email %>" 
+                                                data-role="<%= user.role %>">
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
                                     </div>
@@ -688,6 +692,18 @@
             const elements = document.querySelectorAll('.fade-in');
             elements.forEach((element, index) => {
                 element.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Add event listeners for delete buttons
+            const deleteButtons = document.querySelectorAll('.delete-user-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-id');
+                    const username = this.getAttribute('data-name');
+                    const email = this.getAttribute('data-email');
+                    const role = this.getAttribute('data-role');
+                    openDeleteModal(userId, username, email, role);
+                });
             });
         });
 

@@ -217,26 +217,26 @@
             <button class="btn btn-secondary" onclick="testRoutes()">
                 <i class="fas fa-cog"></i> Test Routes
             </button>
-        </div>
+            </div>
 
         <!-- Products Table -->
         <section class="recent-section fade-in">
             <h2><i class="fas fa-list"></i> All Products</h2>
             <div class="table-container">
-                <table>
-                    <thead>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
                         <tr>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% products.forEach(product => { %>
-                            <tr>
-                                <td>
+                            <td>
                                     <img src="/Images/<%= product.images.main %>" alt="<%= product.alt %>" class="product-image">
                                 </td>
                                 <td>
@@ -244,22 +244,22 @@
                                     <% if (product.featured) { %>
                                         <br><span class="badge badge-warning">Featured</span>
                                     <% } %>
-                                </td>
+                            </td>
                                 <td><span class="badge badge-secondary"><%= product.category %></span></td>
                                 <td><strong><%= product.price.replace('£', 'EGP ') %></strong></td>
-                                <td class="action-buttons">
+                            <td class="action-buttons">
                                     <button class="btn btn-primary btn-sm" onclick="editProduct('<%= product._id %>')">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
                                     <button class="btn btn-danger btn-sm" onclick="deleteProduct('<%= product._id %>')">
                                         <i class="fas fa-trash"></i> Delete
                                     </button>
-                                </td>
-                            </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
-            </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
         </section>
     </main>
 
@@ -440,7 +440,7 @@
                             console.log('Delete successful:', result);
                             showNotification('Product deleted successfully!', 'success');
                             setTimeout(() => {
-                                window.location.reload();
+                        window.location.reload();
                             }, 1500);
                         } catch (parseError) {
                             console.error('JSON parse error:', parseError);
