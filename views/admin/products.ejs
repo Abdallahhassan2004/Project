@@ -196,6 +196,119 @@
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            margin: 5% auto;
+            padding: 0;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .close {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close:hover {
+            opacity: 0.7;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: #f8f9fa;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -270,7 +383,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Price</th>
-                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -283,13 +396,14 @@
                             <td><span class="badge badge-secondary"><%= product.category %></span></td>
                             <td><strong><%= product.price.replace('£', 'EGP ') %></strong></td>
                             <td>
-                                <select class="form-control status-select" data-product-id="<%= product._id %>" onchange="updateStatus(this)">
-                                    <option value="pending" <%= product.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                                    <option value="processing" <%= product.status === 'processing' ? 'selected' : '' %>>Processing</option>
-                                    <option value="shipped" <%= product.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
-                                    <option value="delivered" <%= product.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
-                                    <option value="cancelled" <%= product.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                </select>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-primary" onclick="editProduct('<%= product._id %>')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteProduct('<%= product._id %>', '<%= product.name %>')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     <% }); %>
@@ -297,6 +411,83 @@
             </table>
         </div>
         </section>
+
+        <!-- Edit Product Modal -->
+        <div id="editProductModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-edit"></i> Edit Product</h2>
+                    <span class="close" onclick="closeEditModal()">&times;</span>
+                </div>
+                <form id="editProductForm" onsubmit="updateProduct(event)">
+                    <div class="modal-body">
+                        <input type="hidden" id="editProductId" name="productId">
+                        
+                        <div class="form-group">
+                            <label for="editName">Product Name *</label>
+                            <input type="text" id="editName" name="name" class="form-control" required>
+                            <div class="validation-message" id="editNameValidation"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editCategory">Category *</label>
+                            <select id="editCategory" name="category" class="form-control" required>
+                                <option value="">Select Category</option>
+                                <option value="living">Living Room</option>
+                                <option value="dining">Dining Room</option>
+                                <option value="bedroom">Bedroom</option>
+                                <option value="office">Office</option>
+                                <option value="outdoor">Outdoor</option>
+                            </select>
+                            <div class="validation-message" id="editCategoryValidation"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editPrice">Price *</label>
+                            <input type="text" id="editPrice" name="price" class="form-control" placeholder="EGP 1,500" required>
+                            <div class="validation-message" id="editPriceValidation"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editDescription">Description *</label>
+                            <textarea id="editDescription" name="description" class="form-control" rows="4" required></textarea>
+                            <div class="validation-message" id="editDescriptionValidation"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editMainImage">Main Image *</label>
+                            <input type="file" id="editMainImage" name="mainImage" class="form-control" accept="image/*">
+                            <div class="validation-message" id="editMainImageValidation"></div>
+                            <div class="image-preview" id="editMainImagePreview"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editThumbnails">Thumbnail Images</label>
+                            <input type="file" id="editThumbnails" name="thumbnails" class="form-control" accept="image/*" multiple>
+                            <div class="validation-message" id="editThumbnailsValidation"></div>
+                            <div class="image-preview" id="editThumbnailsPreview"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editAlt">Alt Text</label>
+                            <input type="text" id="editAlt" name="alt" class="form-control" placeholder="Product description for accessibility">
+                            <div class="validation-message" id="editAltValidation"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="editFeatured" name="featured">
+                                Featured Product
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
 
     <!-- Hidden Logout Form -->
@@ -320,43 +511,126 @@
             document.getElementById('logoutForm').submit();
         }
 
-        // Update status function
-        async function updateStatus(selectElement) {
-            const productId = selectElement.dataset.productId;
-            const newStatus = selectElement.value;
-            
+        // Edit product function
+        async function editProduct(productId) {
             try {
-                const response = await fetch(`/api/admin/products/${productId}/status`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ status: newStatus })
-                });
-
+                const response = await fetch(`/admin/api/products/${productId}`);
                 if (response.ok) {
-                    showNotification(`Status updated to ${newStatus}`, 'success');
-                    // Update the select element's class based on status
-                    selectElement.className = `form-control status-select status-${newStatus}`;
+                    const product = await response.json();
+                    
+                    // Populate the edit form
+                    document.getElementById('editProductId').value = product._id;
+                    document.getElementById('editName').value = product.name;
+                    document.getElementById('editCategory').value = product.category;
+                    document.getElementById('editPrice').value = product.price;
+                    document.getElementById('editDescription').value = product.description;
+                    document.getElementById('editAlt').value = product.alt || '';
+                    document.getElementById('editFeatured').checked = product.featured || false;
+                    
+                    // Show current images
+                    const mainPreview = document.getElementById('editMainImagePreview');
+                    mainPreview.innerHTML = `<img src="/Images/${product.images.main}" alt="Current main image">`;
+                    
+                    const thumbnailsPreview = document.getElementById('editThumbnailsPreview');
+                    if (product.images.thumbnails && product.images.thumbnails.length > 0) {
+                        thumbnailsPreview.innerHTML = product.images.thumbnails.map(img => 
+                            `<img src="/Images/${img}" alt="Current thumbnail">`
+                        ).join('');
+                    }
+                    
+                    // Show the modal
+                    document.getElementById('editProductModal').style.display = 'block';
                 } else {
-                    const error = await response.json();
-                    showNotification(`Error: ${error.message}`, 'error');
-                    // Revert the select to its previous value
-                    selectElement.value = selectElement.dataset.previousValue;
+                    showNotification('Error loading product details', 'error');
                 }
             } catch (error) {
-                showNotification('Error updating status: ' + error.message, 'error');
-                // Revert the select to its previous value
-                selectElement.value = selectElement.dataset.previousValue;
+                showNotification('Error: ' + error.message, 'error');
             }
         }
 
-        // Store previous value before change
-        document.querySelectorAll('.status-select').forEach(select => {
-            select.addEventListener('focus', function() {
-                this.dataset.previousValue = this.value;
-            });
-        });
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editProductModal').style.display = 'none';
+            document.getElementById('editProductForm').reset();
+            document.getElementById('editMainImagePreview').innerHTML = '';
+            document.getElementById('editThumbnailsPreview').innerHTML = '';
+        }
+
+        // Update product function
+        async function updateProduct(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const productId = formData.get('productId');
+            
+            try {
+                const response = await fetch(`/admin/api/products/${productId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showNotification('Product updated successfully', 'success');
+                    closeEditModal();
+                    // Reload the page to show updated data
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    const error = await response.json();
+                    showNotification(`Error: ${error.message}`, 'error');
+                }
+            } catch (error) {
+                showNotification('Error updating product: ' + error.message, 'error');
+            }
+        }
+
+        // Delete product function
+        async function deleteProduct(productId, productName) {
+            if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+                try {
+                    const response = await fetch(`/admin/api/products/${productId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        showNotification(`Product "${productName}" deleted successfully`, 'success');
+                        // Reload the page to show updated data
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        const error = await response.json();
+                        showNotification(`Error: ${error.message}`, 'error');
+                    }
+                } catch (error) {
+                    showNotification('Error deleting product: ' + error.message, 'error');
+                }
+            }
+        }
+
+        // Update image previews for edit form
+        function updateEditImagePreviews() {
+            const mainInput = document.getElementById('editMainImage');
+            const thumbnailsInput = document.getElementById('editThumbnails');
+            
+            if (mainInput.files && mainInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editMainImagePreview').innerHTML = 
+                        `<img src="${e.target.result}" alt="Preview">`;
+                };
+                reader.readAsDataURL(mainInput.files[0]);
+            }
+            
+            if (thumbnailsInput.files) {
+                const preview = document.getElementById('editThumbnailsPreview');
+                preview.innerHTML = '';
+                Array.from(thumbnailsInput.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML += `<img src="${e.target.result}" alt="Preview">`;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
 
         function filterProducts() {
             const input = document.getElementById('searchInput');
@@ -378,9 +652,9 @@
         // Test routes function
         function testRoutes() {
             const routes = [
-                '/api/admin/products',
-                '/api/admin/users',
-                '/api/admin/orders'
+                '/admin/api/products',
+                '/admin/api/users',
+                '/admin/api/orders'
             ];
 
             routes.forEach(route => {
@@ -405,31 +679,27 @@
                 element.style.animationDelay = `${index * 0.1}s`;
             });
             
-            // Add validation event listeners
-            const editFields = ['editName', 'editCategory', 'editPrice', 'editDescription', 'editMainImage', 'editThumbnails', 'editAlt'];
-            editFields.forEach(fieldName => {
-                const element = document.getElementById(fieldName);
-                if (element) {
-                    element.addEventListener('input', function() {
-                        validateField(fieldName, this.value);
-                    });
-                    
-                    element.addEventListener('blur', function() {
-                        validateField(fieldName, this.value);
-                    });
-                }
-            });
+            // Add image preview listeners for edit form
+            const editMainImage = document.getElementById('editMainImage');
+            const editThumbnails = document.getElementById('editThumbnails');
             
-            // Add image preview listeners
-            document.getElementById('editMainImage').addEventListener('input', updateEditImagePreviews);
-            document.getElementById('editThumbnails').addEventListener('input', updateEditImagePreviews);
+            if (editMainImage) {
+                editMainImage.addEventListener('input', updateEditImagePreviews);
+            }
+            
+            if (editThumbnails) {
+                editThumbnails.addEventListener('input', updateEditImagePreviews);
+            }
             
             // Close modal when clicking outside
-            document.getElementById('editProductModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeEditModal();
-                }
-            });
+            const editModal = document.getElementById('editProductModal');
+            if (editModal) {
+                editModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeEditModal();
+                    }
+                });
+            }
         });
     </script>
 </body>

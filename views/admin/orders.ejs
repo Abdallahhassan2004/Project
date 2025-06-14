@@ -355,10 +355,10 @@
             saveButton.disabled = true;
             saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
             
-            console.log('Sending request to:', `/api/admin/orders/${orderId}/status`);
+            console.log('Sending request to:', `/admin/api/orders/${orderId}/status`);
             
             // Send the request
-            fetch(`/api/admin/orders/${orderId}/status`, {
+            fetch(`/admin/api/orders/${orderId}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
