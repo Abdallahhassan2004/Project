@@ -32,6 +32,11 @@ const productSchema = new mongoose.Schema({
     alt: {
         type: String,
         required: [true, 'Alt text is required']
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+        default: 'pending'
     }
 }, {
     timestamps: true

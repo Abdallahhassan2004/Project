@@ -9,6 +9,7 @@ const connectDB = require('./models/db');
 const { auth, adminAuth, requireAuth } = require('./middleware/auth');
 const userData = require('./middleware/userData');
 const Product = require('./models/Product');
+const Order = require('./models/Order');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -630,13 +631,24 @@ app.get('/checkout', requireAuth, async (req, res) => {
 
 app.post('/checkout/process', auth, async (req, res) => {
     try {
+        console.log('Starting checkout process...');
         const User = require('./models/User');
         const Order = require('./models/Order');
+        
+        console.log('User ID:', req.user.userId);
         const user = await User.findById(req.user.userId);
+        console.log('User found:', user ? 'Yes' : 'No');
 
         if (!user || !user.cart || user.cart.length === 0) {
+            console.log('Cart validation failed:', { 
+                userExists: !!user, 
+                hasCart: !!user?.cart, 
+                cartLength: user?.cart?.length 
+            });
             return res.status(400).json({ error: 'Cart is empty' });
         }
+
+        console.log('Cart contents:', user.cart);
 
         // Calculate total
         const total = user.cart.reduce((sum, item) => {
@@ -644,27 +656,59 @@ app.post('/checkout/process', auth, async (req, res) => {
             const quantity = parseInt(item.quantity) || 0;
             return sum + (price * quantity);
         }, 0);
+        console.log('Calculated total:', total);
 
-        // Create new order
-        const newOrder = new Order({
-            user: user._id,
-            products: user.cart.map(item => ({
-                product: item.id,
-                quantity: item.quantity
-            })),
-            total: total,
-            status: 'Pending'
+        // Log form data
+        console.log('Form data:', {
+            fullName: req.body.fullName,
+            email: req.body.email,
+            phone: req.body.phone,
+            address: req.body.address,
+            city: req.body.city,
+            postalCode: req.body.postalCode
         });
 
+        // Create new order with shipping information
+        const orderData = {
+            user: user._id,
+            products: user.cart.map(item => {
+                console.log('Processing cart item:', item);
+                return {
+                    product: item.id, // Use id instead of _id as that's what's stored in the cart
+                    quantity: parseInt(item.quantity),
+                    price: parseFloat(item.price)
+                };
+            }),
+            total: total,
+            shippingAddress: {
+                fullName: req.body.fullName,
+                email: req.body.email,
+                phone: req.body.phone,
+                address: req.body.address,
+                city: req.body.city,
+                postalCode: req.body.postalCode
+            }
+        };
+        console.log('Order data prepared:', orderData);
+
+        const newOrder = new Order(orderData);
+        console.log('Order instance created');
+
         await newOrder.save();
+        console.log('Order saved successfully');
 
         // Clear the user's cart
         user.cart = [];
         await user.save();
+        console.log('User cart cleared');
 
         res.redirect('/checkout/success');
     } catch (error) {
-        console.error('Error processing checkout:', error);
+        console.error('Detailed checkout error:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
         res.status(500).render('error', {
             title: 'Error',
             message: 'Error processing checkout',
@@ -875,6 +919,105 @@ app.get('/admin/products', adminAuth, async (req, res) => {
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).send('Error loading products');
+    }
+});
+
+// Update product status
+app.patch('/api/admin/products/:id/status', adminAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
+
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        product.status = status;
+        await product.save();
+
+        res.json({ message: 'Status updated successfully', product });
+    } catch (error) {
+        console.error('Error updating product status:', error);
+        res.status(500).json({ message: 'Error updating status' });
+    }
+});
+
+// Update order status
+app.patch('/api/admin/orders/:id/status', adminAuth, async (req, res) => {
+    try {
+        console.log('=== Order Status Update Request ===');
+        console.log('Order ID:', req.params.id);
+        console.log('Request body:', req.body);
+        console.log('User:', req.user);
+
+        const { id } = req.params;
+        const { status } = req.body;
+
+        // Validate order ID
+        if (!id || !require('mongoose').Types.ObjectId.isValid(id)) {
+            console.log('Invalid order ID:', id);
+            return res.status(400).json({ 
+                success: false,
+                message: 'Invalid order ID' 
+            });
+        }
+
+        // Validate status
+        const validStatuses = ['pending', 'processing', 'delivered', 'cancelled'];
+        if (!status || !validStatuses.includes(status)) {
+            console.log('Invalid status:', status);
+            return res.status(400).json({ 
+                success: false,
+                message: `Invalid status. Must be one of: ${validStatuses.join(', ')}` 
+            });
+        }
+
+        // Find and update order
+        const order = await Order.findById(id);
+        if (!order) {
+            console.log('Order not found:', id);
+            return res.status(404).json({ 
+                success: false,
+                message: 'Order not found' 
+            });
+        }
+
+        console.log('Current order status:', order.status);
+        console.log('Updating to new status:', status);
+
+        // Update order status
+        order.status = status;
+        await order.save();
+
+        console.log('Order updated successfully');
+        console.log('New order status:', order.status);
+        console.log('=== End Order Status Update ===');
+
+        res.json({ 
+            success: true,
+            message: 'Status updated successfully',
+            order: {
+                id: order._id,
+                status: order.status
+            }
+        });
+    } catch (error) {
+        console.error('=== Error in Order Status Update ===');
+        console.error('Error details:', error);
+        console.error('Stack trace:', error.stack);
+        console.error('=== End Error Log ===');
+
+        res.status(500).json({ 
+            success: false,
+            message: 'Error updating status',
+            error: error.message 
+        });
     }
 });
 

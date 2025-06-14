@@ -115,6 +115,108 @@
             font-weight: 700;
             color: var(--text-dark);
         }
+
+        .status-update-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 150px;
+            background-color: white;
+        }
+
+        .status-select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .save-status {
+            padding: 8px 16px;
+            border-radius: 4px;
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .save-status:hover {
+            background: #2980b9;
+        }
+
+        .save-status:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        /* Status Colors */
+        .status-pending {
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+            color: #856404;
+        }
+
+        .status-processing {
+            background-color: #cce5ff;
+            border-color: #b8daff;
+            color: #004085;
+        }
+
+        .status-shipped {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .status-delivered {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification.success {
+            background: #2ecc71;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -151,14 +253,6 @@
                 <h4><i class="fas fa-shopping-bag"></i> Total Orders</h4>
                 <div class="number"><%= orders.length %></div>
             </div>
-            <div class="stat-item">
-                <h4><i class="fas fa-clock"></i> Pending</h4>
-                <div class="number"><%= orders.filter(o => o.status === 'Pending').length %></div>
-            </div>
-            <div class="stat-item">
-                <h4><i class="fas fa-truck"></i> Delivered</h4>
-                <div class="number"><%= orders.filter(o => o.status === 'Delivered').length %></div>
-            </div>
         </div>
 
         <!-- Actions Bar -->
@@ -185,7 +279,7 @@
                             <th>Status</th>
                             <th>Date Placed</th>
                             <th>Last Edited</th>
-                            <th>Actions</th>
+                            <th>Total Price</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -195,16 +289,39 @@
                                 <td><%= order.user ? order.user.username : 'N/A' %></td>
                                 <td>
                                     <% order.products.forEach(item => { %>
-                                        <div><%= item.product ? item.product.name : 'N/A' %> (x<%= item.quantity %>)</div>
+                                        <div>
+                                            <%= item.product ? item.product.name : 'N/A' %> (x<%= item.quantity %>)
+                                            <br>
+                                            <small class="text-muted">Price: <%= parseInt(item.price) %> EGP</small>
+                                        </div>
                                     <% }) %>
                                 </td>
-                                <td><%= order.status %></td>
+                                <td>
+                                    <div class="status-update-container">
+                                        <select class="form-control status-select" 
+                                                id="status-<%= order._id %>"
+                                                data-order-id="<%= order._id %>">
+                                            <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                            <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                                            <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                            <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                        </select>
+                                        <button class="btn btn-primary btn-sm save-status" 
+                                                data-order-id="<%= order._id %>">
+                                            <i class="fas fa-save"></i> Save
+                                        </button>
+                                    </div>
+                                </td>
                                 <td><%= order.createdAt ? order.createdAt.toLocaleDateString() : '' %></td>
                                 <td><%= order.updatedAt ? order.updatedAt.toLocaleDateString() : '' %></td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" onclick="updateOrderStatus('<%= order._id %>')">
-                                        <i class="fas fa-edit"></i> Update Status
-                                    </button>
+                                    <strong><%= parseInt(order.total) %> EGP</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        <% order.products.forEach(item => { %>
+                                            <%= item.product ? item.product.name : 'N/A' %>: <%= parseInt(item.price) * item.quantity %> EGP<br>
+                                        <% }) %>
+                                    </small>
                                 </td>
                             </tr>
                         <% }); %>
@@ -218,6 +335,72 @@
     <form id="logoutForm" action="/auth/logout" method="POST" style="display: none;"></form>
 
     <script>
+        // Save Order Status function
+        function saveOrderStatus(orderId) {
+            console.log('saveOrderStatus called with orderId:', orderId);
+            
+            const selectElement = document.getElementById(`status-${orderId}`);
+            console.log('Select element:', selectElement);
+            
+            const saveButton = document.querySelector(`button[data-order-id="${orderId}"]`);
+            console.log('Save button:', saveButton);
+            
+            const newStatus = selectElement.value;
+            console.log('New status:', newStatus);
+            
+            const previousStatus = selectElement.dataset.previousStatus || selectElement.value;
+            console.log('Previous status:', previousStatus);
+            
+            // Disable button and show loading
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            
+            console.log('Sending request to:', `/api/admin/orders/${orderId}/status`);
+            
+            // Send the request
+            fetch(`/api/admin/orders/${orderId}/status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    showNotification('Status updated successfully!', 'success');
+                    // Update the select element's previous status
+                    selectElement.dataset.previousStatus = newStatus;
+                    // Refresh the page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error(data.message || 'Failed to update status');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating status:', error);
+                showNotification(error.message || 'Error updating status. Please try again.', 'error');
+                // Revert to previous status
+                selectElement.value = previousStatus;
+            })
+            .finally(() => {
+                saveButton.disabled = false;
+                saveButton.innerHTML = '<i class="fas fa-save"></i> Save';
+            });
+        }
+
         function exportOrders() {
             // This should be replaced with actual export functionality
             alert('Exporting orders...');
@@ -234,16 +417,43 @@
             });
         }
 
-        function updateOrderStatus(orderId) {
-            // This should be replaced with actual status update functionality
-            alert(Updating status for order ${orderId}...);
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
-        // Add smooth animations
+        // Store previous status when select changes
+        document.querySelectorAll('.status-select').forEach(select => {
+            select.addEventListener('change', function() {
+                console.log('Status changed to:', this.value);
+                this.dataset.previousStatus = this.value;
+            });
+        });
+
+        // Add event listeners when the page loads
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, adding event listeners');
+            
+            // Add click event listeners to all save buttons
+            document.querySelectorAll('.save-status').forEach(button => {
+                button.addEventListener('click', function() {
+                    const orderId = this.dataset.orderId;
+                    console.log('Save button clicked for order:', orderId);
+                    saveOrderStatus(orderId);
+                });
+            });
+
+            // Add smooth animations
             const elements = document.querySelectorAll('.fade-in');
             elements.forEach((element, index) => {
-                element.style.animationDelay = ${index * 0.1}s;
+                element.style.animationDelay = `${index * 0.1}s`;
             });
         });
     </script>

@@ -114,23 +114,31 @@ function deleteProduct(button) {
 }
 
 // Update Order Status
-function updateOrderStatus(orderId) {
-    const validStatuses = ["Pending", "Shipped", "Delivered"]; // Define valid status options
-    const status = prompt(`Enter new status for Order ID: ${orderId} (e.g., Pending, Shipped, Delivered):`);
+async function updateOrderStatus(orderId, newStatus) {
+    try {
+        const response = await fetch(`/api/admin/orders/${orderId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
 
-    if (status) {
-        if (validStatuses.includes(status)) {
-            const table = document.querySelector('#orders table tbody');
-            const row = Array.from(table.rows).find(row => row.cells[0].textContent == orderId);
-            if (row) {
-                row.cells[3].textContent = status;
-                alert(`Order ID: ${orderId} status updated to "${status}".`);
-            } else {
-                alert(`Order ID: ${orderId} not found.`);
+        if (response.ok) {
+            const result = await response.json();
+            showNotification(`Order status updated to ${newStatus}`, 'success');
+            // Update the status in the table
+            const statusCell = document.querySelector(`tr[data-order-id="${orderId}"] td:nth-child(4)`);
+            if (statusCell) {
+                statusCell.textContent = newStatus;
+                statusCell.className = `status-${newStatus.toLowerCase()}`;
             }
         } else {
-            alert(`Invalid status entered. Please enter one of the following: ${validStatuses.join(", ")}.`);
+            const error = await response.json();
+            showNotification(`Error: ${error.message}`, 'error');
         }
+    } catch (error) {
+        showNotification('Error updating order status: ' + error.message, 'error');
     }
 }
 
