@@ -433,11 +433,10 @@
                             <label for="editCategory">Category *</label>
                             <select id="editCategory" name="category" class="form-control" required>
                                 <option value="">Select Category</option>
-                                <option value="living">Living Room</option>
-                                <option value="dining">Dining Room</option>
-                                <option value="bedroom">Bedroom</option>
-                                <option value="office">Office</option>
-                                <option value="outdoor">Outdoor</option>
+                                <option value="Living Room">Living Room</option>
+                                <option value="Bedroom">Bedroom</option>
+                                <option value="Kitchen">Kitchen</option>
+                                <option value="Dining">Dining</option>
                             </select>
                             <div class="validation-message" id="editCategoryValidation"></div>
                         </div>
@@ -455,23 +454,33 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="editMainImage">Main Image *</label>
-                            <input type="file" id="editMainImage" name="mainImage" class="form-control" accept="image/*">
-                            <div class="validation-message" id="editMainImageValidation"></div>
+                            <label for="editMainImage"><i class="fas fa-image"></i> Main Image Path *</label>
+                            <input type="text" id="editMainImage" name="mainImage" class="form-control" required
+                                   placeholder="e.g., dining/d1/1d.webp for dining products">
+                            <div class="help-text">
+                                <strong>Path Guidelines:</strong><br>
+                                • Dining: dining/d1/1d.webp<br>
+                                • Bedroom: bedrooms/b1/1.jpg<br>
+                                • Kitchen: kitchen/kitchen1/d1.jpg<br>
+                                • Living Room: livingRooms/L1/L1.avif
+                            </div>
                             <div class="image-preview" id="editMainImagePreview"></div>
                         </div>
 
                         <div class="form-group">
-                            <label for="editThumbnails">Thumbnail Images</label>
-                            <input type="file" id="editThumbnails" name="thumbnails" class="form-control" accept="image/*" multiple>
-                            <div class="validation-message" id="editThumbnailsValidation"></div>
+                            <label for="editThumbnails"><i class="fas fa-images"></i> Thumbnail Image Paths (one per line) *</label>
+                            <textarea id="editThumbnails" name="thumbnails" class="form-control" required
+                                      placeholder="e.g., dining/d1/1d.webp&#10;dining/d1/2d.webp&#10;dining/d1/3d.webp"></textarea>
+                            <div class="help-text">
+                                Enter each thumbnail path on a new line. Make sure all images exist in the /Images/ directory.
+                            </div>
                             <div class="image-preview" id="editThumbnailsPreview"></div>
                         </div>
 
                         <div class="form-group">
-                            <label for="editAlt">Alt Text</label>
-                            <input type="text" id="editAlt" name="alt" class="form-control" placeholder="Product description for accessibility">
-                            <div class="validation-message" id="editAltValidation"></div>
+                            <label for="editAlt"><i class="fas fa-image"></i> Alt Text *</label>
+                            <input type="text" id="editAlt" name="alt" class="form-control" required
+                                   placeholder="Product description for accessibility">
                         </div>
 
                         <div class="form-group">
@@ -483,7 +492,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Product</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Product</button>
                     </div>
                 </form>
             </div>
@@ -511,6 +520,29 @@
             document.getElementById('logoutForm').submit();
         }
 
+        // Update image previews for edit form
+        function updateEditImagePreviews(inputElement, previewElementId) {
+            const preview = document.getElementById(previewElementId);
+            const value = inputElement.value.trim();
+            
+            if (inputElement.id === 'editMainImage') {
+                if (value) {
+                    preview.innerHTML = `<img src="/Images/${value}" alt="Main image preview" onerror="this.style.display='none'">`;
+                } else {
+                    preview.innerHTML = '';
+                }
+            } else if (inputElement.id === 'editThumbnails') {
+                const urls = value.split('\n').filter(url => url.trim());
+                if (urls.length > 0) {
+                    preview.innerHTML = urls.map(url => 
+                        `<img src="/Images/${url}" alt="Thumbnail preview" onerror="this.style.display='none'">`
+                    ).join('');
+                } else {
+                    preview.innerHTML = '';
+                }
+            }
+        }
+
         // Edit product function
         async function editProduct(productId) {
             try {
@@ -522,29 +554,27 @@
                     document.getElementById('editProductId').value = product._id;
                     document.getElementById('editName').value = product.name;
                     document.getElementById('editCategory').value = product.category;
-                    document.getElementById('editPrice').value = product.price;
+                    document.getElementById('editPrice').value = parseFloat(product.price.replace('EGP ', ''));
                     document.getElementById('editDescription').value = product.description;
                     document.getElementById('editAlt').value = product.alt || '';
                     document.getElementById('editFeatured').checked = product.featured || false;
                     
-                    // Show current images
-                    const mainPreview = document.getElementById('editMainImagePreview');
-                    mainPreview.innerHTML = `<img src="/Images/${product.images.main}" alt="Current main image">`;
-                    
-                    const thumbnailsPreview = document.getElementById('editThumbnailsPreview');
-                    if (product.images.thumbnails && product.images.thumbnails.length > 0) {
-                        thumbnailsPreview.innerHTML = product.images.thumbnails.map(img => 
-                            `<img src="/Images/${img}" alt="Current thumbnail">`
-                        ).join('');
-                    }
-                    
+                    // Populate image path text fields
+                    document.getElementById('editMainImage').value = product.images.main || '';
+                    document.getElementById('editThumbnails').value = (product.images.thumbnails || []).join('\n');
+
+                    // Trigger image previews for existing images
+                    updateEditImagePreviews(document.getElementById('editMainImage'), 'editMainImagePreview');
+                    updateEditImagePreviews(document.getElementById('editThumbnails'), 'editThumbnailsPreview');
+
                     // Show the modal
                     document.getElementById('editProductModal').style.display = 'block';
                 } else {
                     showNotification('Error loading product details', 'error');
                 }
             } catch (error) {
-                showNotification('Error: ' + error.message, 'error');
+                console.error('Error fetching product:', error); // Log the actual error
+                showNotification('Error loading product details: ' + error.message, 'error');
             }
         }
 
@@ -559,27 +589,118 @@
         // Update product function
         async function updateProduct(event) {
             event.preventDefault();
+            console.log('Update product button clicked.'); // Debug log
             
-            const formData = new FormData(event.target);
-            const productId = formData.get('productId');
-            
+            const productId = document.getElementById('editProductId').value;
+            console.log('Product ID:', productId); // Debug log
+
+            // Get form values
+            const name = document.getElementById('editName').value.trim();
+            const category = document.getElementById('editCategory').value;
+            const price = document.getElementById('editPrice').value;
+
+            // Clean price string before parsing
+            const cleanedPrice = price.replace(/EGP\s*|\s*|\,/g, '');
+            console.log('Cleaned Price:', cleanedPrice); // Debug log
+
+            const parsedPrice = parseFloat(cleanedPrice);
+            console.log('Parsed Price:', parsedPrice); // Debug log
+            if (isNaN(parsedPrice) || parsedPrice <= 0) {
+                showNotification('Price must be a positive number and contain only digits (e.g., 1500 or 1,500)', 'warning');
+                console.log('Validation failed: invalid price.'); // Debug log
+                return;
+            }
+
+            const description = document.getElementById('editDescription').value.trim();
+            const mainImage = document.getElementById('editMainImage').value.trim();
+            const thumbnails = document.getElementById('editThumbnails').value;
+            const alt = document.getElementById('editAlt').value.trim();
+            const featured = document.getElementById('editFeatured').checked;
+
+            // Basic validation
+            if (!name || !category || !price || !description || !mainImage || !thumbnails || !alt) {
+                showNotification('Please fill in all required fields', 'warning');
+                console.log('Validation failed: missing required fields.'); // Debug log
+                return;
+            }
+
+            // Validate image paths based on category
+            const categoryPaths = {
+                'Living Room': 'livingRooms/',
+                'Bedroom': 'bedrooms/',
+                'Kitchen': 'kitchen/',
+                'Dining': 'dining/'
+            };
+
+            const expectedPath = categoryPaths[category];
+            if (!expectedPath) {
+                showNotification('Invalid category selected.', 'warning');
+                console.log('Validation failed: invalid category.'); // Debug log
+                return;
+            }
+
+            if (!mainImage.startsWith(expectedPath)) {
+                showNotification(`Main image path should start with "${expectedPath}" for ${category} products`, 'warning');
+                console.log('Validation failed: main image path.'); // Debug log
+                return;
+            }
+
+            const invalidThumbnails = thumbnails.split('\n').filter(url => !url.startsWith(expectedPath));
+            if (invalidThumbnails.length > 0) {
+                showNotification(`All thumbnail paths should start with "${expectedPath}" for ${category} products`, 'warning');
+                console.log('Validation failed: invalid thumbnail paths.'); // Debug log
+                return;
+            }
+
+            console.log('Client-side validation passed. Preparing to send data.'); // Debug log
+
+            // Show loading state
+            const submitBtn = event.target.querySelector('.btn-primary');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating Product...';
+            submitBtn.disabled = true;
+
+            // Create URL-encoded data
+            const formData = new URLSearchParams();
+            formData.append('name', name);
+            formData.append('category', category);
+            formData.append('price', price);
+            formData.append('description', description);
+            formData.append('mainImage', mainImage);
+            formData.append('thumbnails', thumbnails);
+            formData.append('alt', alt);
+            formData.append('featured', featured);
+
+            console.log('Sending fetch request...'); // Debug log
             try {
                 const response = await fetch(`/admin/api/products/${productId}`, {
                     method: 'PUT',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString()
                 });
+                console.log('Fetch request completed. Response status:', response.status); // Debug log
 
                 if (response.ok) {
-                    showNotification('Product updated successfully', 'success');
+                    showNotification('Product updated successfully!', 'success');
+                    console.log('Product updated successfully. Closing modal and reloading.'); // Debug log
                     closeEditModal();
                     // Reload the page to show updated data
                     setTimeout(() => window.location.reload(), 1000);
                 } else {
-                    const error = await response.json();
-                    showNotification(`Error: ${error.message}`, 'error');
+                    const errorText = await response.text();
+                    showNotification('Error updating product: ' + errorText, 'error');
+                    console.error('Server responded with an error:', errorText); // Debug log
                 }
             } catch (error) {
+                console.error('Error updating product (fetch):', error);
                 showNotification('Error updating product: ' + error.message, 'error');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                console.log('Button state reset.'); // Debug log
             }
         }
 
@@ -602,33 +723,6 @@
                 } catch (error) {
                     showNotification('Error deleting product: ' + error.message, 'error');
                 }
-            }
-        }
-
-        // Update image previews for edit form
-        function updateEditImagePreviews() {
-            const mainInput = document.getElementById('editMainImage');
-            const thumbnailsInput = document.getElementById('editThumbnails');
-            
-            if (mainInput.files && mainInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('editMainImagePreview').innerHTML = 
-                        `<img src="${e.target.result}" alt="Preview">`;
-                };
-                reader.readAsDataURL(mainInput.files[0]);
-            }
-            
-            if (thumbnailsInput.files) {
-                const preview = document.getElementById('editThumbnailsPreview');
-                preview.innerHTML = '';
-                Array.from(thumbnailsInput.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.innerHTML += `<img src="${e.target.result}" alt="Preview">`;
-                    };
-                    reader.readAsDataURL(file);
-                });
             }
         }
 
@@ -672,25 +766,49 @@
             });
         }
 
-        // Add smooth animations
+        // Auto-generate alt text based on product name
         document.addEventListener('DOMContentLoaded', function() {
-            const elements = document.querySelectorAll('.fade-in');
-            elements.forEach((element, index) => {
-                element.style.animationDelay = `${index * 0.1}s`;
-            });
+            // ... existing code ...
             
             // Add image preview listeners for edit form
             const editMainImage = document.getElementById('editMainImage');
             const editThumbnails = document.getElementById('editThumbnails');
-            
+            const editName = document.getElementById('editName');
+            const editAlt = document.getElementById('editAlt');
+
             if (editMainImage) {
-                editMainImage.addEventListener('input', updateEditImagePreviews);
+                editMainImage.addEventListener('input', function() {
+                    updateEditImagePreviews(editMainImage, 'editMainImagePreview');
+                });
             }
             
             if (editThumbnails) {
-                editThumbnails.addEventListener('input', updateEditImagePreviews);
+                editThumbnails.addEventListener('input', function() {
+                    updateEditImagePreviews(editThumbnails, 'editThumbnailsPreview');
+                });
             }
-            
+
+            if (editName && editAlt) {
+                editName.addEventListener('input', function() {
+                    const productName = this.value.trim();
+                    if (productName && !editAlt.value.trim()) {
+                        editAlt.value = `${productName} - Furniture Product`;
+                    }
+                });
+            }
+
+            // Validate price input for edit form
+            const editPriceInput = document.getElementById('editPrice');
+            if (editPriceInput) {
+                editPriceInput.addEventListener('input', function(e) {
+                    const price = parseFloat(e.target.value);
+                    if (price < 0) {
+                        e.target.value = 0;
+                        showNotification('Price cannot be negative', 'warning');
+                    }
+                });
+            }
+
             // Close modal when clicking outside
             const editModal = document.getElementById('editProductModal');
             if (editModal) {

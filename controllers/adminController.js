@@ -253,31 +253,29 @@ exports.updateProduct = async (req, res) => {
             return res.status(404).json({ error: 'Product not found' });
         }
         
-        const { name, category, price, description, alt, featured } = req.body;
+        const { name, category, price, description, alt, featured, mainImage, thumbnails } = req.body;
         
         // Update basic fields
         if (name) product.name = name.trim();
         if (category) product.category = category;
-        if (price) product.price = price;
+        if (price) {
+            const priceNum = parseFloat(price);
+            if (!isNaN(priceNum)) {
+                product.price = `EGP ${priceNum.toFixed(0)}`;
+            }
+        }
         if (description) product.description = description.trim();
         if (alt !== undefined) product.alt = alt.trim();
         if (featured !== undefined) product.featured = featured === 'true' || featured === true;
         
-        // Handle file uploads if provided
-        if (req.files && req.files.mainImage) {
-            product.images.main = req.files.mainImage.name;
-            // Move uploaded file to Images directory
-            await req.files.mainImage.mv(`./public/Images/${req.files.mainImage.name}`);
+        // Handle image paths (now sent as strings from client)
+        if (mainImage) {
+            product.images.main = mainImage.trim();
         }
         
-        if (req.files && req.files.thumbnails) {
-            const thumbnails = Array.isArray(req.files.thumbnails) ? req.files.thumbnails : [req.files.thumbnails];
-            product.images.thumbnails = thumbnails.map(file => file.name);
-            
-            // Move uploaded files to Images directory
-            for (const file of thumbnails) {
-                await file.mv(`./public/Images/${file.name}`);
-            }
+        if (thumbnails) {
+            const thumbnailArray = thumbnails.split('\n').map(t => t.trim()).filter(t => t.length > 0);
+            product.images.thumbnails = thumbnailArray;
         }
         
         await product.save();

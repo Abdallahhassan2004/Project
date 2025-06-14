@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const { sendPasswordResetEmail } = require('../public/JavaScript/email');
+const { sendPasswordResetEmail } = require('../utils/email');
 
 // Get login page
 exports.getLoginPage = (req, res) => {
