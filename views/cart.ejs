@@ -60,7 +60,7 @@
                             <img src="<%= imageSrc %>" alt="<%= item.name %>">
                             <div class="item-details">
                                 <h3><%= item.name %></h3>
-                                <p class="price">EGP <%= parseFloat(item.price).toFixed(2) %></p>
+                                <p class="price">EGP <%= (typeof item.price === 'string' ? parseFloat(item.price.replace(/EGP\s*/, '')) : parseFloat(item.price)).toFixed(0) %></p>
                                 <div class="quantity-controls">
                                     <button class="quantity-btn" onclick="updateQuantity('<%= item.id %>', -1)">-</button>
                                     <span class="quantity-display"><%= item.quantity %></span>
@@ -80,7 +80,7 @@
                         <h3>Order Summary</h3>
                         <div class="summary-item">
                             <span>Items (<%= cart.reduce((sum, item) => sum + item.quantity, 0) %>)</span>
-                            <span>EGP <%= cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2) %></span>
+                            <span>EGP <%= cart.reduce((sum, item) => sum + ((typeof item.price === 'string' ? parseFloat(item.price.replace(/EGP\s*/, '')) : parseFloat(item.price)) * item.quantity), 0).toFixed(0) %></span>
                         </div>
                         <div class="summary-item">
                             <span>Shipping</span>
@@ -88,7 +88,7 @@
                         </div>
                         <div class="summary-item total">
                             <span>Total</span>
-                            <span>EGP <%= cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2) %></span>
+                            <span>EGP <%= cart.reduce((sum, item) => sum + ((typeof item.price === 'string' ? parseFloat(item.price.replace(/EGP\s*/, '')) : parseFloat(item.price)) * item.quantity), 0).toFixed(0) %></span>
                         </div>
                         <a href="/checkout" class="checkout-btn" style="text-decoration: none;">Proceed to Checkout</a>
                     </div>
@@ -243,9 +243,9 @@
                     const totalElements = document.querySelectorAll('.summary-item span:last-child');
                     totalElements.forEach(el => {
                         if (el.parentElement.classList.contains('total')) {
-                            el.textContent = 'EGP ' + parseFloat(data.total).toFixed(2);
+                            el.textContent = 'EGP ' + (typeof data.total === 'string' ? parseFloat(data.total.replace(/EGP\s*/, '')) : parseFloat(data.total)).toFixed(0);
                         } else if (!el.textContent.includes('Free')) {
-                            el.textContent = 'EGP ' + parseFloat(data.total).toFixed(2);
+                            el.textContent = 'EGP ' + (typeof data.total === 'string' ? parseFloat(data.total.replace(/EGP\s*/, '')) : parseFloat(data.total)).toFixed(0);
                         }
                     });
                 }
@@ -281,9 +281,9 @@
                     const totalElements = document.querySelectorAll('.summary-item span:last-child');
                     totalElements.forEach(el => {
                         if (el.parentElement.classList.contains('total')) {
-                            el.textContent = 'EGP ' + parseFloat(data.total).toFixed(2);
+                            el.textContent = 'EGP ' + (typeof data.total === 'string' ? parseFloat(data.total.replace(/EGP\s*/, '')) : parseFloat(data.total)).toFixed(0);
                         } else if (!el.textContent.includes('Free')) {
-                            el.textContent = 'EGP ' + parseFloat(data.total).toFixed(2);
+                            el.textContent = 'EGP ' + (typeof data.total === 'string' ? parseFloat(data.total.replace(/EGP\s*/, '')) : parseFloat(data.total)).toFixed(0);
                         }
                     });
                 }

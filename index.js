@@ -307,6 +307,16 @@ app.delete('/admin/delete-user/:userId', adminAuth, async (req, res) => {
 // Protected admin routes
 app.use('/api/admin/products', adminAuth, productRoutes);
 
+// Helper function to safely parse prices (handles both string and number formats)
+function parsePrice(price) {
+    if (typeof price === 'string') {
+        return parseFloat(price.replace(/EGP\s*/, '')) || 0;
+    } else if (typeof price === 'number') {
+        return price || 0;
+    }
+    return 0;
+}
+
 // Cart Routes
 app.get('/cart', requireAuth, async (req, res) => {
     try {
@@ -330,7 +340,7 @@ app.get('/cart', requireAuth, async (req, res) => {
         
         // Calculate total with proper number parsing
         const total = cart.reduce((sum, item) => {
-            const price = parseFloat(item.price) || 0;
+            const price = parsePrice(item.price);
             const quantity = parseInt(item.quantity) || 0;
             return sum + (price * quantity);
         }, 0);
@@ -458,7 +468,7 @@ app.post('/cart/add/:id', auth, async (req, res) => {
             const newItem = {
                 id: product._id,
                 name: product.name,
-                price: parseFloat(product.price) || 0,
+                price: parsePrice(product.price),
                 image: imagePath,
                 quantity: 1
             };
@@ -474,7 +484,7 @@ app.post('/cart/add/:id', auth, async (req, res) => {
 
         // Calculate new total and count
         const total = user.cart.reduce((sum, item) => {
-            const price = parseFloat(item.price) || 0;
+            const price = parsePrice(item.price);
             return sum + (price * item.quantity);
         }, 0);
 
@@ -505,7 +515,7 @@ app.post('/cart/remove/:id', auth, async (req, res) => {
         
         // Recalculate total with proper number parsing
         const total = user.cart.reduce((sum, item) => {
-            const price = parseFloat(item.price) || 0;
+            const price = parsePrice(item.price);
             const quantity = parseInt(item.quantity) || 0;
             return sum + (price * quantity);
         }, 0);
@@ -543,7 +553,7 @@ app.post('/cart/update/:id', auth, async (req, res) => {
 
         // Recalculate total with proper number parsing
         const total = user.cart.reduce((sum, item) => {
-            const price = parseFloat(item.price) || 0;
+            const price = parsePrice(item.price);
             const quantity = parseInt(item.quantity) || 0;
             return sum + (price * quantity);
         }, 0);
@@ -601,7 +611,7 @@ app.get('/checkout', requireAuth, async (req, res) => {
         
         // Calculate total with proper number parsing
         const total = cart.reduce((sum, item) => {
-            const price = parseFloat(item.price) || 0;
+            const price = parsePrice(item.price);
             const quantity = parseInt(item.quantity) || 0;
             return sum + (price * quantity);
         }, 0);
@@ -652,7 +662,7 @@ app.post('/checkout/process', auth, async (req, res) => {
 
         // Calculate total
         const total = user.cart.reduce((sum, item) => {
-            const price = parseFloat(item.price) || 0;
+            const price = parsePrice(item.price);
             const quantity = parseInt(item.quantity) || 0;
             return sum + (price * quantity);
         }, 0);
@@ -867,10 +877,11 @@ app.post('/admin/add-product', adminAuth, async (req, res) => {
         }
         
         // Create new product
-        const newProduct = new Product({
+        const priceNum = parseFloat(price);
+        const product = new Product({
             name: name.trim(),
             category: category,
-            price: `EGP ${parseFloat(price).toFixed(2)}`,
+            price: `EGP ${priceNum.toFixed(0)}`,
             description: description.trim(),
             images: {
                 main: mainImage.trim(),
@@ -880,7 +891,7 @@ app.post('/admin/add-product', adminAuth, async (req, res) => {
         });
         
         // Save to database
-        const savedProduct = await newProduct.save();
+        const savedProduct = await product.save();
         
         console.log('Product added successfully:', savedProduct);
         res.status(201).json({ 
