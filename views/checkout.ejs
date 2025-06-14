@@ -103,14 +103,14 @@
                                     <span class="item-name"><%= item.name %></span>
                                     <span class="item-quantity">x<%= item.quantity %></span>
                                 </div>
-                                <span class="item-price">EGP <%= (parseFloat(item.price) * item.quantity).toFixed(2) %></span>
+                                <span class="item-price">EGP <%= ((typeof item.price === 'string' ? parseFloat(item.price.replace(/EGP\s*/, '')) : parseFloat(item.price)) * item.quantity).toFixed(0) %></span>
                             </div>
                         <% }); %>
                     </div>
                     <div class="summary-total">
                         <div class="total-row">
                             <span>Subtotal</span>
-                            <span>EGP <%= total.toFixed(2) %></span>
+                            <span>EGP <%= total.toFixed(0) %></span>
                         </div>
                         <div class="total-row">
                             <span>Shipping</span>
@@ -118,7 +118,7 @@
                         </div>
                         <div class="total-row grand-total">
                             <span>Total</span>
-                            <span>EGP <%= total.toFixed(2) %></span>
+                            <span>EGP <%= total.toFixed(0) %></span>
                         </div>
                     </div>
                 </div>

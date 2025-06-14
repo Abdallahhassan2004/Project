@@ -130,7 +130,14 @@
         }
 
         .related-item {
-            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .related-item:hover {
+            transform: translateY(-5px);
         }
 
         .related-item img {
@@ -166,87 +173,43 @@
             }
         }
 
-        .product img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            cursor: pointer;
+        .product {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
             transition: transform 0.3s ease;
         }
 
-        .product img:hover {
+        .product img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product:hover img {
             transform: scale(1.05);
         }
 
-        .product-title {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            cursor: default;
-        }
-
-        .product-title:hover {
-            text-decoration: none;
-        }
-
-        .add-to-cart {
-            background-color: #2c3e50;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-top: auto;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .add-to-cart:hover {
-            background-color: #34495e;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .add-to-cart:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .product-info {
-            padding: 20px;
-            flex: 1;
-        }
-
-        .product-info h2 {
-            margin: 0 0 10px 0;
-            color: #333;
-            font-size: 24px;
-        }
-
-        .product-info .price {
-            font-size: 24px;
-            color: #2c3e50;
-            font-weight: 600;
-            margin: 15px 0;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .product-info p {
-            color: #666;
-            line-height: 1.6;
-            margin: 15px 0;
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .product .price {
-            font-size: 18px;
-            color: #2c3e50;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin: 8px 0;
-            font-family: 'Arial', sans-serif;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product .product-title {
+            display: block;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #333;
         }
     </style>
 </head>
@@ -275,10 +238,10 @@
     <!-- Product List Section -->
     <div class="product-list">
         <% products.forEach(product => { %>
-            <div class="product">
-                <img src="/Images/<%= product.images.main %>" alt="<%= product.alt %>" onclick="showProductDetails('<%= JSON.stringify(product).replace(/'/g, "\\'") %>')">
-                <p class="price">EGP <%= parseFloat(product.price).toFixed(2) %></p>
-                <a href="#" class="product-title" onclick="showProductDetails('<%= JSON.stringify(product).replace(/'/g, "\\'") %>')"><%= product.name %></a>
+            <div class="product" data-product-id="<%= product._id %>" style="cursor: pointer;">
+                <img src="/Images/<%= product.images.main %>" alt="<%= product.name %>">
+                <p class="price"><%= product.price %></p>
+                <p class="product-title"><%= product.name %></p>
             </div>
         <% }); %>
     </div>
@@ -288,31 +251,31 @@
         <div class="details-content">
             <span class="close-details" onclick="closeProductDetails()">&times;</span>
             <div class="image-gallery">
-                <div class="thumbnail-images" id="thumbnailContainer">
-                    <!-- Thumbnails will be added here dynamically -->
-                </div>
-                <img id="mainProductImage" src="" alt="" class="main-image">
+                <div class="thumbnail-images" id="thumbnailImages"></div>
+                <img id="modalMainImage" src="" alt="Main product image" class="main-image">
             </div>
             <div class="product-info">
-                <h2 id="productTitle" class="product-title"></h2>
-                <p id="productPrice" class="price"></p>
-                <p id="productDescription"></p>
-                <button class="add-to-cart" onclick="addToCartLocal(currentProduct._id)">Add to Cart</button>
+                <h2 id="modalProductTitle" class="product-title"></h2>
+                <p id="modalProductPrice" class="product-price"></p>
+                <p id="modalProductDescription" class="product-description"></p>
+                <button class="add-to-cart-btn" onclick="addToCartLocal()">Add to Cart</button>
             </div>
+            <!-- You May Also Like Section -->
             <div class="related-products">
                 <h3>You May Also Like</h3>
                 <div class="related-grid">
-                    <% const relatedProducts = [
-                        { image: '/Images/livingRooms/L1/L1.avif', title: 'Modern Living Room' },
-                        { image: '/Images/kitchen/kitchen 1/kit1 2.jpg', title: 'Modern Kitchen' },
-                        { image: '/Images/bedrooms/b1/5.jpg', title: 'Modern Bedroom' }
-                    ]; %>
-                    <% relatedProducts.forEach(item => { %>
-                        <div class="related-item">
-                            <img src="<%= item.image %>" alt="<%= item.title %>">
-                            <p><%= item.title %></p>
-                        </div>
-                    <% }); %>
+                    <a href="/living" class="related-item">
+                        <img src="/Images/livingRooms/L1/L1.avif" alt="Contemporary Living Room">
+                        <p>Contemporary Living Room</p>
+                    </a>
+                    <a href="/kitchen" class="related-item">
+                        <img src="/Images/kitchen/kitchen 1/kit1 2.jpg" alt="Contemporary Kitchen">
+                        <p>Contemporary Kitchen</p>
+                    </a>
+                    <a href="/bedroom" class="related-item">
+                        <img src="/Images/bedrooms/b1/5.jpg" alt="Contemporary Bedroom">
+                        <p>Contemporary Bedroom</p>
+                    </a>
                 </div>
             </div>
         </div>
@@ -320,7 +283,6 @@
 
     <footer>
         <div class="footer-wrapper">
-            <!-- Grid Columns with Bordered Boxes -->
             <div class="footer-grid">
                 <% const footerSections = [
                     { title: 'Store', links: ['Home', 'About', 'Journal', 'Contact'] },
@@ -341,71 +303,44 @@
                 <% }); %>
             </div>
         </div>
-
-        <!-- Store name in its own full-width block at the bottom -->
         <div class="footer-brand">
             <h2>Sense</h2>
         </div>
     </footer>
 
     <script>
+        const products = <%- JSON.stringify(products) %>;
         let currentProduct = null;
 
-        function handleSearchClick() {
-            const query = document.getElementById('search-input').value.trim().toLowerCase();
-            const roomPages = {
-                "living": "/living",
-                "living room": "/living",
-                "bed": "/bedroom",
-                "bedroom": "/bedroom",
-                "kitchen": "/kitchen",
-                "dining": "/dining",
-                "dining room": "/dining"
-            };
-
-            const matchedKey = Object.keys(roomPages).find(key => query.includes(key));
-
-            if (matchedKey) {
-                window.location.href = roomPages[matchedKey];
-            } else {
-                alert("No matching room found. Try: living, bed, kitchen, dining.");
-            }
-        }
-
-        function toggleMenu() {
-            const menu = document.getElementById("fullMenu");
-            const toggleBtn = document.querySelector(".menu-toggle");
-            menu.classList.toggle("active");
-            toggleBtn.textContent = menu.classList.contains("active") ? "✕" : "☰";
-        }
-
-        function showProductDetails(product) {
-            currentProduct = typeof product === 'string' ? JSON.parse(product) : product;
-            const modal = document.getElementById('productDetails');
-            const mainImage = document.getElementById('mainProductImage');
-            const thumbnailContainer = document.getElementById('thumbnailContainer');
-            const productTitle = document.getElementById('productTitle');
-            const productPrice = document.getElementById('productPrice');
-            const productDescription = document.getElementById('productDescription');
-
-            // Set main product details
-            mainImage.src = `/Images/${currentProduct.images.main}`;
-            mainImage.alt = currentProduct.alt;
-            productTitle.textContent = currentProduct.name;
-            productPrice.textContent = `EGP ${parseFloat(currentProduct.price).toFixed(2)}`;
-            productDescription.textContent = currentProduct.description;
-
-            // Clear and populate thumbnails
-            thumbnailContainer.innerHTML = '';
-            Object.values(currentProduct.images).forEach(image => {
-                const thumbnail = document.createElement('img');
-                thumbnail.src = `/Images/${image}`;
-                thumbnail.alt = currentProduct.alt;
-                thumbnail.onclick = () => mainImage.src = `/Images/${image}`;
-                thumbnailContainer.appendChild(thumbnail);
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.product').forEach(div => {
+                div.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    showProductDetails(productId);
+                });
             });
+        });
 
-            modal.style.display = 'block';
+        function showProductDetails(productId) {
+            currentProduct = products.find(p => p._id === productId);
+            if (!currentProduct) return;
+
+            // Set main image
+            document.getElementById('modalMainImage').src = '/Images/' + currentProduct.images.main;
+
+            // Set thumbnails
+            const thumbnailsDiv = document.getElementById('thumbnailImages');
+            thumbnailsDiv.innerHTML = currentProduct.images.thumbnails.map(thumb =>
+                `<img src="/Images/${thumb}" class="thumbnail" onclick="updateMainImage('/Images/${thumb}')">`
+            ).join('');
+
+            // Set other product info
+            document.getElementById('modalProductTitle').textContent = currentProduct.name;
+            document.getElementById('modalProductPrice').textContent = currentProduct.price;
+            document.getElementById('modalProductDescription').textContent = currentProduct.description;
+
+            // Show modal
+            document.getElementById('productDetails').style.display = 'block';
         }
 
         function closeProductDetails() {
@@ -413,27 +348,21 @@
             currentProduct = null;
         }
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('productDetails');
-            if (event.target === modal) {
-                closeProductDetails();
-            }
+        function updateMainImage(src) {
+            document.getElementById('modalMainImage').src = src;
         }
 
-        // Add event listener for search input
-        document.getElementById('search-input').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                handleSearchClick();
-            }
-        });
-
-        // Add to cart function
-        function addToCartLocal(productId) {
-            if (!productId) return;
+        function addToCartLocal() {
+            if (!currentProduct) return;
             // Call the global addToCart function directly
-            window.addToCart(productId);
+            window.addToCart(currentProduct._id);
+        }
+
+        function updateCartCount(count) {
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = count;
+            }
         }
 
         // Update cart count on page load

@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
         const product = new Product({
             name: req.body.name,
             category: req.body.category,
-            price: `EGP ${priceNum.toFixed(2)}`,
+            price: `EGP ${priceNum.toFixed(0)}`,
             description: req.body.description,
             images: req.body.images,
             alt: req.body.alt
@@ -182,7 +182,7 @@ router.patch('/:id', async (req, res) => {
         // Update product with validated data
         product.name = name.trim();
         product.category = category;
-        product.price = `EGP ${priceNum.toFixed(2)}`;
+        product.price = `EGP ${priceNum.toFixed(0)}`;
         product.description = description.trim();
         product.images = {
             main: mainImage.trim(),
