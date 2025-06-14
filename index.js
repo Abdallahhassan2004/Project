@@ -75,6 +75,11 @@ app.set('views', path.join(__dirname, 'views'));
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Global error:', err);
+    console.error('Error stack:', err.stack);
+    console.error('Request URL:', req.url);
+    console.error('Request method:', req.method);
+    console.error('Request body:', req.body);
+    
     res.status(500).render('error', {
         message: 'Server error',
         error: process.env.NODE_ENV === 'development' ? err : {}
@@ -310,9 +315,12 @@ app.use('/api/admin/products', adminAuth, productRoutes);
 // Helper function to safely parse prices (handles both string and number formats)
 function parsePrice(price) {
     if (typeof price === 'string') {
-        return parseFloat(price.replace(/EGP\s*/, '')) || 0;
+        // Remove currency symbols, spaces, and commas
+        const cleanedPrice = price.replace(/[EGP£$,\s]/g, '');
+        const parsed = parseFloat(cleanedPrice);
+        return isNaN(parsed) ? 0 : parsed;
     } else if (typeof price === 'number') {
-        return price || 0;
+        return isNaN(price) ? 0 : price;
     }
     return 0;
 }
@@ -644,6 +652,7 @@ app.post('/checkout/process', auth, async (req, res) => {
         console.log('Starting checkout process...');
         const User = require('./models/User');
         const Order = require('./models/Order');
+        const mongoose = require('mongoose');
         
         console.log('User ID:', req.user.userId);
         const user = await User.findById(req.user.userId);
@@ -660,43 +669,81 @@ app.post('/checkout/process', auth, async (req, res) => {
 
         console.log('Cart contents:', user.cart);
 
-        // Calculate total
-        const total = user.cart.reduce((sum, item) => {
+        // Validate and process cart items
+        const processedItems = [];
+        let total = 0;
+
+        for (const item of user.cart) {
+            console.log('Processing cart item:', item);
+            
+            // Validate item structure
+            if (!item.id || !item.name || !item.price || !item.quantity) {
+                console.error('Invalid cart item structure:', item);
+                return res.status(400).json({ error: 'Invalid cart item structure' });
+            }
+
+            // Validate product ID
+            if (!mongoose.Types.ObjectId.isValid(item.id)) {
+                console.error('Invalid product ID:', item.id);
+                return res.status(400).json({ error: 'Invalid product ID in cart' });
+            }
+
+            // Parse price and quantity
             const price = parsePrice(item.price);
             const quantity = parseInt(item.quantity) || 0;
-            return sum + (price * quantity);
-        }, 0);
+
+            if (isNaN(price) || price <= 0) {
+                console.error('Invalid price for item:', item.name, 'Price:', item.price);
+                return res.status(400).json({ error: 'Invalid price in cart' });
+            }
+
+            if (quantity <= 0) {
+                console.error('Invalid quantity for item:', item.name, 'Quantity:', item.quantity);
+                return res.status(400).json({ error: 'Invalid quantity in cart' });
+            }
+
+            processedItems.push({
+                product: item.id,
+                quantity: quantity,
+                price: price
+            });
+
+            total += price * quantity;
+        }
+
+        console.log('Processed items:', processedItems);
         console.log('Calculated total:', total);
+
+        // Validate form data
+        const { fullName, email, phone, address, city, postalCode } = req.body;
+        
+        if (!fullName || !email || !phone || !address || !city || !postalCode) {
+            console.error('Missing required shipping information');
+            return res.status(400).json({ error: 'Missing required shipping information' });
+        }
 
         // Log form data
         console.log('Form data:', {
-            fullName: req.body.fullName,
-            email: req.body.email,
-            phone: req.body.phone,
-            address: req.body.address,
-            city: req.body.city,
-            postalCode: req.body.postalCode
+            fullName: fullName,
+            email: email,
+            phone: phone,
+            address: address,
+            city: city,
+            postalCode: postalCode
         });
 
         // Create new order with shipping information
         const orderData = {
             user: user._id,
-            products: user.cart.map(item => {
-                console.log('Processing cart item:', item);
-                return {
-                    product: item.id, // Use id instead of _id as that's what's stored in the cart
-                    quantity: parseInt(item.quantity),
-                    price: parseFloat(item.price)
-                };
-            }),
+            products: processedItems,
             total: total,
             shippingAddress: {
-                fullName: req.body.fullName,
-                email: req.body.email,
-                phone: req.body.phone,
-                address: req.body.address,
-                city: req.body.city,
-                postalCode: req.body.postalCode
+                fullName: fullName.trim(),
+                email: email.trim(),
+                phone: phone.trim(),
+                address: address.trim(),
+                city: city.trim(),
+                postalCode: postalCode.trim()
             }
         };
         console.log('Order data prepared:', orderData);
@@ -719,6 +766,28 @@ app.post('/checkout/process', auth, async (req, res) => {
             stack: error.stack,
             name: error.name
         });
+        
+        // Handle specific mongoose validation errors
+        if (error.name === 'ValidationError') {
+            const validationErrors = Object.values(error.errors).map(err => err.message);
+            console.error('Validation errors:', validationErrors);
+            return res.status(400).json({ error: `Validation error: ${validationErrors.join(', ')}` });
+        }
+        
+        // Handle duplicate key errors
+        if (error.code === 11000) {
+            console.error('Duplicate key error:', error);
+            
+            // Check if it's an orderNumber duplicate error
+            if (error.keyPattern && error.keyPattern.orderNumber) {
+                console.error('Duplicate orderNumber error - retrying with new orderNumber');
+                // The orderNumber will be auto-generated, so this shouldn't happen often
+                return res.status(500).json({ error: 'Error creating order. Please try again.' });
+            }
+            
+            return res.status(400).json({ error: 'Order already exists' });
+        }
+        
         res.status(500).render('error', {
             title: 'Error',
             message: 'Error processing checkout',

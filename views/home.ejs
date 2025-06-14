@@ -55,6 +55,13 @@
         </div>
     </section>
 
+    <section class="gallery-section">
+        <div class="gallery-content">
+            <h2>Our Collection</h2>
+            <p>Discover the perfect blend of style and comfort</p>
+        </div>
+    </section>
+
     <section class="shop-by-room-section">
         <div class="section-title">
             <h2 class="shop-by-room-title">Shop By Room</h2>
@@ -98,16 +105,6 @@
         </div>
     </section>
 
-    <section class="newsletter-section">
-        <div class="newsletter-content">
-            <h2>Be a part of our club</h2>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email" required />
-                <button type="submit">Join</button>
-            </form>
-        </div>
-    </section>
-
     <!-- Google Map Section -->
     <section id="map-section" class="map-section" style="padding: 40px 20px; background: #f9f9f9;">
         <h2 style="text-align: center;">Find Us</h2>
@@ -124,31 +121,7 @@
         </div>
     </section>
 
-    <footer>
-        <div class="footer-wrapper">
-            <div class="footer-grid">
-                <% const footerSections = [
-                    { title: 'Store', links: ['Home', 'About', 'Journal', 'Contact'] },
-                    { title: 'Shop', links: ['All', 'Lookbook', 'Collections', 'Featured'] },
-                    { title: 'Collections', links: ['Decors', 'Furnitures', 'Ceramic', 'Lamps'] },
-                    { title: 'Help', links: ['Contact', 'Login & Account', 'Privacy Policy', 'Refund policy'] }
-                ]; %>
-                <% footerSections.forEach(section => { %>
-                    <div class="footer-box">
-                        <h4><%= section.title %></h4>
-                        <ul>
-                            <% section.links.forEach(link => { %>
-                                <li><a href="#"><%= link %></a></li>
-                            <% }); %>
-                        </ul>
-                    </div>
-                <% }); %>
-            </div>
-        </div>
-        <div class="footer-brand">
-            <h2>Sense</h2>
-        </div>
-    </footer>
+    <%- include('partials/footer') %>
 
     <script>
         // Update cart count on page load

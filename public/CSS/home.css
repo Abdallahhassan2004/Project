@@ -648,76 +648,9 @@ html, body {
   }
   
   .info-text p {
-    font-size: 1em;
+    font-size: 14px;
+    color: #666;
     line-height: 1.6;
-    max-width: 800px;
-  }
-  /* email  */
-
-  .newsletter-section {
-    background-image: url('../Images/Home/em.jpg'); /* Replace with your actual image path */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 700px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 40px 20px;
-  }
-  
-  .newsletter-content h2 {
-    font-size: 36px;
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  
-  
-  .newsletter-content h2 {
-    font-size: 56px;
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-family: 'Playfair Display', serif; /* Add this */
-    font-weight: 500; /* Or 400 */
-  }
-  
-  
-  .newsletter-form {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .newsletter-form input[type="email"] {
-    padding: 14px 20px;
-    font-size: 14px;
-    background: transparent;
-    color: white;
-    border: 1px solid white;
-    border-radius: 4px;
-    outline: none;
-    width: 300px;
-    text-align: center;
-  }
-  
-  
-  .newsletter-form button {
-    padding: 14px 20px;
-    font-size: 14px;
-    background: transparent;
-    color: white;
-    border: 1px solid white;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .newsletter-form button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
   }
   
 /* footer */
@@ -880,6 +813,19 @@ footer {
         padding: 60px 20px;
     }
     
+    .gallery-section {
+        height: 400px;
+        background-attachment: scroll;
+    }
+    
+    .gallery-content h2 {
+        font-size: 36px;
+    }
+    
+    .gallery-content p {
+        font-size: 16px;
+    }
+    
     .footer-content {
         gap: 30px;
     }
@@ -905,14 +851,6 @@ footer {
     
     .footer-section {
         flex: 1 1 100%;
-    }
-    
-    .newsletter-form {
-        flex-direction: column;
-    }
-    
-    .newsletter-form button {
-        padding: 12px;
     }
 }
 
@@ -1007,7 +945,69 @@ footer {
     .img4 { top: 45%; left: 10%; }
     .img5 { top: 50%; left: 50%; }
     .img6 { top: 70%; left: 25%; }
+    
+    .gallery-section {
+      height: 300px;
+    }
+    
+    .gallery-content h2 {
+      font-size: 28px;
+    }
+    
+    .gallery-content p {
+      font-size: 14px;
+    }
   }
   
-
+  /* Gallery Section */
+  .gallery-section {
+    background-image: url('../Images/Home/em.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+  }
+  
+  .gallery-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  
+  .gallery-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+  }
+  
+  .gallery-content h2 {
+    font-size: 56px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .gallery-content p {
+    font-size: 18px;
+    margin-bottom: 0;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    opacity: 0.9;
+  }
+  
   

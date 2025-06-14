@@ -1,6 +1,17 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
+    orderNumber: {
+        type: String,
+        unique: true,
+        required: true,
+        default: function() {
+            // Generate a unique order number: ORD + timestamp + random 4 digits
+            const timestamp = Date.now().toString();
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `ORD${timestamp}${random}`;
+        }
+    },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     products: [
         {
